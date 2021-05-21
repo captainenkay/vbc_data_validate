@@ -1,0 +1,289 @@
+@import url('https://fonts.googleapis.com/css2?family=Open+Sans:ital,wght@0,300;0,400;0,600;0,700;0,800;1,300;1,400;1,600;1,700;1,800&family=Orbitron:wght@400;500;600;700;800;900&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Open+Sans:ital,wght@0,300;0,400;0,600;0,700;0,800;1,300;1,400;1,600;1,700;1,800&display=swap');
+.fullPage{
+    width: 1440px;
+    height: 898px;
+    position: relative;
+    background-image: url("./assets/backgroundImage.png");
+}
+.header{
+    position: absolute;
+    width: 1440px;
+    height: 74px;
+    left: 0px;
+    top: 0px
+}
+.logo{
+    position: absolute;
+    width: 117px;
+    height: 41px;
+    left: 75px;
+    top: 16px;
+
+    background: #C4C4C4;
+}
+.homeText{
+    position: absolute;
+    width: 58px;
+    height: 26px;
+    left: 504px;
+    top: 24px;
+
+    font-family: Open Sans;
+    font-style: normal;
+    font-weight: 600;
+    font-size: 20px;
+    line-height: 27px;
+    display: flex;
+    align-items: center;
+
+    color: #FF7A30;
+}
+.collectiblesText{
+    position: absolute;
+    width: 106px;
+    height: 26px;
+    left: 684px;
+    top: 24px;
+
+    font-family: Open Sans;
+    font-style: normal;
+    font-weight: normal;
+    font-size: 20px;
+    line-height: 27px;
+    display: flex;
+    align-items: center;
+
+    color: rgba(255, 255, 255, 0.6);
+}
+.collectiblesText:hover{
+    color: #FF7A30
+}
+.aboutText{
+    position: absolute;
+    width: 57px;
+    height: 26px;
+    left: 912px;
+    top: 24px;
+
+    font-family: Open Sans;
+    font-style: normal;
+    font-weight: normal;
+    font-size: 20px;
+    line-height: 27px;
+    display: flex;
+    align-items: center;
+
+    color: rgba(255, 255, 255, 0.6);
+}
+.aboutText:hover{
+    color: #FF7A30
+}
+.metamaskBackground{
+    position: absolute;
+    width: 190px;
+    height: 38px;
+    left: 1175px;
+    top: 18px;
+
+    background: #E5581C;
+    border-radius: 100px;
+}
+
+.metamaskText {
+    position: absolute;
+    width: 143px;
+    height: 22px;
+    left: 1199px;
+    top: 26px;
+
+    font-family: Open Sans;
+    font-style: normal;
+    font-weight: normal;
+    font-size: 16px;
+    line-height: 22px;
+    /* identical to box height */
+
+    text-align: center;
+
+    color: #FFFFFF;
+}
+
+.applicationName {
+    position: absolute;
+    width: 428px;
+    height: 45px;
+    left: 508px;
+    top: 123px;
+
+    font-family: Orbitron;
+    font-style: normal;
+    font-weight: 500;
+    font-size: 36px;
+    line-height: 45px;
+    letter-spacing: 0.08em;
+
+    color: #E8F0F5;
+}
+
+.publishBackground{
+    position: absolute;
+    width: 168px;
+    height: 48px;
+    left: 300px;
+    top: 239px;
+
+    background: #FFFFFF;
+}
+
+.publishText{
+    position: absolute;
+    width: 82px;
+    height: 30px;
+    left: 343px;
+    top: 248px;
+
+    font-family: Open Sans;
+    font-style: normal;
+    font-weight: bold;
+    font-size: 22px;
+    line-height: 30px;
+    /* identical to box height */
+
+    text-align: center;
+
+    color: #000000;
+}
+
+.verifyBackground{
+    position: absolute;
+    width: 168px;
+    height: 48px;
+    left: 468px;
+    top: 239px;
+
+    background: #E5581C;
+}
+
+.verifyText{
+    position: absolute;
+    width: 66px;
+    height: 30px;
+    left: 519px;
+    top: 248px;
+
+    font-family: Open Sans;
+    font-style: normal;
+    font-weight: bold;
+    font-size: 22px;
+    line-height: 30px;
+    /* identical to box height */
+
+    text-align: center;
+
+    color: #FFFFFF;
+}
+
+.chooseFileBackground{
+    position: absolute;
+    width: 841px;
+    height: 252px;
+    left: 300px;
+    top: 287px;
+    
+    background: #FFFFFF;
+}
+
+.dragFilesText{
+    position: absolute;
+    width: 296px;
+    height: 25px;
+    left: 573px;
+    top: 401px;
+
+    font-family: Open Sans;
+    font-style: normal;
+    font-weight: normal;
+    font-size: 18px;
+    line-height: 25px;
+    /* identical to box height */
+
+    text-align: center;
+
+    color: #000000;
+}
+
+.browseFilesBackground{
+    position: absolute;
+    width: 130px;
+    height: 38px;
+    left: 656px;
+    top: 461px;
+
+    background: rgba(229, 88, 28, 0.2);
+    border-radius: 100px;
+}
+
+.browseFilesText{
+    position: absolute;
+    width: 94px;
+    height: 22px;
+    left: 674px;
+    top: 469px;
+
+    font-family: Open Sans;
+    font-style: normal;
+    font-weight: 600;
+    font-size: 16px;
+    line-height: 22px;
+    /* identical to box height */
+
+    text-align: center;
+
+    color: #E5581C;
+}
+
+.footer{
+    position: absolute;
+    width: 1440px;
+    height: 177px;
+    left: 0px;
+    top: 721px;
+
+    background: #191919;
+}
+
+.number{
+    position: absolute;
+    width: 104px;
+    height: 30px;
+    left: 370px;
+    top: 584px;
+
+    font-family: Open Sans;
+    font-style: normal;
+    font-weight: bold;
+    font-size: 26px;
+    line-height: 35px;
+    display: flex;
+    align-items: center;
+
+    color: #FFFFFF;
+}
+
+.text{
+    position: absolute;
+    width: 137px;
+    height: 20px;
+    left: 370px;
+    top: 616px;
+
+    font-family: Open Sans;
+    font-style: normal;
+    font-weight: normal;
+    font-size: 15px;
+    line-height: 20px;
+    text-align: left;
+
+    color: #FFFFFF;
+}
