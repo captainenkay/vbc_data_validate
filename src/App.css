@@ -22,11 +22,10 @@
 
     background: #C4C4C4;
 }
-.homeText{
+.activeText{
     position: absolute;
     width: 58px;
     height: 26px;
-    left: 504px;
     top: 24px;
 
     font-family: Open Sans;
@@ -39,11 +38,10 @@
 
     color: #FF7A30;
 }
-.collectiblesText{
+.inactiveText{
     position: absolute;
     width: 106px;
     height: 26px;
-    left: 684px;
     top: 24px;
 
     font-family: Open Sans;
@@ -56,7 +54,7 @@
 
     color: rgba(255, 255, 255, 0.6);
 }
-.collectiblesText:hover{
+.inactiveText:hover{
     color: #FF7A30
 }
 .aboutText{

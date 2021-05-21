@@ -1,5 +1,4 @@
 import { Component } from 'react';
-// import {Navbar, Button, Row, Col} from 'react-bootstrap'
 import Web3 from 'web3';
 import "./App.css"
 import homeLogoActive from "./assets/homeLogoActive.png"
@@ -9,6 +8,7 @@ import browseFileIcon from "./assets/browseFileIcon.png"
 import publishFilesIcon from "./assets/publishFilesIcon.png"
 import connectedAddressIcon from "./assets/connectedAddressIcon.png"
 import verifyUserIcon from "./assets/verifyUserIcon.png"
+import {Link} from "react-router-dom"
 
 class App extends Component {
   async componentWillMount(){
@@ -49,16 +49,22 @@ class App extends Component {
           <div className = "logo"></div>
           
           {/* Home Button */}
-          <img style = {{position: "absolute",width: "20px", height: "19px", left:"475px", top: "27px"}} src = {homeLogoActive} alt="Home Logo Active"/>
-          <div className = "homeText">Home</div>
+          <Link to= "/home">
+            <img style = {{position: "absolute",width: "20px", height: "19px", left:"475px", top: "27px"}} src = {homeLogoActive} alt="Home Logo Active"/>
+            <div className = "activeText" style ={{left: "504px"}}>Home</div>
+          </Link>
 
           {/* Collectibles Button */}
-          <img style = {{position: "absolute",width: "26px", height: "26px", left:"652px", top: "24px"}} src = {collectiblesLogo} alt="Collectibles Logo"/>
-          <div className = "collectiblesText">Collectibles</div>
+          <Link to= "/collectibles">
+            <img style = {{position: "absolute",width: "26px", height: "26px", left:"652px", top: "24px"}} src = {collectiblesLogo} alt="Collectibles Logo"/>
+            <div className = "inactiveText" style ={{left: "684px"}}>Collectibles</div>
+          </Link>
 
           {/* About Button */}
-          <img style = {{position: "absolute",width: "26px", height: "26px", left:"880px", top: "24px"}} src = {aboutLogo} alt="About Logo"/>
-          <div className = "aboutText">About</div>
+          <Link to= "/about">
+            <img style = {{position: "absolute",width: "26px", height: "26px", left:"880px", top: "24px"}} src = {aboutLogo} alt="About Logo"/>
+            <div className = "inactiveText" style ={{left: "912px"}}>About</div>
+          </Link>
 
           {/* Metamask Button */}
           <div className = "metamaskBackground"/>
@@ -100,24 +106,6 @@ class App extends Component {
 
         <div className="footer"/>
       </div>
-
-      // <Navbar fixed= "top">
-      //   <Row style={{width: "100%"}}>
-      //     <Col className='col-sm-2'>
-      //       <Navbar.Brand href="#home">
-      //         <img src= {logo} width="30" height="30" className="d-inline-block align-top" alt="React Bootstrap logo"/>
-      //       </Navbar.Brand>
-      //     </Col>
-      //     <Col className='col-sm-8' style={{paddingLeft: "311.08px", paddingRight: "311.08px"}}>
-      //           <Button variant="success" href="#home">Home</Button>
-      //           <Button variant="outline-success" href="#collectibles">Collectibles</Button>
-      //           <Button variant="outline-success" href="#about">About Us</Button>
-      //     </Col>
-      //     <Col className='col-sm-2'>
-      //       {/* <Button variant="outline-success" style={{float: "right"}}>{this.state.account.slice(0,6) + '...' + this.state.account.slice(38,42)}</Button> */}
-      //     </Col>
-      //   </Row>
-      // </Navbar>
     );
   }
 }
