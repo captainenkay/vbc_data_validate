@@ -1,0 +1,10 @@
+.card{
+    position: absolute;
+    width: 300px;
+    height: 252px;
+    left: 75px;
+    top: 118px;
+
+    background: rgba(0, 117, 255, 0.6);
+    mix-blend-mode: screen;
+}

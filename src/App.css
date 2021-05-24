@@ -6,13 +6,6 @@
     position: relative;
     background-image: url("./assets/backgroundImage.png");
 }
-.header{
-    position: absolute;
-    width: 1440px;
-    height: 74px;
-    left: 0px;
-    top: 0px
-}
 .logo{
     position: absolute;
     width: 117px;
@@ -36,7 +29,7 @@
     display: flex;
     align-items: center;
 
-    color: #FF7A30;
+    color: #3BCCFA;
 }
 .inactiveText{
     position: absolute;
@@ -52,30 +45,10 @@
     display: flex;
     align-items: center;
 
-    color: rgba(255, 255, 255, 0.6);
+    color: rgba(255, 255, 255, 0.9);
 }
 .inactiveText:hover{
-    color: #FF7A30
-}
-.aboutText{
-    position: absolute;
-    width: 57px;
-    height: 26px;
-    left: 912px;
-    top: 24px;
-
-    font-family: Open Sans;
-    font-style: normal;
-    font-weight: normal;
-    font-size: 20px;
-    line-height: 27px;
-    display: flex;
-    align-items: center;
-
-    color: rgba(255, 255, 255, 0.6);
-}
-.aboutText:hover{
-    color: #FF7A30
+    color: #3BCCFA
 }
 .metamaskBackground{
     position: absolute;
@@ -84,7 +57,7 @@
     left: 1175px;
     top: 18px;
 
-    background: #E5581C;
+    background: linear-gradient(99.51deg, #23B1EE 20.6%, #005BC7 133.71%);
     border-radius: 100px;
 }
 
@@ -124,62 +97,74 @@
     color: #E8F0F5;
 }
 
-.publishBackground{
+.buttonActiveBackground{
     position: absolute;
     width: 168px;
     height: 48px;
-    left: 300px;
     top: 239px;
 
-    background: #FFFFFF;
+    background: rgba(0, 117, 255, 0.6);
+    mix-blend-mode: screen;
 }
 
-.publishText{
+.buttonActiveBackground:hover{
+    cursor: pointer;
+}
+
+.buttonActiveText{
     position: absolute;
-    width: 82px;
-    height: 30px;
-    left: 343px;
-    top: 248px;
+    height: 25px;
+    top: 251px;
 
     font-family: Open Sans;
     font-style: normal;
     font-weight: bold;
-    font-size: 22px;
-    line-height: 30px;
-    /* identical to box height */
-
-    text-align: center;
-
-    color: #000000;
-}
-
-.verifyBackground{
-    position: absolute;
-    width: 168px;
-    height: 48px;
-    left: 468px;
-    top: 239px;
-
-    background: #E5581C;
-}
-
-.verifyText{
-    position: absolute;
-    width: 66px;
-    height: 30px;
-    left: 519px;
-    top: 248px;
-
-    font-family: Open Sans;
-    font-style: normal;
-    font-weight: bold;
-    font-size: 22px;
-    line-height: 30px;
+    font-size: 18px;
+    line-height: 25px;
     /* identical to box height */
 
     text-align: center;
 
     color: #FFFFFF;
+}
+
+.buttonActiveText:hover{
+    cursor: pointer;
+}
+
+.buttonInactiveBackground{
+    position: absolute;
+    width: 168px;
+    height: 48px;
+    top: 239px;
+
+    background: rgba(67, 122, 146, 0.2);
+    mix-blend-mode: screen;
+}
+
+.buttonInactiveBackground:hover{
+    cursor: pointer;
+}
+
+.buttonInactiveText{
+    position: absolute;
+    height: 25px;
+    top: 251px;
+
+    font-family: Open Sans;
+    font-style: normal;
+    font-weight: bold;
+    font-size: 18px;
+    line-height: 25px;
+    /* identical to box height */
+
+    text-align: center;
+
+    color: #FFFFFF;
+}
+
+.buttonInactiveText:hover{
+    cursor: pointer;
 }
 
 .chooseFileBackground{
@@ -188,11 +173,12 @@
     height: 252px;
     left: 300px;
     top: 287px;
-    
-    background: #FFFFFF;
+
+    background: rgba(0, 117, 255, 0.6);
+mix-blend-mode: screen;
 }
 
-.dragFilesText{
+.filesText{
     position: absolute;
     width: 296px;
     height: 25px;
@@ -208,7 +194,8 @@
 
     text-align: center;
 
-    color: #000000;
+    color: #FFFFFF;
+
 }
 
 .browseFilesBackground{
@@ -217,12 +204,13 @@
     height: 38px;
     left: 656px;
     top: 461px;
-
-    background: rgba(229, 88, 28, 0.2);
+    
+    background: rgba(255, 255, 255, 0.7);
+    mix-blend-mode: screen;
     border-radius: 100px;
 }
 
-.browseFilesText{
+label{
     position: absolute;
     width: 94px;
     height: 22px;
@@ -238,7 +226,10 @@
 
     text-align: center;
 
-    color: #E5581C;
+    color: #052D79;
+}
+label:hover{
+    cursor: pointer;
 }
 
 .footer{
@@ -248,7 +239,7 @@
     left: 0px;
     top: 721px;
 
-    background: #191919;
+    background: rgba(0, 0, 0, 0.62);
 }
 
 .number{
@@ -284,4 +275,26 @@
     text-align: left;
 
     color: #FFFFFF;
+}
+
+.publishText{
+    position: absolute;
+    width: 94px;
+    height: 22px;
+    top: 469px;
+
+    font-family: Open Sans;
+    font-style: normal;
+    font-weight: 600;
+    font-size: 16px;
+    line-height: 22px;
+    /* identical to box height */
+
+    text-align: center;
+
+    color: #052D79;
+}
+
+.publishText:hover{
+    cursor: pointer;
 }
