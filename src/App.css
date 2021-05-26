@@ -6,15 +6,6 @@
     position: relative;
     background-image: url("./assets/backgroundImage.png");
 }
-.logo{
-    position: absolute;
-    width: 117px;
-    height: 41px;
-    left: 75px;
-    top: 16px;
-
-    background: #C4C4C4;
-}
 .activeText{
     position: absolute;
     width: 58px;

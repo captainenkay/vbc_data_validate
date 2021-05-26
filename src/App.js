@@ -307,10 +307,10 @@ class App extends Component {
   render(){
     return (
       <div className = "fullPage">
-        <div className = "logo"></div>
-        
+        <img style = {{position: "absolute", width: "159px",height: "39px",left: "75px",top: "18px"}} src = {logoVBC} alt="logo VBC"/>
+
         {/* Home Button */}
-        <Link to= "/home/publish">
+        <Link to= "/home">
           <img style = {{position: "absolute",width: "20px", height: "19px", left:"475px", top: "27px"}} src = {homeLogoActive} alt="Home Logo Active"/>
           <div className = "activeText" style ={{left: "504px"}}>Home</div>
         </Link>

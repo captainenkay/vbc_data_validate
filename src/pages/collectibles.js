@@ -1,7 +1,9 @@
 import { Component } from 'react';
 import Web3 from 'web3';
 import "./../App.css"
+import "./collectibles.css"
 import homeLogo from "./../assets/homeLogo.png"
+import logoVBC from "./../assets/logoVBC.png"
 import collectiblesLogoActive from "./../assets/collectiblesLogoActive.png"
 import aboutLogo from "./../assets/aboutLogo.png"
 import {Link} from "react-router-dom"
@@ -41,7 +43,7 @@ class Collectibles extends Component {
   render(){
     return (
       <div className = "fullPage">
-        <div className = "logo"></div>
+        <img style = {{position: "absolute", width: "159px",height: "39px",left: "75px",top: "18px"}} src = {logoVBC} alt="logo VBC"/>
         
         {/* Home Button */}
         <Link to= "/home">
@@ -65,7 +67,9 @@ class Collectibles extends Component {
         <div className = "metamaskBackground"/>
         <div className = "metamaskText">{this.state.account.slice(0,10) + '...' + this.state.account.slice(38,42)}</div>
 
-        {/* <div className = "card"/> */}
+        <div className = "card">
+          <div className = "fileName">This file name</div>
+        </div>
 
         <div className="footer"/>
       </div>

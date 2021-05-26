@@ -1,7 +1,9 @@
 import { Component } from 'react';
 import Web3 from 'web3';
 import "./../App.css"
+import "./about.css"
 import homeLogo from "./../assets/homeLogo.png"
+import logoVBC from "./../assets/logoVBC.png"
 import collectiblesLogo from "./../assets/collectiblesLogo.png"
 import aboutLogoActive from "./../assets/aboutLogoActive.png"
 import {Link} from "react-router-dom"
@@ -41,7 +43,7 @@ class About extends Component {
   render(){
     return (
       <div className = "fullPage">
-        <div className = "logo"></div>
+        <img style = {{position: "absolute", width: "159px",height: "39px",left: "75px",top: "18px"}} src = {logoVBC} alt="logo VBC"/>
         
         {/* Home Button */}
         <Link to= "/home">
@@ -64,6 +66,13 @@ class About extends Component {
         {/* Metamask Button */}
         <div className = "metamaskBackground"/>
         <div className = "metamaskText">{this.state.account.slice(0,10) + '...' + this.state.account.slice(38,42)}</div>
+
+        <div className = "aboutBackground"/>
+        <div className ="aboutTitle" >About Data Validation</div>
+
+        <div className = "aboutDescription">Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially unchanged. It was popularised in the 1960s with the release of Letraset sheets containing Lorem Ipsum passages, and more recently with desktop publishing software like Aldus PageMaker including versions of Lorem Ipsum.
+Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially unchanged. It was popularised in the 1960s with the release of Letraset sheets containing Lorem Ipsum passages, and more recently with desktop publishing software like Aldus PageMaker including versions of Lorem Ipsum.</div>
+
         <div className="footer"/>
       </div>
     );

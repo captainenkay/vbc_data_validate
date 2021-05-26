@@ -8,3 +8,20 @@
     background: rgba(0, 117, 255, 0.6);
     mix-blend-mode: screen;
 }
+
+.fileName{
+    position: absolute;
+    height: 22px;
+    
+    font-family: Open Sans;
+    font-style: normal;
+    font-weight: 600;
+    font-size: 16px;
+    line-height: 22px;
+    /* identical to box height */
+    
+    display: flex;
+    align-items: center;
+    
+    color: #FFFFFF;   
+}
