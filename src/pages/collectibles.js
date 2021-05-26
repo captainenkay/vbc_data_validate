@@ -48,19 +48,19 @@ class Collectibles extends Component {
         {/* Home Button */}
         <Link to= "/home">
           <img style = {{position: "absolute",width: "20px", height: "19px", left:"475px", top: "27px"}} src = {homeLogo} alt="Home Logo Active"/>
-          <div className = "inactiveText" style ={{left: "504px"}}>Home</div>
+          <div className = "inactivePageText" style ={{left: "504px"}}>Home</div>
         </Link>
 
         {/* Collectibles Button */}
         <Link to= "/collectibles">
           <img style = {{position: "absolute",width: "26px", height: "26px", left:"652px", top: "24px"}} src = {collectiblesLogoActive} alt="Collectibles Logo"/>
-          <div className = "activeText" style ={{left: "684px"}}>Collectibles</div>
+          <div className = "activePageText" style ={{left: "684px"}}>Collectibles</div>
         </Link>
 
         {/* About Button */}
         <Link to= "/about">
           <img style = {{position: "absolute",width: "26px", height: "26px", left:"880px", top: "24px"}} src = {aboutLogo} alt="About Logo"/>
-          <div className = "inactiveText" style={{left: "912px"}}>About</div>
+          <div className = "inactivePageText" style={{left: "912px"}}>About</div>
         </Link>
 
         {/* Metamask Button */}

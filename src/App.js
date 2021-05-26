@@ -92,6 +92,7 @@ class App extends Component {
       isPublished: true,
       verifiedFiles: 0,
       connectedAddress: [],
+      fileSize: ''
     }
   }
 
@@ -116,12 +117,20 @@ class App extends Component {
     const reader = new FileReader();
     reader.readAsArrayBuffer(file);
 
+
     reader.onloadend = () => {
-      this.setState({buffer: Buffer(reader.result), fileName: file.name, isUploaded: true})
+      this.setState({buffer: Buffer(reader.result), fileName: file.name, isUploaded: true, fileSize: this.handleFileSize(file.size)})
     }
     reader.onerror = () => {
       console.log('file error', reader.error)
     }
+  }
+
+  handleFileSize(bytes){
+    var sizes = ['Bytes', 'KB', 'MB', 'GB', 'TB'];
+    if (bytes === 0) return '0 Byte';
+    var i = parseInt(Math.floor(Math.log(bytes) / Math.log(1024)));
+    return Math.round(bytes / Math.pow(1024, i), 2) + ' ' + sizes[i];
   }
 
   verifyFile = async (event) => {
@@ -312,19 +321,19 @@ class App extends Component {
         {/* Home Button */}
         <Link to= "/home">
           <img style = {{position: "absolute",width: "20px", height: "19px", left:"475px", top: "27px"}} src = {homeLogoActive} alt="Home Logo Active"/>
-          <div className = "activeText" style ={{left: "504px"}}>Home</div>
+          <div className = "activePageText" style ={{left: "504px"}}>Home</div>
         </Link>
 
         {/* Collectibles Button */}
         <Link to= "/collectibles">
           <img style = {{position: "absolute",width: "26px", height: "26px", left:"652px", top: "24px"}} src = {collectiblesLogo} alt="Collectibles Logo"/>
-          <div className = "inactiveText" style ={{left: "684px"}}>Collectibles</div>
+          <div className = "inactivePageText" style ={{left: "684px"}}>Collectibles</div>
         </Link>
 
         {/* About Button */}
         <Link to= "/about">
           <img style = {{position: "absolute",width: "26px", height: "26px", left:"880px", top: "24px"}} src = {aboutLogo} alt="About Logo"/>
-          <div className = "inactiveText" style ={{left: "912px"}}>About</div>
+          <div className = "inactivePageText" style ={{left: "912px"}}>About</div>
         </Link>
 
         {/* Metamask Button */}
@@ -361,29 +370,30 @@ class App extends Component {
 
         {this.state.isUploaded ? 
         <div>
-          <div className= "filesText">{this.state.fileName}</div>
-          <div className= "browseFilesBackground" style ={{left: "920px"}}/>
+          <div className= "fileText">{this.state.fileName}</div>
+          <div className= "fileSize">{this.state.fileSize}</div>
+          <div className= "browseFilesBackground"/>
+          <div className = "borderFile"/>
           {this.state.isPublished ?
             <div>
-              <div className= "publishText" style ={{left: "938px"}} onClick={this.publishFile}>Publish</div>
+              <div className= "publishText" onClick={this.publishFile}>Publish</div>
             </div>
             : 
             <div>
-              <div className= "publishText" style ={{left: "938px"}} onClick={this.verifyFile}>Verify</div>
+              <div className= "publishText" onClick={this.verifyFile}>Verify</div>
             </div>
           }
         </div> 
         :
         <div>
           <img style = {{position: "absolute",width: "58px",height: "58px",left: "692px", top: "327px"}} src={browseFileIcon} alt="Browse File Icon"/>
-          <div className= "filesText">Drag & Drop files here to upload or</div>
+          <div className= "dragFilesText">Drag & Drop files here to upload or</div>
+          {/* Browse Files Button */}
+          <div className= "browseFilesBackground"/>
+          <input type="file" id ="browseFile" onChange = {this.handleFileChange} hidden/>
+          <label for="browseFile">Choose file</label>
         </div>
         }
-
-        {/* Browse Files Button */}
-        <div className= "browseFilesBackground"/>
-        <input type="file" id ="browseFile" onChange = {this.handleFileChange} hidden/>
-        <label for="browseFile">Choose file</label>
 
         {/* Published Files */}
         <img style ={{position: "absolute",width: "54px",height: "54px",left: "300px",top: "583px"}} src = {publishFilesIcon} alt="Publish File Icon"/>
