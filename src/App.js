@@ -51,6 +51,17 @@ class App extends Component {
   }
 
   async loadBlockchainData(){
+    if (JSON.parse(localStorage.getItem('Transaction')) != null){
+      this.setState({transaction: JSON.parse(localStorage.getItem('Transaction'))})
+    }
+
+    if (localStorage.getItem('verifiedFiles') != null){
+      this.setState({verifiedFiles: localStorage.getItem('verifiedFiles')})
+    }
+
+    if (JSON.parse(localStorage.getItem('connectedAddress') != null)){
+      this.setState({connectedAddress: JSON.parse(localStorage.getItem('connectedAddress'))})
+    }
     const web3 = window.web3
     const accounts = await web3.eth.getAccounts()
     this.setState({account: accounts[0]})
@@ -68,17 +79,6 @@ class App extends Component {
         this.setState({
           hashes: [...this.state.hashes, hash]
         })
-      }
-      if (JSON.parse(localStorage.getItem('Transaction')) != null){
-        this.setState({transaction: JSON.parse(localStorage.getItem('Transaction'))})
-      }
-
-      if (localStorage.getItem('verifiedFiles') != null){
-        this.setState({verifiedFiles: localStorage.getItem('verifiedFiles')})
-      }
-
-      if (JSON.parse(localStorage.getItem('connectedAddress') != null)){
-        this.setState({connectedAddress: JSON.parse(localStorage.getItem('connectedAddress'))})
       }
     }
     else{
@@ -147,6 +147,12 @@ class App extends Component {
     if (bytes === 0) return '0 Byte';
     var i = parseInt(Math.floor(Math.log(bytes) / Math.log(1024)));
     return Math.round(bytes / Math.pow(1024, i), 2) + ' ' + sizes[i];
+  }
+
+  handleFileName(fileName){
+    if (fileName.length < 30) return fileName
+    var editedName = fileName.slice(0,18) + '... .' + fileName.split('.').pop()
+    return editedName 
   }
 
   verifyFile = async (event) => {
@@ -392,7 +398,7 @@ class App extends Component {
         {this.state.isUploaded ? 
         <div>
           <img style = {{position: "absolute",width: "56px",height: "56px",left: "652px",top: "346px"}} src = {fileImage} alt="File Img"/>
-          <div className= "fileText">{this.state.fileName}</div>
+          <div className= "fileText">{this.handleFileName(this.state.fileName)}</div>
           <div className= "fileSize">{this.state.fileSize}</div>
           <div className= "browseFilesBackground"/>
           <div className = "borderFile"/>
@@ -405,7 +411,7 @@ class App extends Component {
                 <div className = "alertSuccessCheckBar"/>
                 <img style = {{position: "absolute",width: "24px",height: "24px",left: "976px",top: "172px"}} src = {closeAlert} alt="Close alert button" onClick = {this.handleRefresh}/>
                 <img style = {{position: "absolute",width: "56px",height: "56px",left: "651px",top: "196px"}} src = {fileImage} alt="File Img"/>
-                <div className= "fileText" style ={{left: "717px", top: "201px", color: "#1E1E1E"}}>{this.state.fileName}</div>
+                <div className= "fileText" style ={{left: "717px", top: "201px", color: "#1E1E1E"}}>{this.handleFileName(this.state.fileName)}</div>
                 <div className= "fileSize" style ={{left: "717px", top: "228px", color: "rgba(30, 30, 30, 0.8)"}}>{this.state.fileSize}</div>
                 <img style = {{position: "absolute",width: "560px;",height: "1px",left: "440px",top: "292px"}} src = {line} alt="line"/>
                 <div className = "alertText" style= {{top: "317px"}}>Computing local hash</div>

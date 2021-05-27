@@ -47,3 +47,14 @@
 
     color: #FFFFFF;
 }
+
+.aboutFooter{
+    position: absolute;
+    width: 1440px;
+    height: 177px;
+    left: 0px;
+    top: 721px;
+
+    background: rgba(0, 0, 0, 0.8);
+    box-shadow: inset 0px 1px 0px rgba(255, 255, 255, 0.15);
+}
