@@ -1,27 +1,122 @@
-.card{
+.content{
     position: absolute;
-    width: 300px;
-    height: 252px;
     left: 75px;
-    top: 118px;
+    top: 123px;
+    width: 1290px;
+}
 
-    background: rgba(0, 117, 255, 0.6);
-    mix-blend-mode: screen;
+.card{
+    /* position: absolute; */
+    width: 300px;
+    height: 308px;
+
+    background: #2E2F38;
+    mix-blend-mode: normal;
 }
 
 .fileName{
     position: absolute;
-    height: 22px;
+    width: 274px;
+    height: 38px;
+    left: 13px;
+    top : 201px;
+
+    font-family: Open Sans;
+    font-style: normal;
+    font-weight: 600;
+    font-size: 14px;
+    line-height: 19px;
+    display: flex;
+    align-items: center;
+
+    color: #FFFFFF; 
+}
+
+.detailButtonText{
+    position: absolute;
+    width: 35px;
+    height: 16px;
+
+    font-family: Open Sans;
+    font-style: normal;
+    font-weight: 600;
+    font-size: 12px;
+    line-height: 16px;
+    display: flex;
+    align-items: center;
+    text-align: center;
+
+    color: #3BCCFA;
+}
+
+.detailButtonText:hover{
+    cursor: pointer;
+}
+
+.editedImg-container {
+    overflow: hidden;
+    height: 190px;
+    max-height: 300px;
+    position: relative;
+}
+
+.editedImg {
+     display: block;
+     width: 100%;
+     height: auto;
+     position: absolute;
+     top: 0;
+ }
+
+ .pdfBackground{
+    position: absolute;
+    width: 300px;
+    height: 201px;
+    
+    background: #1A1B20;
+ }
+
+ .detailBackground{
+    position: absolute;
+    width: 299px;
+    height: 94px;
+    top: 304px;
+
+    background: #2E2F38;
+    mix-blend-mode: normal;
+ }
+
+ .date{
+    position: absolute;
+    height: 16px;
+    left: 13px;
+    top: 308px;
+    
+    font-family: Open Sans;
+    font-style: normal;
+    font-weight: normal;
+    font-size: 12px;
+    line-height: 16px;
+    display: flex;
+    align-items: center;
+    
+    color: rgba(255, 255, 255, 0.8);    
+ }
+
+ .detailText{
+    position: absolute;
+    width: 274px;
+    height: 57px;
+    left: 13px;
+    top: 320px;
     
     font-family: Open Sans;
     font-style: normal;
     font-weight: 600;
-    font-size: 16px;
-    line-height: 22px;
-    /* identical to box height */
-    
+    font-size: 14px;
+    line-height: 19px;
     display: flex;
     align-items: center;
     
-    color: #FFFFFF;   
-}
+    color: #FFFFFF;
+ }

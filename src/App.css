@@ -335,3 +335,108 @@ label:hover{
     border: 1px dashed #3BCCFA;
     box-sizing: border-box;
 }
+
+.alertBackground{
+    position: absolute;
+    width: 600px;
+    left: 420px;
+
+    background: #FFFFFF;
+}
+
+.alertText{
+    position: absolute;
+    height: 19px;
+    left: 648px;
+
+    font-family: Open Sans;
+    font-style: normal;
+    font-weight: normal;
+    font-size: 14px;
+    line-height: 19px;
+    /* identical to box height */
+
+    display: flex;
+    align-items: center;
+
+    color: #000000;
+}
+
+.alertSuccessCheckBar{
+    position: absolute;
+    width: 15px;
+    height: 293px;
+    left: 617px;
+    top: 317px;
+
+    background: linear-gradient(179.95deg, #23B1EE -3.46%, #005BC7 112.7%);
+    border-radius: 100px;
+}
+
+.alertFailCheckBar{
+    position: absolute;
+    width: 15px;
+    height: 132px;
+    left: 557px;
+    top: 450px;
+
+    background: linear-gradient(179.95deg, #23B1EE -3.46%, #F84949 112.7%);
+    border-radius: 100px;
+}
+
+.alertFailTitle{
+    position: absolute;
+    height: 19px;
+    left: 588px;
+    top: 567px;
+
+    font-family: Open Sans;
+    font-style: normal;
+    font-weight: bold;
+    font-size: 14px;
+    line-height: 19px;
+    /* identical to box height */
+
+    display: flex;
+    align-items: center;
+
+    color: #F84949;
+}
+
+.alertSuccessBigTitle{
+    position: absolute;
+    width: 78px;
+    height: 19px;
+    left: 648px;
+    top: 576px;
+
+    font-family: Open Sans;
+    font-style: normal;
+    font-weight: bold;
+    font-size: 14px;
+    line-height: 19px;
+    /* identical to box height */
+
+    display: flex;
+    align-items: center;
+
+    color: #1FA7EA;
+}
+
+.alertSuccessTitle{
+    position: absolute;
+    width: 252px;
+    height: 32px;
+    left: 648px;
+    top: 597px;
+
+    font-family: Open Sans;
+    font-style: normal;
+    font-weight: normal;
+    font-size: 12px;
+    line-height: 16px;
+    display: flex;
+    align-items: center;
+
+    color: #6F6F6F;
+}

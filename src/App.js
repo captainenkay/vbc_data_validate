@@ -8,7 +8,15 @@ import browseFileIcon from "./assets/browseFileIcon.png"
 import publishFilesIcon from "./assets/publishFilesIcon.png"
 import connectedAddressIcon from "./assets/connectedAddressIcon.png"
 import verifyUserIcon from "./assets/verifyUserIcon.png"
+import closeAlert from "./assets/closeAlert.png"
+import line from "./assets/line.png"
+import checkIcon from "./assets/checkIcon.png"
+import crossIcon from "./assets/crossIcon.png"
+import bigCheckIcon from "./assets/bigCheckIcon.png"
+import bigCrossIcon from "./assets/bigCrossIcon.png"
 import logoVBC from "./assets/logoVBC.png"
+import logoBlackVBC from "./assets/logoBlackVBC.png"
+import fileImage from "./assets/fileImage.png"
 import {Link} from "react-router-dom"
 import DataValidate from './abis/DataValidate.json'
 import {degrees, PDFDocument, rgb, StandardFonts } from 'pdf-lib'
@@ -92,7 +100,10 @@ class App extends Component {
       isPublished: true,
       verifiedFiles: 0,
       connectedAddress: [],
-      fileSize: ''
+      fileSize: '',
+      successAlert: false,
+      failAlert: false,
+      transactionLink: ''
     }
   }
 
@@ -104,6 +115,11 @@ class App extends Component {
   handeVerifyMode = (event) => {
     event.preventDefault()
     this.setState({isPublished: false})
+  }
+
+  handleRefresh = (event) => {
+    event.preventDefault()
+    this.setState({isUploaded: false, successAlert: false, failAlert: false})
   }
 
   handleFileChange = (event) => {
@@ -150,17 +166,12 @@ class App extends Component {
     }
 
     
-    if (this.state.fileName.split('.').pop() === "pdf"){
+    if (this.state.fileName.split('.').pop().toLowerCase() === "pdf"){
       ipfs.add(this.state.buffer, (error,result) => {
         const url = 'https:ipfs.infura.io/ipfs/' + result[0].hash
         for (let i = 0; i < this.state.hashes.length; i++){
           if(url === this.state.transaction[i].initialIpfs){
-            if(this.state.account === this.state.transaction[i].address){
-              
-              alert("exist file in blockchain and the owner is you")
-              return
-            }
-            alert("exist file in blockchain and the owner is " + this.state.transaction[i].address)
+            this.setState({successAlert: true})
             return
           }
         }
@@ -168,21 +179,17 @@ class App extends Component {
           console.log(error)
           return
         }
-        alert("This file have not been publish")
+        this.setState({failAlert: true})
         return
       })
     }
 
-    if (this.state.fileName.split('.').pop() === "png" || this.state.fileName.split('.').pop() === "jpg"){
+    if (this.state.fileName.split('.').pop().toLowerCase() === "png" || this.state.fileName.split('.').pop().toLowerCase()  === "jpg" || this.state.fileName.split('.').pop().toLowerCase()  === "jpeg"){
       ipfs.add(this.state.buffer, (error,result) => {
         var ipfsResult = result[0].hash
         for (let i = 0; i < this.state.hashes.length; i++){
           if(ipfsResult === this.state.transaction[i].input){
-            if(this.state.account === this.state.transaction[i].address){
-              alert("exist file in blockchain and the owner is you")
-              return
-            }
-            alert("exist file in blockchain and the owner is " + this.state.transaction[i].address)
+            this.setState({successAlert: true, transactionLink: this.state.transaction[i].transactionHash})
             return
           }
         }
@@ -190,7 +197,7 @@ class App extends Component {
           console.log(error)
           return
         }
-        alert("This file have not been publish")
+        this.setState({failAlert: true})
         return
       })
     }
@@ -211,16 +218,12 @@ class App extends Component {
     }
 
     // PDF File
-    if (this.state.fileName.split('.').pop() === "pdf"){
+    if (this.state.fileName.split('.').pop().toLowerCase() === "pdf"){
       ipfs.add(this.state.buffer, async (error,result) => {
         const url = 'https:ipfs.infura.io/ipfs/' + result[0].hash
         for (let i = 0; i < this.state.hashes.length; i++){
           if(url === this.state.transaction[i].initialIpfs){
-            if(this.state.account === this.state.transaction[i].address){
-              alert("exist file in blockchain and the owner is you")
-              return
-            }
-            alert("exist file in blockchain and the owner is " + this.state.transaction[i].address)
+            this.setState({failAlert: true})
             return
           }
         }
@@ -231,9 +234,9 @@ class App extends Component {
         const existingPdfBytes = await fetch(url).then(res => res.arrayBuffer())
         const pdfDoc = await PDFDocument.load(existingPdfBytes)
 
-        const pngImageBytes = await fetch(logoVBC).then(res => res.arrayBuffer())
+        const pngImageBytes = await fetch(logoBlackVBC).then(res => res.arrayBuffer())
         const pngImage = await pdfDoc.embedPng(pngImageBytes)
-        const pngDims = pngImage.scale(0.1)
+        const pngDims = pngImage.scale(0.5)
 
         const helveticaFont = await pdfDoc.embedFont(StandardFonts.Helvetica)
         const pages = await pdfDoc.getPages()
@@ -267,28 +270,26 @@ class App extends Component {
             return
           }
           this.state.contract.methods.mint(ipfsResult).send({ from: this.state.account}).once('receipt', (receipt) => {
-            var result = {address: this.state.account, transactionHash: receipt.transactionHash, input: ipfsResult, blockNumber: receipt.blockNumber, fileName: this.state.fileName, initialIpfs: url}
+            var result = {address: this.state.account, transactionHash: receipt.transactionHash, input: ipfsResult, blockNumber: receipt.blockNumber, fileName: this.state.fileName, initialIpfs: url, date: new Date()}
             this.setState({
               hashes: [ipfsResult,...this.state.hashes],
-              transaction:[result, ...this.state.transaction]
+              transaction:[result, ...this.state.transaction],
+              successAlert: true,
+              transactionLink: receipt.transactionHash
             })
             localStorage.setItem('Transaction', JSON.stringify(this.state.transaction))
           })
         })
-      })  
+      })
     }
 
     // PNG & JPG
-    if (this.state.fileName.split('.').pop() === "png" || this.state.fileName.split('.').pop() === "jpg"){
+    if (this.state.fileName.split('.').pop().toLowerCase() === "png" || this.state.fileName.split('.').pop().toLowerCase() === "jpg" || this.state.fileName.split('.').pop().toLowerCase() === "jpeg"){
       ipfs.add(this.state.buffer, (error,result) => {
         var ipfsResult = result[0].hash
         for (let i = 0; i < this.state.hashes.length; i++){
           if(ipfsResult === this.state.transaction[i].input){
-            if(this.state.account === this.state.transaction[i].address){
-              alert("exist file in blockchain and the owner is you")
-              return
-            }
-            alert("exist file in blockchain and the owner is " + this.state.transaction[i].address)
+            this.setState({failAlert: true})
             return
           }
         }
@@ -297,10 +298,12 @@ class App extends Component {
           return
         }
         this.state.contract.methods.mint(ipfsResult).send({ from: this.state.account}).once('receipt', (receipt) => {
-          var result = {address: this.state.account, transactionHash: receipt.transactionHash, input: ipfsResult, blockNumber: receipt.blockNumber, fileName: this.state.fileName}
+          var result = {address: this.state.account, transactionHash: receipt.transactionHash, input: ipfsResult, blockNumber: receipt.blockNumber, fileName: this.state.fileName, date: new Date()}
           this.setState({
             hashes: [ipfsResult,...this.state.hashes],
-            transaction:[result, ...this.state.transaction]
+            transaction:[result, ...this.state.transaction],
+            successAlert: true,
+            transactionLink: receipt.transactionHash
           })
           localStorage.setItem('Transaction', JSON.stringify(this.state.transaction))
         })
@@ -308,16 +311,14 @@ class App extends Component {
     }
 
     // Other file type 
-    if(this.state.fileName.split('.').pop() !== "png" && this.state.fileName.split('.').pop() !== "jpg" && this.state.fileName.split('.').pop() !== "pdf"){
-      alert("Please choose pdf, png, jpg file")
+    if(this.state.fileName.split('.').pop().toLowerCase() !== "png" && this.state.fileName.split('.').pop().toLowerCase() !== "jpg" &&  this.state.fileName.split('.').pop().toLowerCase() !== "jpeg" && this.state.fileName.split('.').pop().toLowerCase() !== "pdf"){
+      alert("Please choose pdf, png, jpg, jpeg file")
     }
   }
 
   render(){
     return (
       <div className = "fullPage">
-        <img style = {{position: "absolute", width: "159px",height: "39px",left: "75px",top: "18px"}} src = {logoVBC} alt="logo VBC"/>
-
         {/* Home Button */}
         <Link to= "/home">
           <img style = {{position: "absolute",width: "20px", height: "19px", left:"475px", top: "27px"}} src = {homeLogoActive} alt="Home Logo Active"/>
@@ -341,6 +342,26 @@ class App extends Component {
         <div className = "metamaskText">{this.state.account.slice(0,10) + '...' + this.state.account.slice(38,42)}</div>
 
         <div className= "applicationName">DATA VALIDATION</div>
+
+        {/* Published Files */}
+        <img style ={{position: "absolute",width: "54px",height: "54px",left: "300px",top: "583px"}} src = {publishFilesIcon} alt="Publish File Icon"/>
+        <div className = "number">{this.state.transaction.length}</div>
+        <div className = "text">Published Files</div>
+
+        {/* Verified Files */}
+        <img style ={{position: "absolute",width: "54px",height: "54px",left: "617px",top: "583px"}} src = {verifyUserIcon} alt="Verified User Icon"/>
+        <div className = "number" style ={{left: "687px"}}>{this.state.verifiedFiles}</div>
+        <div className = "text" style ={{left: "688px"}}>Verified Files</div>
+
+        {/* Connected Address Files */}
+        <img style ={{position: "absolute",width: "54px",height: "54px",left: "934px",top: "583px"}} src = {connectedAddressIcon} alt="Connected Address Icon"/>
+        <div className = "number" style ={{left: "1004px"}}>{this.state.connectedAddress.length}</div>
+        <div className = "text" style ={{left: "1004px"}}>Connected Address</div>
+        <div className="footer"/>
+
+        <img style = {{position: "absolute", width: "159px",height: "39px",left: "75px",top: "18px"}} src = {logoVBC} alt="logo VBC"/>
+
+        
 
         {this.state.isPublished ?
         // Publish Mode
@@ -370,6 +391,7 @@ class App extends Component {
 
         {this.state.isUploaded ? 
         <div>
+          <img style = {{position: "absolute",width: "56px",height: "56px",left: "652px",top: "346px"}} src = {fileImage} alt="File Img"/>
           <div className= "fileText">{this.state.fileName}</div>
           <div className= "fileSize">{this.state.fileSize}</div>
           <div className= "browseFilesBackground"/>
@@ -377,10 +399,100 @@ class App extends Component {
           {this.state.isPublished ?
             <div>
               <div className= "publishText" onClick={this.publishFile}>Publish</div>
+              {this.state.successAlert ?
+              <div>
+                <div className = "alertBackground" style={{top: "152px", height: "497px"}}/>
+                <div className = "alertSuccessCheckBar"/>
+                <img style = {{position: "absolute",width: "24px",height: "24px",left: "976px",top: "172px"}} src = {closeAlert} alt="Close alert button" onClick = {this.handleRefresh}/>
+                <img style = {{position: "absolute",width: "56px",height: "56px",left: "651px",top: "196px"}} src = {fileImage} alt="File Img"/>
+                <div className= "fileText" style ={{left: "717px", top: "201px", color: "#1E1E1E"}}>{this.state.fileName}</div>
+                <div className= "fileSize" style ={{left: "717px", top: "228px", color: "rgba(30, 30, 30, 0.8)"}}>{this.state.fileSize}</div>
+                <img style = {{position: "absolute",width: "560px;",height: "1px",left: "440px",top: "292px"}} src = {line} alt="line"/>
+                <div className = "alertText" style= {{top: "317px"}}>Computing local hash</div>
+                <img style = {{position: "absolute",width: "26px;",height: "26px",left: "611px",top: "313px"}} src = {checkIcon} alt="Check Icon"/>
+                <div className = "alertText" style= {{top: "372px"}}>Comparing hash</div>
+                <img style = {{position: "absolute",width: "26px;",height: "26px",left: "611px",top: "369px"}} src = {checkIcon} alt="Check Icon"/>
+                <div className = "alertText" style= {{top: "423px"}}>Deploy file on ipfs</div>
+                <img style = {{position: "absolute",width: "26px;",height: "26px",left: "611px",top: "420px"}} src = {checkIcon} alt="Check Icon"/>
+                <div className = "alertText" style= {{top: "474px"}}>Publish file on network</div>
+                <img style = {{position: "absolute",width: "26px;",height: "26px",left: "611px",top: "471px"}} src = {checkIcon} alt="Check Icon"/>
+                <div className = "alertText" style= {{top: "525px"}}>Generate to your collectibles</div>
+                <img style = {{position: "absolute",width: "26px;",height: "26px",left: "611px",top: "522px"}} src = {checkIcon} alt="Check Icon"/>
+                <div className = "alertSuccessBigTitle">PUBLISHED</div>
+                <div className = "alertSuccessTitle" style ={{top: "597px"}}> This file has been published on our network </div>
+                <a style = {{position: "absolute", width: "252px", height: "32px", left: "648px", top: "613px", fontFamily:"Open Sans", fontStyle: "normal", fontWeight: "normal", fontSize: "12px", lineHeight: "16px", display: "flex", alignItems: "center", color: "#6F6F6F"}}target="_blank" rel="noopener noreferrer" href={'https:testnet.bscscan.com/tx/' + this.state.transactionLink}>View transaction</a>
+                <img style = {{position: "absolute",width: "36px;",height: "36px",left: "606px",top: "585px", filter: "drop-shadow(0px 4px 4px rgba(84, 114, 174, 0.2))"}} src = {bigCheckIcon} alt="Big Check Icon"/>
+
+              </div>
+              :
+              <div/>}
+
+              {this.state.failAlert ?
+                <div>
+                  <div className = "alertBackground" style={{top: "285px", height: "329px"}}/>
+                  <div className = "alertFailCheckBar"/>
+                  <img style = {{position: "absolute",width: "24px",height: "24px",left: "976px",top: "305px"}} src = {closeAlert} alt="Close alert button" onClick = {this.handleRefresh}/>
+                  <img style = {{position: "absolute",width: "56px",height: "56px",left: "651px",top: "329px"}} src = {fileImage} alt="File Img"/>
+                  <div className= "fileText" style ={{left: "717px", top: "334px", color: "#1E1E1E"}}>{this.state.fileName}</div>
+                  <div className= "fileSize" style ={{left: "717px", top: "361px", color: "rgba(30, 30, 30, 0.8)"}}>{this.state.fileSize}</div>
+                  <img style = {{position: "absolute",width: "560px;",height: "1px",left: "440px",top: "425px"}} src = {line} alt="line"/>
+                  <div className = "alertText" style= {{top: "450px", left: "588px"}}>Computing local hash</div>
+                  <img style = {{position: "absolute",width: "26px;",height: "26px",left: "551px",top: "446px"}} src = {checkIcon} alt="Check Icon"/>
+                  <div className = "alertText" style= {{top: "505px", left: "588px"}}>Comparing hash</div>
+                  <img style = {{position: "absolute",width: "26px;",height: "26px",left: "551px",top: "502px"}} src = {crossIcon} alt="Cross Icon"/>
+                  <div className = "alertFailTitle">This file has been published on our network before</div>
+                  <img style = {{position: "absolute",width: "36px;",height: "36px",left: "546px",top: "558px"}} src = {bigCrossIcon} alt="Big Cross Icon"/>
+                </div>
+                :
+                <div/>}
+
             </div>
             : 
             <div>
               <div className= "publishText" onClick={this.verifyFile}>Verify</div>
+              {this.state.successAlert ?
+              <div>
+                <div className = "alertBackground" style={{top: "152px", height: "400px"}}/>
+                <div className = "alertSuccessCheckBar" style ={{height: "190px"}}/>
+                <img style = {{position: "absolute",width: "24px",height: "24px",left: "976px",top: "172px"}} src = {closeAlert} alt="Close alert button" onClick = {this.handleRefresh}/>
+                <img style = {{position: "absolute",width: "56px",height: "56px",left: "651px",top: "196px"}} src = {fileImage} alt="File Img"/>
+                <div className= "fileText" style ={{left: "717px", top: "201px", color: "#1E1E1E"}}>{this.state.fileName}</div>
+                <div className= "fileSize" style ={{left: "717px", top: "228px", color: "rgba(30, 30, 30, 0.8)"}}>{this.state.fileSize}</div>
+                <img style = {{position: "absolute",width: "560px;",height: "1px",left: "440px",top: "292px"}} src = {line} alt="line"/>
+                <div className = "alertText" style= {{top: "317px"}}>Computing local hash</div>
+                <img style = {{position: "absolute",width: "26px;",height: "26px",left: "611px",top: "313px"}} src = {checkIcon} alt="Check Icon"/>
+                <div className = "alertText" style= {{top: "372px"}}>Comparing hash</div>
+                <img style = {{position: "absolute",width: "26px;",height: "26px",left: "611px",top: "369px"}} src = {checkIcon} alt="Check Icon"/>
+                <div className = "alertText" style= {{top: "423px"}}>Checking receipt</div>
+                <img style = {{position: "absolute",width: "26px;",height: "26px",left: "611px",top: "420px"}} src = {checkIcon} alt="Check Icon"/>
+                <div className = "alertSuccessBigTitle" style ={{top: "474px"}}>VERIFIED</div>
+                <div className = "alertSuccessTitle" style ={{top: "495px"}}> This is a valid certificate </div>
+                <a style = {{position: "absolute", width: "252px", height: "32px", left: "648px", top: "511px", fontFamily:"Open Sans", fontStyle: "normal", fontWeight: "normal", fontSize: "12px", lineHeight: "16px", display: "flex", alignItems: "center", color: "#6F6F6F"}}target="_blank" rel="noopener noreferrer" href={'https:testnet.bscscan.com/tx/' + this.state.transactionLink}>View transaction</a>
+                  
+                <img style = {{position: "absolute",width: "36px;",height: "36px",left: "606px",top: "483px", filter: "drop-shadow(0px 4px 4px rgba(84, 114, 174, 0.2))"}} src = {bigCheckIcon} alt="Big Check Icon"/>
+
+              </div>
+              :
+              <div/>}
+
+              {this.state.failAlert ?
+                <div>
+                  <div className = "alertBackground" style={{top: "285px", height: "329px"}}/>
+                  <div className = "alertFailCheckBar"/>
+                  <img style = {{position: "absolute",width: "24px",height: "24px",left: "976px",top: "305px"}} src = {closeAlert} alt="Close alert button" onClick = {this.handleRefresh}/>
+                  <img style = {{position: "absolute",width: "56px",height: "56px",left: "651px",top: "329px"}} src = {fileImage} alt="File Img"/>
+                  <div className= "fileText" style ={{left: "717px", top: "334px", color: "#1E1E1E"}}>{this.state.fileName}</div>
+                  <div className= "fileSize" style ={{left: "717px", top: "361px", color: "rgba(30, 30, 30, 0.8)"}}>{this.state.fileSize}</div>
+                  <img style = {{position: "absolute",width: "560px;",height: "1px",left: "440px",top: "425px"}} src = {line} alt="line"/>
+                  <div className = "alertText" style= {{top: "450px", left: "588px"}}>Computing local hash</div>
+                  <img style = {{position: "absolute",width: "26px;",height: "26px",left: "551px",top: "446px"}} src = {checkIcon} alt="Check Icon"/>
+                  <div className = "alertText" style= {{top: "505px", left: "588px"}}>Comparing hash</div>
+                  <img style = {{position: "absolute",width: "26px;",height: "26px",left: "551px",top: "502px"}} src = {crossIcon} alt="Cross Icon"/>
+                  <div className = "alertFailTitle">This file has not been published on our network</div>
+                  <img style = {{position: "absolute",width: "36px;",height: "36px",left: "546px",top: "558px"}} src = {bigCrossIcon} alt="Big Cross Icon"/>
+                </div>
+                :
+                <div/>}
             </div>
           }
         </div> 
@@ -394,24 +506,6 @@ class App extends Component {
           <label for="browseFile">Choose file</label>
         </div>
         }
-
-        {/* Published Files */}
-        <img style ={{position: "absolute",width: "54px",height: "54px",left: "300px",top: "583px"}} src = {publishFilesIcon} alt="Publish File Icon"/>
-        <div className = "number">{this.state.transaction.length}</div>
-        <div className = "text">Published Files</div>
-
-        {/* Verified Files */}
-        <img style ={{position: "absolute",width: "54px",height: "54px",left: "617px",top: "583px"}} src = {verifyUserIcon} alt="Verified User Icon"/>
-        <div className = "number" style ={{left: "687px"}}>{this.state.verifiedFiles}</div>
-        <div className = "text" style ={{left: "688px"}}>Verified Files</div>
-
-        {/* Connected Address Files */}
-        <img style ={{position: "absolute",width: "54px",height: "54px",left: "934px",top: "583px"}} src = {connectedAddressIcon} alt="Connected Address Icon"/>
-        <div className = "number" style ={{left: "1004px"}}>{this.state.connectedAddress.length}</div>
-        <div className = "text" style ={{left: "1004px"}}>Connected Address</div>
-
-
-        <div className="footer"/>
       </div>
     );
   }
