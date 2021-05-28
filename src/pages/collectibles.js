@@ -145,6 +145,7 @@ class Collectibles extends Component {
                     )
                   }
                 }
+                return(<div></div>)
               })}
             </Row>
           </div>

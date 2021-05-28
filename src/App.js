@@ -104,7 +104,8 @@ class App extends Component {
       fileSize: '',
       successAlert: false,
       failAlert: false,
-      transactionLink: ''
+      transactionLink: '',
+      isWaiting: false,
     }
   }
 
@@ -120,7 +121,7 @@ class App extends Component {
 
   handleRefresh = (event) => {
     event.preventDefault()
-    this.setState({isUploaded: false, successAlert: false, failAlert: false})
+    this.setState({isUploaded: false, successAlert: false, failAlert: false, isWaiting: false})
   }
 
   handleFileChange = (event) => {
@@ -257,6 +258,8 @@ class App extends Component {
           console.log(error)
           return
         }
+        this.setState({isWaiting: true})
+
         const existingPdfBytes = await fetch(url).then(res => res.arrayBuffer())
         const pdfDoc = await PDFDocument.load(existingPdfBytes)
 
@@ -300,8 +303,9 @@ class App extends Component {
             this.setState({
               hashes: [ipfsResult,...this.state.hashes],
               transaction:[result, ...this.state.transaction],
+              isWaiting: false,
               successAlert: true,
-              transactionLink: receipt.transactionHash
+              transactionLink: receipt.transactionHash,
             })
             localStorage.setItem('Transaction', JSON.stringify(this.state.transaction))
           })
@@ -323,11 +327,13 @@ class App extends Component {
           console.log(error)
           return
         }
+        this.setState({isWaiting: true})
         this.state.contract.methods.mint(ipfsResult).send({ from: this.state.account}).once('receipt', (receipt) => {
           var result = {address: this.state.account, transactionHash: receipt.transactionHash, input: ipfsResult, blockNumber: receipt.blockNumber, fileName: this.state.fileName, date: new Date()}
           this.setState({
             hashes: [ipfsResult,...this.state.hashes],
             transaction:[result, ...this.state.transaction],
+            isWaiting: false,
             successAlert: true,
             transactionLink: receipt.transactionHash
           })
@@ -421,9 +427,18 @@ class App extends Component {
           <div className= "fileSize">{this.state.fileSize}</div>
           <div className= "browseFilesBackground"/>
           <div className = "borderFile"/>
+          
           {this.state.isPublished ?
             <div>
               <div className= "publishText" onClick={this.publishFile}>Publish</div>
+              {this.state.isWaiting ? 
+                <div>
+                  <div className = "alertBackground" style={{top: "285px", height: "329px"}}/>
+                  <div className = "alertSuccessBigTitle" style ={{left: "693.135px", top: "440px"}}>Waiting...</div> 
+                  <img style = {{position: "absolute",width: "24px",height: "24px",left: "976px",top: "305px"}} src = {closeAlert} alt="Close alert button" onClick = {this.handleRefresh}/>
+                </div> 
+                : 
+                <div/>}
               {this.state.successAlert ?
               <div>
                 <div className = "alertBackground" style={{top: "152px", height: "497px"}}/>
@@ -447,7 +462,6 @@ class App extends Component {
                 <div className = "alertSuccessTitle" style ={{top: "597px"}}> This file has been published on our network </div>
                 <a style = {{position: "absolute", width: "252px", height: "32px", left: "648px", top: "613px", fontFamily:"Open Sans", fontStyle: "normal", fontWeight: "normal", fontSize: "12px", lineHeight: "16px", display: "flex", alignItems: "center", color: "#6F6F6F"}}target="_blank" rel="noopener noreferrer" href={'https:testnet.bscscan.com/tx/' + this.state.transactionLink}>View transaction</a>
                 <img style = {{position: "absolute",width: "36px;",height: "36px",left: "606px",top: "585px", filter: "drop-shadow(0px 4px 4px rgba(84, 114, 174, 0.2))"}} src = {bigCheckIcon} alt="Big Check Icon"/>
-
               </div>
               :
               <div/>}
