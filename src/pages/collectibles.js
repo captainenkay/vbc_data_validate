@@ -155,7 +155,10 @@ class Collectibles extends Component {
           </div> 
           : 
           <div>
-            <div className="collectiblesFooter" style ={{marginTop: "500px"}}/>
+            <div style= {{width: "100%", height: "380px"}}> 
+              <div style= {{textAlign: "center", color: "#ffffff"}}>You dont have any collectibles </div>
+            </div>
+            <div className="collectiblesFooter"/>
           </div>}
         </div>
       // <div className = "fullPage">

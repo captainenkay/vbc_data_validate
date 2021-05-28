@@ -329,6 +329,8 @@ class App extends Component {
         }
         this.setState({isWaiting: true})
         this.state.contract.methods.mint(ipfsResult).send({ from: this.state.account}).once('receipt', (receipt) => {
+          console.log(receipt)
+          console.log(this.state.contract)
           var result = {address: this.state.account, transactionHash: receipt.transactionHash, input: ipfsResult, blockNumber: receipt.blockNumber, fileName: this.state.fileName, date: new Date()}
           this.setState({
             hashes: [ipfsResult,...this.state.hashes],
@@ -430,7 +432,11 @@ class App extends Component {
           
           {this.state.isPublished ?
             <div>
-              <div className= "publishText" onClick={this.publishFile}>Publish</div>
+              <div className= "browseFilesBackground" style ={{left : "950px"}}/>
+              <div className= "publishText" style ={{left: "970px"}} onClick={this.publishFile}>Publish</div>
+              <input type="file" id ="browseFile" onChange = {this.handleFileChange} hidden/>
+              <label for="browseFile">Choose file</label>
+
               {this.state.isWaiting ? 
                 <div>
                   <div className = "alertBackground" style={{top: "285px", height: "329px"}}/>
@@ -488,7 +494,10 @@ class App extends Component {
             </div>
             : 
             <div>
-              <div className= "publishText" onClick={this.verifyFile}>Verify</div>
+              <div className= "browseFilesBackground" style ={{left : "950px"}}/>
+              <div className= "publishText" style ={{left: "970px"}} onClick={this.verifyFile}>Verify</div>
+              <input type="file" id ="browseFile" onChange = {this.handleFileChange} hidden/>
+              <label for="browseFile">Choose file</label>
               {this.state.successAlert ?
               <div>
                 <div className = "alertBackground" style={{top: "152px", height: "400px"}}/>
