@@ -16,6 +16,7 @@ class Collectibles extends Component {
   async componentWillMount(){
     await this.loadWeb3()
     await this.loadBlockchainData()
+    await this.hanldeCollectibles()
   }
 
   componentDidMount(){
@@ -52,9 +53,19 @@ class Collectibles extends Component {
     this.state = {
       account: '',
       transaction: [],
-      collapse: false
+      collapse: false,
+      haveCollectibles: false
     }
     this.toggle = this.toggle.bind(this);
+  }
+
+  async hanldeCollectibles(){
+    for (var i = 0 ; i < this.state.transaction.length; i++ ){
+      if (this.state.transaction[i].address === this.state.account){
+        this.setState({haveCollectibles: true})
+        return
+      }
+    }
   }
 
   toggle() {
@@ -88,57 +99,64 @@ class Collectibles extends Component {
         <div className = "metamaskBackground"/>
         <div className = "metamaskText">{this.state.account.slice(0,10) + '...' + this.state.account.slice(38,42)}</div>
 
-      <div className = "v2content" style={{background: "black"}}>
-          <Row style= {{margin: "0 0 0 0"}}>
-            {this.state.transaction.map((transaction, key) => {
-              if (transaction.address === this.state.account){
-                if (transaction.fileName.split('.').pop().toLowerCase() === "pdf"){
-                  return(
-                    <Col key = {key} className = 'col-sm-3'>
-                      <div className = "card" style ={{marginBottom: "112px", paddingLeft: "0px"}}>
-                        <div className = "pdfBackground"/>
-                        <img style = {{position: "absolute",width: "84px",height: "84px",left: "108px",top: "47px"}}src = {pdfPicture} alt="Pdf pic"/>
-                        <div className= "fileName">{transaction.fileName}</div>
-                        <img style = {{position: "absolute",width: "274px",height: "1px",left: "13px",top: "265px"}}src = {collectiblesLine} alt="Collectibles Line"/>
-                        <div className = "detailButtonText" style ={{left: "123px", top:"279px"}} id={"toggler" + key}>Detail</div>
-                        <img style = {{position: "absolute",width: "9px",height: "5px",left: "168px",top: "285px"}}src = {detailIcon} alt="Detail icon"/>
-                        <UncontrolledCollapse toggler={"#toggler" + key}>
-                          <div className = "detailBackground"/>
-                          <div className = "date">Posted in {transaction.date.slice(8,10)} / {transaction.date.slice(5,7)} / {transaction.date.slice(0,4)}</div>
-                          <a style = {{position: "absolute", width: "274px",height: "57px",left: "13px",top: "320px",fontFamily: "Open Sans", fontStyle: "normal", fontWeight: "600", fontSize: "14px", lineHeight: "19px",display: "flex", alignItems:"center", color: "#FFFFFF" }}target="_blank" rel="noopener noreferrer" href={'https:testnet.bscscan.com/tx/' + transaction.transactionHash}>View transaction</a>
-                          <a style = {{position: "absolute", width: "274px",height: "57px",left: "13px",top: "353px",fontFamily: "Open Sans", fontStyle: "normal", fontWeight: "600", fontSize: "14px", lineHeight: "19px",display: "flex", alignItems:"center", color: "#FFFFFF" }}target="_blank" rel="noopener noreferrer" href={'https:ipfs.infura.io/ipfs/' + transaction.input}>View certificate</a>
-                        </UncontrolledCollapse>
-                      </div>
-                    </Col>
-                  )
-                }
-                if (transaction.fileName.split('.').pop().toLowerCase() === "png" || transaction.fileName.split('.').pop().toLowerCase() === "jpg" || transaction.fileName.split('.').pop().toLowerCase() === "jpeg"){
-                  return(
-                    <Col key = {key} className = 'col-sm-3'>
-                      <Card style ={{marginBottom: "112px", paddingLeft: "0px"}}>
-                        <div class="editedImg-container">
-                          <img class="editedImg" src={'https:ipfs.infura.io/ipfs/' + transaction.input} alt = "source"/>
+        <div className = "v2content" style={{background: "black"}}>
+            <Row style= {{margin: "0 0 0 0"}}>
+              {this.state.transaction.map((transaction, key) => {
+                if (transaction.address === this.state.account){
+                  if (transaction.fileName.split('.').pop().toLowerCase() === "pdf"){
+                    return(
+                      <Col key = {key} className = 'col-sm-3'>
+                        <div className = "card" style ={{marginBottom: "112px", paddingLeft: "0px"}}>
+                          <div className = "pdfBackground"/>
+                          <img style = {{position: "absolute",width: "84px",height: "84px",left: "108px",top: "47px"}}src = {pdfPicture} alt="Pdf pic"/>
+                          <div className= "fileName">{transaction.fileName}</div>
+                          <img style = {{position: "absolute",width: "274px",height: "1px",left: "13px",top: "265px"}}src = {collectiblesLine} alt="Collectibles Line"/>
+                          <div className = "detailButtonText" style ={{left: "123px", top:"279px"}} id={"toggler" + key}>Detail</div>
+                          <img style = {{position: "absolute",width: "9px",height: "5px",left: "168px",top: "285px"}}src = {detailIcon} alt="Detail icon"/>
+                          <UncontrolledCollapse toggler={"#toggler" + key}>
+                            <div className = "detailBackground"/>
+                            <div className = "date">Posted in {transaction.date.slice(8,10)} / {transaction.date.slice(5,7)} / {transaction.date.slice(0,4)}</div>
+                            <a style = {{position: "absolute", width: "274px",height: "57px",left: "13px",top: "320px",fontFamily: "Open Sans", fontStyle: "normal", fontWeight: "600", fontSize: "14px", lineHeight: "19px",display: "flex", alignItems:"center", color: "#FFFFFF" }}target="_blank" rel="noopener noreferrer" href={'https:testnet.bscscan.com/tx/' + transaction.transactionHash}>View transaction</a>
+                            <a style = {{position: "absolute", width: "274px",height: "57px",left: "13px",top: "353px",fontFamily: "Open Sans", fontStyle: "normal", fontWeight: "600", fontSize: "14px", lineHeight: "19px",display: "flex", alignItems:"center", color: "#FFFFFF" }}target="_blank" rel="noopener noreferrer" href={'https:ipfs.infura.io/ipfs/' + transaction.input}>View certificate</a>
+                          </UncontrolledCollapse>
                         </div>
-                        <div className= "fileName">{transaction.fileName}</div>
-                        <img style = {{position: "absolute",width: "274px",height: "1px",left: "13px",top: "265px"}}src = {collectiblesLine} alt="Collectibles Line"/>
-                        <div className = "detailButtonText" style ={{left: "123px", top:"279px"}} id={"toggler" + key}>Detail</div>
-                        <img style = {{position: "absolute",width: "9px",height: "5px",left: "168px",top: "285px"}}src = {detailIcon} alt="Detail icon"/>
-                        <UncontrolledCollapse toggler={"#toggler" + key}>
-                          <div className = "detailBackground"/>
-                          <div className = "date">Posted in {transaction.date.slice(8,10)} / {transaction.date.slice(5,7)} / {transaction.date.slice(0,4)}</div>
-                          <a style = {{position: "absolute", width: "274px",height: "57px",left: "13px",top: "320px",fontFamily: "Open Sans", fontStyle: "normal", fontWeight: "600", fontSize: "14px", lineHeight: "19px",display: "flex", alignItems:"center", color: "#FFFFFF" }}target="_blank" rel="noopener noreferrer" href={'https:testnet.bscscan.com/tx/' + transaction.transactionHash}>View transaction</a>
-                          <a style = {{position: "absolute", width: "274px",height: "57px",left: "13px",top: "353px",fontFamily: "Open Sans", fontStyle: "normal", fontWeight: "600", fontSize: "14px", lineHeight: "19px",display: "flex", alignItems:"center", color: "#FFFFFF" }}target="_blank" rel="noopener noreferrer" href={'https:ipfs.infura.io/ipfs/' + transaction.input}>View file</a>
-                        </UncontrolledCollapse>
-                      </Card>
-                    </Col>
-                  )
+                      </Col>
+                    )
+                  }
+                  if (transaction.fileName.split('.').pop().toLowerCase() === "png" || transaction.fileName.split('.').pop().toLowerCase() === "jpg" || transaction.fileName.split('.').pop().toLowerCase() === "jpeg"){
+                    return(
+                      <Col key = {key} className = 'col-sm-3'>
+                        <Card style ={{marginBottom: "112px", paddingLeft: "0px"}}>
+                          <div class="editedImg-container">
+                            <img class="editedImg" src={'https:ipfs.infura.io/ipfs/' + transaction.input} alt = "source"/>
+                          </div>
+                          <div className= "fileName">{transaction.fileName}</div>
+                          <img style = {{position: "absolute",width: "274px",height: "1px",left: "13px",top: "265px"}}src = {collectiblesLine} alt="Collectibles Line"/>
+                          <div className = "detailButtonText" style ={{left: "123px", top:"279px"}} id={"toggler" + key}>Detail</div>
+                          <img style = {{position: "absolute",width: "9px",height: "5px",left: "168px",top: "285px"}}src = {detailIcon} alt="Detail icon"/>
+                          <UncontrolledCollapse toggler={"#toggler" + key}>
+                            <div className = "detailBackground"/>
+                            <div className = "date">Posted in {transaction.date.slice(8,10)} / {transaction.date.slice(5,7)} / {transaction.date.slice(0,4)}</div>
+                            <a style = {{position: "absolute", width: "274px",height: "57px",left: "13px",top: "320px",fontFamily: "Open Sans", fontStyle: "normal", fontWeight: "600", fontSize: "14px", lineHeight: "19px",display: "flex", alignItems:"center", color: "#FFFFFF" }}target="_blank" rel="noopener noreferrer" href={'https:testnet.bscscan.com/tx/' + transaction.transactionHash}>View transaction</a>
+                            <a style = {{position: "absolute", width: "274px",height: "57px",left: "13px",top: "353px",fontFamily: "Open Sans", fontStyle: "normal", fontWeight: "600", fontSize: "14px", lineHeight: "19px",display: "flex", alignItems:"center", color: "#FFFFFF" }}target="_blank" rel="noopener noreferrer" href={'https:ipfs.infura.io/ipfs/' + transaction.input}>View file</a>
+                          </UncontrolledCollapse>
+                        </Card>
+                      </Col>
+                    )
+                  }
                 }
-              }
-            })}
-          </Row>
+              })}
+            </Row>
+          </div>
+          {this.state.haveCollectibles ? 
+          <div>
+            <div className="collectiblesFooter"/>
+          </div> 
+          : 
+          <div>
+            <div className="collectiblesFooter" style ={{marginTop: "500px"}}/>
+          </div>}
         </div>
-        <div className="collectiblesFooter"/>
-      </div>
       // <div className = "fullPage">
       //   <img style = {{position: "absolute", width: "159px",height: "39px",left: "75px",top: "18px"}} src = {logoVBC} alt="logo VBC"/>
 

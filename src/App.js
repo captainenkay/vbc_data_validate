@@ -20,6 +20,7 @@ import fileImage from "./assets/fileImage.png"
 import {Link} from "react-router-dom"
 import DataValidate from './abis/DataValidate.json'
 import {degrees, PDFDocument, rgb, StandardFonts } from 'pdf-lib'
+import Dropzone from 'react-dropzone'
 
 const ipfsClient = require('ipfs-http-client')
 const ipfs = ipfsClient({ host: 'ipfs.infura.io', port: '5001', protocol: 'https' })
@@ -125,6 +126,25 @@ class App extends Component {
   handleFileChange = (event) => {
     event.preventDefault()
     const file = event.target.files[0];
+
+    if (!file){
+      return
+    }
+
+    const reader = new FileReader();
+    reader.readAsArrayBuffer(file);
+
+
+    reader.onloadend = () => {
+      this.setState({buffer: Buffer(reader.result), fileName: file.name, isUploaded: true, fileSize: this.handleFileSize(file.size)})
+    }
+    reader.onerror = () => {
+      console.log('file error', reader.error)
+    }
+  }
+
+  handleOnDrop = (files) => {
+    const file = files[0]
 
     if (!file){
       return
@@ -393,10 +413,9 @@ class App extends Component {
         </div>
         }
 
-        <div className= "chooseFileBackground"/>
-
         {this.state.isUploaded ? 
         <div>
+          <div className= "chooseFileBackground"/>
           <img style = {{position: "absolute",width: "56px",height: "56px",left: "652px",top: "346px"}} src = {fileImage} alt="File Img"/>
           <div className= "fileText">{this.handleFileName(this.state.fileName)}</div>
           <div className= "fileSize">{this.state.fileSize}</div>
@@ -504,6 +523,7 @@ class App extends Component {
         </div> 
         :
         <div>
+          <Dropzone style ={{position: "absolute",width: "841px",height: "252px",left: "300px",top: "287px", background: "rgba(0, 117, 255, 0.6)",mixBlendMode: "screen"}} onDrop = {this.handleOnDrop}/>
           <img style = {{position: "absolute",width: "58px",height: "58px",left: "692px", top: "327px"}} src={browseFileIcon} alt="Browse File Icon"/>
           <div className= "dragFilesText">Drag & Drop files here to upload or</div>
           {/* Browse Files Button */}
