@@ -28,12 +28,29 @@ const ipfs = ipfsClient({ host: 'ipfs.infura.io', port: '5001', protocol: 'https
 
 class App extends Component {
   async componentWillMount(){
+    await this.loadStorage()
+    if (this.state.account !== ''){
+      this.setState({connected: true})
+      await this.loadWeb3()
+      await this.loadBlockchainData()
+    }
+  }
+
+  connectMetamask = async(event) => {
+    event.preventDefault()
     await this.loadWeb3()
     await this.loadBlockchainData()
   }
 
+  disconnectMetamask = (event) => {
+    event.preventDefault()
+    localStorage.removeItem('address')
+    window.location.reload()
+  }
+
   componentDidMount(){
-    window.ethereum.on('accountsChanged', function (accounts) {
+    window.ethereum.on('accountsChanged', function (accounts){
+      localStorage.setItem('address', accounts[0])
       window.location.reload()
     });
   }
@@ -51,7 +68,7 @@ class App extends Component {
     }
   }
 
-  async loadBlockchainData(){
+  async loadStorage(){
     if (JSON.parse(localStorage.getItem('Transaction')) != null){
       this.setState({transaction: JSON.parse(localStorage.getItem('Transaction'))})
     }
@@ -63,9 +80,16 @@ class App extends Component {
     if (JSON.parse(localStorage.getItem('connectedAddress') != null)){
       this.setState({connectedAddress: JSON.parse(localStorage.getItem('connectedAddress'))})
     }
+    if (localStorage.getItem("address") != null){
+      this.setState({account: localStorage.getItem("address")})
+    }
+  }
+
+  async loadBlockchainData(){
     const web3 = window.web3
     const accounts = await web3.eth.getAccounts()
-    this.setState({account: accounts[0]})
+    this.setState({account: accounts[0], connected: true})
+    localStorage.setItem('address',this.state.account)
     const networkId = await web3.eth.net.getId()
     const networkData = DataValidate.networks[networkId]
     if(networkData) {
@@ -106,6 +130,7 @@ class App extends Component {
       failAlert: false,
       transactionLink: '',
       isWaiting: false,
+      connected: false
     }
   }
 
@@ -373,7 +398,18 @@ class App extends Component {
 
         {/* Metamask Button */}
         <div className = "metamaskBackground"/>
-        <div className = "metamaskText">{this.state.account.slice(0,10) + '...' + this.state.account.slice(38,42)}</div>
+        {this.state.connected? 
+        <div>
+          <div className = "metamaskConnectedText" onClick = {this.disconnectMetamask}>{this.state.account.slice(0,10) + '...' + this.state.account.slice(38,42)}
+            <span className="metamaskConnectedTextText">Disconnect</span>
+          </div>
+        </div> 
+        : 
+        <div>
+          <div className = "metamaskText" onClick = {this.connectMetamask}> Connect metamask
+            <span className="metamaskTextText">Connect</span>
+          </div>
+        </div>}
 
         <div className= "applicationName">DATA VALIDATION</div>
 
@@ -392,10 +428,10 @@ class App extends Component {
         <div className = "number" style ={{left: "1004px"}}>{this.state.connectedAddress.length}</div>
         <div className = "text" style ={{left: "1004px"}}>Connected Address</div>
         <div className="footer"/>
+        <div className= "browseFilesBackground"/>
+
 
         <img style = {{position: "absolute", width: "159px",height: "39px",left: "75px",top: "18px"}} src = {logoVBC} alt="logo VBC"/>
-
-        
 
         {this.state.isPublished ?
         // Publish Mode
@@ -427,15 +463,13 @@ class App extends Component {
           <img style = {{position: "absolute",width: "56px",height: "56px",left: "652px",top: "346px"}} src = {fileImage} alt="File Img"/>
           <div className= "fileText">{this.handleFileName(this.state.fileName)}</div>
           <div className= "fileSize">{this.state.fileSize}</div>
-          <div className= "browseFilesBackground"/>
           <div className = "borderFile"/>
+          <img style = {{position: "absolute",width: "24px",height: "24px",left: "600px",top: "360px"}} src = {closeAlert} alt="Close alert button" onClick = {this.handleRefresh}/>
+
           
           {this.state.isPublished ?
             <div>
-              <div className= "browseFilesBackground" style ={{left : "950px"}}/>
-              <div className= "publishText" style ={{left: "970px"}} onClick={this.publishFile}>Publish</div>
-              <input type="file" id ="browseFile" onChange = {this.handleFileChange} hidden/>
-              <label for="browseFile">Choose file</label>
+              <div className= "publishText" onClick={this.publishFile}>Publish</div>
 
               {this.state.isWaiting ? 
                 <div>
@@ -447,6 +481,7 @@ class App extends Component {
                 <div/>}
               {this.state.successAlert ?
               <div>
+                <div className = "alertBackgroundFade"/>
                 <div className = "alertBackground" style={{top: "152px", height: "497px"}}/>
                 <div className = "alertSuccessCheckBar"/>
                 <img style = {{position: "absolute",width: "24px",height: "24px",left: "976px",top: "172px"}} src = {closeAlert} alt="Close alert button" onClick = {this.handleRefresh}/>
@@ -474,6 +509,7 @@ class App extends Component {
 
               {this.state.failAlert ?
                 <div>
+                  <div className = "alertBackgroundFade"/>
                   <div className = "alertBackground" style={{top: "285px", height: "329px"}}/>
                   <div className = "alertFailCheckBar"/>
                   <img style = {{position: "absolute",width: "24px",height: "24px",left: "976px",top: "305px"}} src = {closeAlert} alt="Close alert button" onClick = {this.handleRefresh}/>
@@ -494,12 +530,11 @@ class App extends Component {
             </div>
             : 
             <div>
-              <div className= "browseFilesBackground" style ={{left : "950px"}}/>
-              <div className= "publishText" style ={{left: "970px"}} onClick={this.verifyFile}>Verify</div>
-              <input type="file" id ="browseFile" onChange = {this.handleFileChange} hidden/>
-              <label for="browseFile">Choose file</label>
+              <div className= "publishText" onClick={this.verifyFile}>Verify</div>
+              
               {this.state.successAlert ?
               <div>
+                <div className = "alertBackgroundFade"/>
                 <div className = "alertBackground" style={{top: "152px", height: "400px"}}/>
                 <div className = "alertSuccessCheckBar" style ={{height: "190px"}}/>
                 <img style = {{position: "absolute",width: "24px",height: "24px",left: "976px",top: "172px"}} src = {closeAlert} alt="Close alert button" onClick = {this.handleRefresh}/>
@@ -525,6 +560,7 @@ class App extends Component {
 
               {this.state.failAlert ?
                 <div>
+                  <div className = "alertBackgroundFade"/>
                   <div className = "alertBackground" style={{top: "285px", height: "329px"}}/>
                   <div className = "alertFailCheckBar"/>
                   <img style = {{position: "absolute",width: "24px",height: "24px",left: "976px",top: "305px"}} src = {closeAlert} alt="Close alert button" onClick = {this.handleRefresh}/>
@@ -550,7 +586,6 @@ class App extends Component {
           <img style = {{position: "absolute",width: "58px",height: "58px",left: "692px", top: "327px"}} src={browseFileIcon} alt="Browse File Icon"/>
           <div className= "dragFilesText">Drag & Drop files here to upload or</div>
           {/* Browse Files Button */}
-          <div className= "browseFilesBackground"/>
           <input type="file" id ="browseFile" onChange = {this.handleFileChange} hidden/>
           <label for="browseFile">Choose file</label>
         </div>

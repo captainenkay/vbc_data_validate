@@ -54,7 +54,6 @@
 }
 .metamaskText {
     position: absolute;
-    width: 143px;
     height: 22px;
     left: 1199px;
     top: 26px;
@@ -68,6 +67,59 @@
 
     color: #FFFFFF;
 }
+.metamaskText .metamaskTextText{
+    visibility: hidden;
+    background-color: black;
+    color: #fff;
+    text-align: center;
+    padding: 5px 5px 5px 5px;
+    border-radius: 6px;
+    
+    /* Position the tooltip text - see examples below! */
+    position: absolute;
+    z-index: 1;
+}
+
+.metamaskText:hover .metamaskTextText{
+    cursor: pointer;
+    visibility: visible;
+} 
+
+
+.metamaskConnectedText {
+    position: absolute;
+    height: 22px;
+    left: 1199px;
+    top: 26px;
+
+    font-family: Open Sans;
+    font-style: normal;
+    font-weight: normal;
+    font-size: 16px;
+    line-height: 22px;
+    text-align: center;
+
+    color: #FFFFFF;
+}
+
+.metamaskConnectedText .metamaskConnectedTextText{
+    visibility: hidden;
+    background-color: black;
+    color: #fff;
+    text-align: center;
+    padding: 5px 5px 5px 5px;
+    border-radius: 6px;
+    
+    /* Position the tooltip text - see examples below! */
+    position: absolute;
+    z-index: 1;
+}
+
+.metamaskConnectedText:hover .metamaskConnectedTextText{
+    cursor: pointer;
+    visibility: visible;
+} 
+
 
 .applicationName {
     position: absolute;
@@ -438,4 +490,14 @@ label:hover{
     align-items: center;
 
     color: #6F6F6F;
+}
+
+.alertBackgroundFade{
+    position: absolute;
+    width: 1440px;
+    height: 898px;
+    left: 0px;
+    top: 0px;
+
+    background: rgba(0, 0, 0, 0.42);
 }

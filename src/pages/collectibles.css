@@ -1,12 +1,4 @@
-.v1content{
-    position: absolute;
-    margin-left: 75px;
-    margin-top: 123px;
-    width: 1290px;
-}
-
-.v2content{
-    /* position: absolute; */
+.content{
     margin-left: 75px;
     margin-top: 123px;
     width: 1290px;

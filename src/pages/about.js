@@ -10,14 +10,35 @@ import {Link} from "react-router-dom"
 
 class About extends Component {
   async componentWillMount(){
+    await this.loadStorage()
+    if (this.state.account !== ''){
+      this.setState({connected: true})
+    }
+  }
+
+  connectMetamask = async(event) => {
+    event.preventDefault()
     await this.loadWeb3()
     await this.loadBlockchainData()
   }
 
+  disconnectMetamask = (event) => {
+    event.preventDefault()
+    localStorage.removeItem('address')
+    window.location.reload()
+  }
+
   componentDidMount(){
     window.ethereum.on('accountsChanged', function (accounts) {
+      localStorage.setItem('address', accounts[0])
       window.location.reload()
     });
+  }
+
+  async loadStorage(){
+    if (localStorage.getItem("address") != null){
+      this.setState({account: localStorage.getItem("address")})
+    }
   }
 
   async loadWeb3() {
@@ -36,13 +57,15 @@ class About extends Component {
   async loadBlockchainData(){
     const web3 = window.web3
     const accounts = await web3.eth.getAccounts()
-    this.setState({account: accounts[0]})
+    this.setState({account: accounts[0], connected: true})
+    localStorage.setItem('address',this.state.account)
   }
 
   constructor(props){
     super(props);
     this.state = {
-      account: ''
+      account: '',
+      connected: false
     }
   }
 
@@ -71,7 +94,18 @@ class About extends Component {
 
         {/* Metamask Button */}
         <div className = "metamaskBackground"/>
-        <div className = "metamaskText">{this.state.account.slice(0,10) + '...' + this.state.account.slice(38,42)}</div>
+        {this.state.connected? 
+        <div>
+          <div className = "metamaskConnectedText" onClick = {this.disconnectMetamask}>{this.state.account.slice(0,10) + '...' + this.state.account.slice(38,42)}
+            <span className="metamaskConnectedTextText">Disconnect</span>
+          </div>
+        </div> 
+        : 
+        <div>
+          <div className = "metamaskText" onClick = {this.connectMetamask}> Connect metamask
+            <span className="metamaskTextText">Connect</span>
+          </div>
+        </div>}
 
         <div className = "aboutBackground"/>
         <div className ="aboutTitle" >About Data Validation</div>
