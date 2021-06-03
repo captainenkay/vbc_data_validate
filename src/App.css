@@ -501,3 +501,19 @@ label:hover{
 
     background: rgba(0, 0, 0, 0.42);
 }
+
+.Progress{
+    position: absolute;
+    width: 15px;
+    height: 132px;
+    left: 557px;
+    top: 450px;
+}
+
+.ProgressBar{
+    height: 0%;
+    width: 100%;
+    background: linear-gradient(179.95deg, #23B1EE -3.46%, #F84949 112.7%);
+    color: black;
+    border-radius: 100px;
+}

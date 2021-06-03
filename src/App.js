@@ -111,6 +111,63 @@ class App extends Component {
     }
   }
 
+  handleCheckBar(min, max, step){
+    if (this.state.barHeight === 40 || this.state.barHeight === 66 || this.state.barHeight >= 99) return
+    if (this.state.barHeight === max){
+      return this.handleCheckBar(max, max + step, step)
+    }
+    var elem = document.getElementsByClassName("ProgressBar");
+    var height = min;
+    var id = setInterval(() => {
+      if(height >= max){
+        this.setState({barHeight: max})
+        clearInterval(id)
+      }
+      else{
+        height++;
+        elem[0].style.height = height + "%"
+      }
+    } , 20);
+  }
+
+  handleCheckBar2(min, max, step){
+    if (this.state.barHeight2 === 80 || this.state.barHeight2 >= 99) return
+    if (this.state.barHeight2 === max){
+      return this.handleCheckBar2(max, max + step, step)
+    }
+    var elem = document.getElementsByClassName("ProgressBar");
+    var height = min;
+    var id = setInterval(() => {
+      if(height >= max){
+        this.setState({barHeight2: max})
+        clearInterval(id)
+      }
+      else{
+        height++;
+        elem[0].style.height = height + "%"
+      }
+    } , 50);
+  }
+
+  handleCheckBar3(min, max, step){
+    if (this.state.barHeight3 === 100) return
+    if (this.state.barHeight3 === max){
+      return this.handleCheckBar3(max, max + step, step)
+    }
+    var elem = document.getElementsByClassName("ProgressBar");
+    var height = min;
+    var id = setInterval(() => {
+      if(height >= max){
+        this.setState({barHeight3: max})
+        clearInterval(id)
+      }
+      else{
+        height++;
+        elem[0].style.height = height + "%"
+      }
+    } , 20);
+  }
+
   constructor(props){
     super(props);
     this.state = {
@@ -130,7 +187,10 @@ class App extends Component {
       failAlert: false,
       transactionLink: '',
       isWaiting: false,
-      connected: false
+      connected: false,
+      barHeight: 0,
+      barHeight2: 0,
+      barHeight3: 0,
     }
   }
 
@@ -146,7 +206,7 @@ class App extends Component {
 
   handleRefresh = (event) => {
     event.preventDefault()
-    this.setState({isUploaded: false, successAlert: false, failAlert: false, isWaiting: false})
+    this.setState({isUploaded: false, successAlert: false, failAlert: false, isWaiting: false, barHeight: 0, barHeight2: 0, barHeight3: 0})
   }
 
   handleFileChange = (event) => {
@@ -203,6 +263,10 @@ class App extends Component {
 
   verifyFile = async (event) => {
     event.preventDefault()
+    if (this.state.contract === null) {
+      alert("Please connect to metamask")
+      return
+    }
     if (this.state.buffer === null){
       alert("input file first")
       return
@@ -213,10 +277,8 @@ class App extends Component {
 
     if (this.state.connectedAddress.includes(this.state.account) === false){
       await this.setState({connectedAddress: [...this.state.connectedAddress, this.state.account]})
-      await console.log(this.state.connectedAddress)
       await localStorage.setItem('connectedAddress',JSON.stringify(this.state.connectedAddress))
     }
-
     
     if (this.state.fileName.split('.').pop().toLowerCase() === "pdf"){
       ipfs.add(this.state.buffer, (error,result) => {
@@ -235,6 +297,8 @@ class App extends Component {
         return
       })
     }
+
+    
 
     if (this.state.fileName.split('.').pop().toLowerCase() === "png" || this.state.fileName.split('.').pop().toLowerCase()  === "jpg" || this.state.fileName.split('.').pop().toLowerCase()  === "jpeg"){
       ipfs.add(this.state.buffer, (error,result) => {
@@ -257,7 +321,10 @@ class App extends Component {
 
   publishFile = async (event) => {
     event.preventDefault()
-
+    if (this.state.contract === null) {
+      alert("Please connect to metamask")
+      return
+    }
     if (this.state.buffer === null){
       alert("input file first")
       return
@@ -265,7 +332,6 @@ class App extends Component {
 
     if (this.state.connectedAddress.includes(this.state.account) === false){
       await this.setState({connectedAddress: [...this.state.connectedAddress, this.state.account]})
-      await console.log(this.state.connectedAddress)
       await localStorage.setItem('connectedAddress',JSON.stringify(this.state.connectedAddress))
     }
 
@@ -354,8 +420,6 @@ class App extends Component {
         }
         this.setState({isWaiting: true})
         this.state.contract.methods.mint(ipfsResult).send({ from: this.state.account}).once('receipt', (receipt) => {
-          console.log(receipt)
-          console.log(this.state.contract)
           var result = {address: this.state.account, transactionHash: receipt.transactionHash, input: ipfsResult, blockNumber: receipt.blockNumber, fileName: this.state.fileName, date: new Date()}
           this.setState({
             hashes: [ipfsResult,...this.state.hashes],
@@ -483,7 +547,9 @@ class App extends Component {
               <div>
                 <div className = "alertBackgroundFade"/>
                 <div className = "alertBackground" style={{top: "152px", height: "497px"}}/>
-                <div className = "alertSuccessCheckBar"/>
+                <div className="Progress" style = {{height: "293px",left: "617px",top:"317px"}}>
+                  <div className="ProgressBar" style= {{background:"linear-gradient(179.95deg, #23B1EE -3.46%, #005BC7 112.7%)"}}>{this.handleCheckBar(0,20,20)}</div>
+                </div>
                 <img style = {{position: "absolute",width: "24px",height: "24px",left: "976px",top: "172px"}} src = {closeAlert} alt="Close alert button" onClick = {this.handleRefresh}/>
                 <img style = {{position: "absolute",width: "56px",height: "56px",left: "651px",top: "196px"}} src = {fileImage} alt="File Img"/>
                 <div className= "fileText" style ={{left: "717px", top: "201px", color: "#1E1E1E"}}>{this.handleFileName(this.state.fileName)}</div>
@@ -491,18 +557,52 @@ class App extends Component {
                 <img style = {{position: "absolute",width: "560px;",height: "1px",left: "440px",top: "292px"}} src = {line} alt="line"/>
                 <div className = "alertText" style= {{top: "317px"}}>Computing local hash</div>
                 <img style = {{position: "absolute",width: "26px;",height: "26px",left: "611px",top: "313px"}} src = {checkIcon} alt="Check Icon"/>
-                <div className = "alertText" style= {{top: "372px"}}>Comparing hash</div>
-                <img style = {{position: "absolute",width: "26px;",height: "26px",left: "611px",top: "369px"}} src = {checkIcon} alt="Check Icon"/>
-                <div className = "alertText" style= {{top: "423px"}}>Deploy file on ipfs</div>
-                <img style = {{position: "absolute",width: "26px;",height: "26px",left: "611px",top: "420px"}} src = {checkIcon} alt="Check Icon"/>
-                <div className = "alertText" style= {{top: "474px"}}>Publish file on network</div>
-                <img style = {{position: "absolute",width: "26px;",height: "26px",left: "611px",top: "471px"}} src = {checkIcon} alt="Check Icon"/>
-                <div className = "alertText" style= {{top: "525px"}}>Generate to your collectibles</div>
-                <img style = {{position: "absolute",width: "26px;",height: "26px",left: "611px",top: "522px"}} src = {checkIcon} alt="Check Icon"/>
-                <div className = "alertSuccessBigTitle">PUBLISHED</div>
-                <div className = "alertSuccessTitle" style ={{top: "597px"}}> This file has been published on our network </div>
-                <a style = {{position: "absolute", width: "252px", height: "32px", left: "648px", top: "613px", fontFamily:"Open Sans", fontStyle: "normal", fontWeight: "normal", fontSize: "12px", lineHeight: "16px", display: "flex", alignItems: "center", color: "#6F6F6F"}}target="_blank" rel="noopener noreferrer" href={'https:testnet.bscscan.com/tx/' + this.state.transactionLink}>View transaction</a>
-                <img style = {{position: "absolute",width: "36px;",height: "36px",left: "606px",top: "585px", filter: "drop-shadow(0px 4px 4px rgba(84, 114, 174, 0.2))"}} src = {bigCheckIcon} alt="Big Check Icon"/>
+
+                {this.state.barHeight >= 20 ? 
+                <div>
+                  <div className = "alertText" style= {{top: "372px"}}>Comparing hash</div>
+                  <img style = {{position: "absolute",width: "26px;",height: "26px",left: "611px",top: "369px"}} src = {checkIcon} alt="Check Icon"/>
+                </div> 
+                : 
+                <div/>}
+
+                {this.state.barHeight >= 40 ? 
+                <div>
+                  <div className = "alertText" style= {{top: "423px"}}>Deploy file on ipfs</div>
+                  <img style = {{position: "absolute",width: "26px;",height: "26px",left: "611px",top: "420px"}} src = {checkIcon} alt="Check Icon"/>
+                  {this.handleCheckBar2(40,60,20)}
+                </div> 
+                : 
+                <div/>}
+
+                {this.state.barHeight2 >= 60 ? 
+                <div>
+                  <div className = "alertText" style= {{top: "474px"}}>Publish file on network</div>
+                  <img style = {{position: "absolute",width: "26px;",height: "26px",left: "611px",top: "471px"}} src = {checkIcon} alt="Check Icon"/>
+                </div>
+                : 
+                <div/>}
+
+                {this.state.barHeight2 >= 80 ? 
+                <div>
+                  <div className = "alertText" style= {{top: "525px"}}>Generate to your collectibles</div>
+                  <img style = {{position: "absolute",width: "26px;",height: "26px",left: "611px",top: "522px"}} src = {checkIcon} alt="Check Icon"/>
+                  {this.handleCheckBar3(80,100,20)}
+                </div>
+                : 
+                <div/>}
+                
+                {this.state.barHeight3 >= 100 ? 
+                <div>
+                  <div className = "alertSuccessBigTitle">PUBLISHED</div>
+                  <div className = "alertSuccessTitle" style ={{top: "597px"}}> This file has been published on our network </div>
+                  <a style = {{position: "absolute", width: "252px", height: "32px", left: "648px", top: "613px", fontFamily:"Open Sans", fontStyle: "normal", fontWeight: "normal", fontSize: "12px", lineHeight: "16px", display: "flex", alignItems: "center", color: "#6F6F6F"}}target="_blank" rel="noopener noreferrer" href={'https:testnet.bscscan.com/tx/' + this.state.transactionLink}>View transaction</a>
+                  <img style = {{position: "absolute",width: "36px;",height: "36px",left: "606px",top: "585px", filter: "drop-shadow(0px 4px 4px rgba(84, 114, 174, 0.2))"}} src = {bigCheckIcon} alt="Big Check Icon"/>
+                </div>
+                : 
+                <div/>}
+
+                
               </div>
               :
               <div/>}
@@ -511,7 +611,9 @@ class App extends Component {
                 <div>
                   <div className = "alertBackgroundFade"/>
                   <div className = "alertBackground" style={{top: "285px", height: "329px"}}/>
-                  <div className = "alertFailCheckBar"/>
+                  <div className="Progress">
+                    <div className="ProgressBar">{this.handleCheckBar(0,50,50)}</div>
+                  </div>
                   <img style = {{position: "absolute",width: "24px",height: "24px",left: "976px",top: "305px"}} src = {closeAlert} alt="Close alert button" onClick = {this.handleRefresh}/>
                   <img style = {{position: "absolute",width: "56px",height: "56px",left: "651px",top: "329px"}} src = {fileImage} alt="File Img"/>
                   <div className= "fileText" style ={{left: "717px", top: "334px", color: "#1E1E1E"}}>{this.state.fileName}</div>
@@ -519,10 +621,23 @@ class App extends Component {
                   <img style = {{position: "absolute",width: "560px;",height: "1px",left: "440px",top: "425px"}} src = {line} alt="line"/>
                   <div className = "alertText" style= {{top: "450px", left: "588px"}}>Computing local hash</div>
                   <img style = {{position: "absolute",width: "26px;",height: "26px",left: "551px",top: "446px"}} src = {checkIcon} alt="Check Icon"/>
-                  <div className = "alertText" style= {{top: "505px", left: "588px"}}>Comparing hash</div>
-                  <img style = {{position: "absolute",width: "26px;",height: "26px",left: "551px",top: "502px"}} src = {crossIcon} alt="Cross Icon"/>
-                  <div className = "alertFailTitle">This file has been published on our network before</div>
-                  <img style = {{position: "absolute",width: "36px;",height: "36px",left: "546px",top: "558px"}} src = {bigCrossIcon} alt="Big Cross Icon"/>
+
+                  {this.state.barHeight >= 50 ? 
+                  <div>
+                    <div className = "alertText" style= {{top: "505px", left: "588px"}}>Comparing hash</div>
+                    <img style = {{position: "absolute",width: "26px;",height: "26px",left: "551px",top: "502px"}} src = {crossIcon} alt="Cross Icon"/>
+                  </div> 
+                  : 
+                  <div/>}
+
+                  {this.state.barHeight >= 100 ? 
+                  <div>
+                    <div className = "alertFailTitle">This file has been published on our network before</div>
+                    <img style = {{position: "absolute",width: "36px;",height: "36px",left: "546px",top: "558px"}} src = {bigCrossIcon} alt="Big Cross Icon"/>
+                  </div> 
+                  : 
+                  <div/>}
+
                 </div>
                 :
                 <div/>}
@@ -536,7 +651,10 @@ class App extends Component {
               <div>
                 <div className = "alertBackgroundFade"/>
                 <div className = "alertBackground" style={{top: "152px", height: "400px"}}/>
-                <div className = "alertSuccessCheckBar" style ={{height: "190px"}}/>
+                <div className="Progress" style = {{height: "190px",left: "617px",top:"317px"}}>
+                  <div className="ProgressBar" style= {{background:"linear-gradient(179.95deg, #23B1EE -3.46%, #005BC7 112.7%)"}}>{this.handleCheckBar(0,33,33)}</div>
+                </div>
+
                 <img style = {{position: "absolute",width: "24px",height: "24px",left: "976px",top: "172px"}} src = {closeAlert} alt="Close alert button" onClick = {this.handleRefresh}/>
                 <img style = {{position: "absolute",width: "56px",height: "56px",left: "651px",top: "196px"}} src = {fileImage} alt="File Img"/>
                 <div className= "fileText" style ={{left: "717px", top: "201px", color: "#1E1E1E"}}>{this.state.fileName}</div>
@@ -544,16 +662,34 @@ class App extends Component {
                 <img style = {{position: "absolute",width: "560px;",height: "1px",left: "440px",top: "292px"}} src = {line} alt="line"/>
                 <div className = "alertText" style= {{top: "317px"}}>Computing local hash</div>
                 <img style = {{position: "absolute",width: "26px;",height: "26px",left: "611px",top: "313px"}} src = {checkIcon} alt="Check Icon"/>
-                <div className = "alertText" style= {{top: "372px"}}>Comparing hash</div>
-                <img style = {{position: "absolute",width: "26px;",height: "26px",left: "611px",top: "369px"}} src = {checkIcon} alt="Check Icon"/>
-                <div className = "alertText" style= {{top: "423px"}}>Checking receipt</div>
-                <img style = {{position: "absolute",width: "26px;",height: "26px",left: "611px",top: "420px"}} src = {checkIcon} alt="Check Icon"/>
-                <div className = "alertSuccessBigTitle" style ={{top: "474px"}}>VERIFIED</div>
-                <div className = "alertSuccessTitle" style ={{top: "495px"}}> This is a valid certificate </div>
-                <a style = {{position: "absolute", width: "252px", height: "32px", left: "648px", top: "511px", fontFamily:"Open Sans", fontStyle: "normal", fontWeight: "normal", fontSize: "12px", lineHeight: "16px", display: "flex", alignItems: "center", color: "#6F6F6F"}}target="_blank" rel="noopener noreferrer" href={'https:testnet.bscscan.com/tx/' + this.state.transactionLink}>View transaction</a>
-                  
-                <img style = {{position: "absolute",width: "36px;",height: "36px",left: "606px",top: "483px", filter: "drop-shadow(0px 4px 4px rgba(84, 114, 174, 0.2))"}} src = {bigCheckIcon} alt="Big Check Icon"/>
 
+                {this.state.barHeight >= 33 ? 
+                <div>
+                  <div className = "alertText" style= {{top: "372px"}}>Comparing hash</div>
+                  <img style = {{position: "absolute",width: "26px;",height: "26px",left: "611px",top: "369px"}} src = {checkIcon} alt="Check Icon"/>
+                </div> 
+                : 
+                <div/>}
+
+                {this.state.barHeight >= 66 ? 
+                <div>
+                  <div className = "alertText" style= {{top: "423px"}}>Checking receipt</div>
+                  <img style = {{position: "absolute",width: "26px;",height: "26px",left: "611px",top: "420px"}} src = {checkIcon} alt="Check Icon"/>
+                  {this.handleCheckBar2(67,99,33)}
+                </div>
+                : 
+                <div/>}
+
+                {this.state.barHeight >= 99 ? 
+                <div>
+                  <div className = "alertSuccessBigTitle" style ={{top: "474px"}}>VERIFIED</div>
+                  <div className = "alertSuccessTitle" style ={{top: "495px"}}> This is a valid certificate </div>
+                  <a style = {{position: "absolute", width: "252px", height: "32px", left: "648px", top: "511px", fontFamily:"Open Sans", fontStyle: "normal", fontWeight: "normal", fontSize: "12px", lineHeight: "16px", display: "flex", alignItems: "center", color: "#6F6F6F"}}target="_blank" rel="noopener noreferrer" href={'https:testnet.bscscan.com/tx/' + this.state.transactionLink}>View transaction</a>
+                    
+                  <img style = {{position: "absolute",width: "36px;",height: "36px",left: "606px",top: "483px", filter: "drop-shadow(0px 4px 4px rgba(84, 114, 174, 0.2))"}} src = {bigCheckIcon} alt="Big Check Icon"/>
+                </div>
+                : 
+                <div/>}
               </div>
               :
               <div/>}
@@ -562,7 +698,9 @@ class App extends Component {
                 <div>
                   <div className = "alertBackgroundFade"/>
                   <div className = "alertBackground" style={{top: "285px", height: "329px"}}/>
-                  <div className = "alertFailCheckBar"/>
+                  <div className="Progress">
+                    <div className="ProgressBar">{this.handleCheckBar(0,50,50)}</div>
+                  </div>
                   <img style = {{position: "absolute",width: "24px",height: "24px",left: "976px",top: "305px"}} src = {closeAlert} alt="Close alert button" onClick = {this.handleRefresh}/>
                   <img style = {{position: "absolute",width: "56px",height: "56px",left: "651px",top: "329px"}} src = {fileImage} alt="File Img"/>
                   <div className= "fileText" style ={{left: "717px", top: "334px", color: "#1E1E1E"}}>{this.state.fileName}</div>
@@ -570,10 +708,22 @@ class App extends Component {
                   <img style = {{position: "absolute",width: "560px;",height: "1px",left: "440px",top: "425px"}} src = {line} alt="line"/>
                   <div className = "alertText" style= {{top: "450px", left: "588px"}}>Computing local hash</div>
                   <img style = {{position: "absolute",width: "26px;",height: "26px",left: "551px",top: "446px"}} src = {checkIcon} alt="Check Icon"/>
-                  <div className = "alertText" style= {{top: "505px", left: "588px"}}>Comparing hash</div>
-                  <img style = {{position: "absolute",width: "26px;",height: "26px",left: "551px",top: "502px"}} src = {crossIcon} alt="Cross Icon"/>
-                  <div className = "alertFailTitle">This file has not been published on our network</div>
-                  <img style = {{position: "absolute",width: "36px;",height: "36px",left: "546px",top: "558px"}} src = {bigCrossIcon} alt="Big Cross Icon"/>
+                  {this.state.barHeight >= 50 ? 
+                  <div>
+                    <div className = "alertText" style= {{top: "505px", left: "588px"}}>Comparing hash</div>
+                    <img style = {{position: "absolute",width: "26px;",height: "26px",left: "551px",top: "502px"}} src = {crossIcon} alt="Cross Icon"/>
+                  </div> 
+                  : 
+                  <div/>}
+
+                  {this.state.barHeight >= 100 ? 
+                  <div>
+                    <div className = "alertFailTitle">This file has not been published on our network</div>
+                    <img style = {{position: "absolute",width: "36px;",height: "36px",left: "546px",top: "558px"}} src = {bigCrossIcon} alt="Big Cross Icon"/>
+                  </div> 
+                  : 
+                  <div/>}
+                  
                 </div>
                 :
                 <div/>}
