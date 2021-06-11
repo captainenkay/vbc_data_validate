@@ -392,6 +392,8 @@ label:hover{
     position: absolute;
     width: 600px;
     left: 420px;
+    top: 152px;
+    height: 497px;
 
     background: #FFFFFF;
 }
@@ -422,17 +424,6 @@ label:hover{
     top: 317px;
 
     background: linear-gradient(179.95deg, #23B1EE -3.46%, #005BC7 112.7%);
-    border-radius: 100px;
-}
-
-.alertFailCheckBar{
-    position: absolute;
-    width: 15px;
-    height: 132px;
-    left: 557px;
-    top: 450px;
-
-    background: linear-gradient(179.95deg, #23B1EE -3.46%, #F84949 112.7%);
     border-radius: 100px;
 }
 
@@ -505,9 +496,9 @@ label:hover{
 .Progress{
     position: absolute;
     width: 15px;
-    height: 132px;
-    left: 557px;
-    top: 450px;
+    height: 293px;
+    left: 617px;
+    top: 317px;
 }
 
 .ProgressBar{
@@ -516,4 +507,45 @@ label:hover{
     background: linear-gradient(179.95deg, #23B1EE -3.46%, #F84949 112.7%);
     color: black;
     border-radius: 100px;
+}
+
+.descriptionText{
+    position: absolute;
+    width: 544px;
+    height: 25px;
+    left: 449px;
+    top: 405px;
+
+    border: none;
+    background-color: inherit;
+    color: #ffffff;
+    font-family: Open Sans;
+    font-style: normal;
+    font-weight: normal;
+    font-size: 18px;
+    line-height: 25px;
+}
+
+.descriptionText::placeholder{
+    position: absolute;
+    left: 200px;
+
+    color: #ffffff;
+    font-family: Open Sans;
+    font-style: normal;
+    font-weight: normal;
+    font-size: 18px;
+    line-height: 25px;
+}
+
+.closeButton{
+    position: absolute;
+    width: 24px;
+    height: 24px;
+    left: 600px;
+    top: 360px;
+}
+
+.closeButton:hover{
+    cursor: pointer;
 }

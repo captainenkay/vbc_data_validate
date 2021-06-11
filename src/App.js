@@ -111,54 +111,13 @@ class App extends Component {
     }
   }
 
-  handleCheckBar(min, max, step){
-    if (this.state.barHeight === 40 || this.state.barHeight === 66 || this.state.barHeight >= 99) return
-    if (this.state.barHeight === max){
-      return this.handleCheckBar(max, max + step, step)
-    }
+  handleCheckBar(min, max){
+    if (this.state.barHeight >= 99) return
     var elem = document.getElementsByClassName("ProgressBar");
     var height = min;
     var id = setInterval(() => {
       if(height >= max){
         this.setState({barHeight: max})
-        clearInterval(id)
-      }
-      else{
-        height++;
-        elem[0].style.height = height + "%"
-      }
-    } , 20);
-  }
-
-  handleCheckBar2(min, max, step){
-    if (this.state.barHeight2 === 80 || this.state.barHeight2 >= 99) return
-    if (this.state.barHeight2 === max){
-      return this.handleCheckBar2(max, max + step, step)
-    }
-    var elem = document.getElementsByClassName("ProgressBar");
-    var height = min;
-    var id = setInterval(() => {
-      if(height >= max){
-        this.setState({barHeight2: max})
-        clearInterval(id)
-      }
-      else{
-        height++;
-        elem[0].style.height = height + "%"
-      }
-    } , 50);
-  }
-
-  handleCheckBar3(min, max, step){
-    if (this.state.barHeight3 === 100) return
-    if (this.state.barHeight3 === max){
-      return this.handleCheckBar3(max, max + step, step)
-    }
-    var elem = document.getElementsByClassName("ProgressBar");
-    var height = min;
-    var id = setInterval(() => {
-      if(height >= max){
-        this.setState({barHeight3: max})
         clearInterval(id)
       }
       else{
@@ -186,12 +145,12 @@ class App extends Component {
       successAlert: false,
       failAlert: false,
       transactionLink: '',
-      isWaiting: false,
       connected: false,
       barHeight: 0,
-      barHeight2: 0,
-      barHeight3: 0,
+      alertBackground: false,
+      description: '',
     }
+    this.handleTextChange = this.handleTextChange.bind(this);
   }
 
   handePublishMode = (event) => {
@@ -206,7 +165,11 @@ class App extends Component {
 
   handleRefresh = (event) => {
     event.preventDefault()
-    this.setState({isUploaded: false, successAlert: false, failAlert: false, isWaiting: false, barHeight: 0, barHeight2: 0, barHeight3: 0})
+    this.setState({isUploaded: false, successAlert: false, failAlert: false, barHeight: 0, alertBackground: false, description: ''})
+  }
+
+  handleTextChange(event) {
+    this.setState({description: event.target.value})
   }
 
   handleFileChange = (event) => {
@@ -272,6 +235,8 @@ class App extends Component {
       return
     }
 
+    this.setState({alertBackground: true})
+
     await this.setState({verifiedFiles: parseInt(this.state.verifiedFiles) + 1})
     await localStorage.setItem('verifiedFiles',this.state.verifiedFiles)
 
@@ -281,12 +246,21 @@ class App extends Component {
     }
     
     if (this.state.fileName.split('.').pop().toLowerCase() === "pdf"){
-      ipfs.add(this.state.buffer, (error,result) => {
+      ipfs.add(this.state.buffer, async(error,result) => {
         const url = 'https:ipfs.infura.io/ipfs/' + result[0].hash
+        await this.handleCheckBar(0,33)
         for (let i = 0; i < this.state.hashes.length; i++){
           if(url === this.state.transaction[i].initialIpfs){
             this.setState({successAlert: true})
-            return
+            let timer = await setTimeout(()=>{
+              this.handleCheckBar(33,66);
+              let timer1 = setTimeout(()=>{
+               this.handleCheckBar(66,99)
+               return clearTimeout(timer1);
+              },1000)
+              return clearTimeout(timer)
+           },1000)
+           return
           }
         }
         if(error){
@@ -294,18 +268,28 @@ class App extends Component {
           return
         }
         this.setState({failAlert: true})
+        setTimeout(()=>{
+          this.handleCheckBar(33,99)
+         },1000)
         return
       })
     }
 
-    
-
     if (this.state.fileName.split('.').pop().toLowerCase() === "png" || this.state.fileName.split('.').pop().toLowerCase()  === "jpg" || this.state.fileName.split('.').pop().toLowerCase()  === "jpeg"){
-      ipfs.add(this.state.buffer, (error,result) => {
+      ipfs.add(this.state.buffer, async(error,result) => {
         var ipfsResult = result[0].hash
+        await this.handleCheckBar(0,33)
         for (let i = 0; i < this.state.hashes.length; i++){
           if(ipfsResult === this.state.transaction[i].input){
             this.setState({successAlert: true, transactionLink: this.state.transaction[i].transactionHash})
+            let timer = await setTimeout(()=>{
+               this.handleCheckBar(33,66);
+               let timer1 = setTimeout(()=>{
+                this.handleCheckBar(66,99)
+                return clearTimeout(timer1);
+               },1000)
+               return clearTimeout(timer)
+            },1000)
             return
           }
         }
@@ -314,6 +298,9 @@ class App extends Component {
           return
         }
         this.setState({failAlert: true})
+        setTimeout(()=>{
+          this.handleCheckBar(33,99)
+         },1000)
         return
       })
     }
@@ -329,6 +316,7 @@ class App extends Component {
       alert("input file first")
       return
     }
+    this.setState({alertBackground: true})
 
     if (this.state.connectedAddress.includes(this.state.account) === false){
       await this.setState({connectedAddress: [...this.state.connectedAddress, this.state.account]})
@@ -339,9 +327,11 @@ class App extends Component {
     if (this.state.fileName.split('.').pop().toLowerCase() === "pdf"){
       ipfs.add(this.state.buffer, async (error,result) => {
         const url = 'https:ipfs.infura.io/ipfs/' + result[0].hash
+        await this.handleCheckBar(0,20)
         for (let i = 0; i < this.state.hashes.length; i++){
           if(url === this.state.transaction[i].initialIpfs){
             this.setState({failAlert: true})
+            this.handleCheckBar(0,50)
             return
           }
         }
@@ -349,8 +339,6 @@ class App extends Component {
           console.log(error)
           return
         }
-        this.setState({isWaiting: true})
-
         const existingPdfBytes = await fetch(url).then(res => res.arrayBuffer())
         const pdfDoc = await PDFDocument.load(existingPdfBytes)
 
@@ -383,21 +371,33 @@ class App extends Component {
         }
         const pdfBytes = await pdfDoc.save()
         const editedBuffer = Buffer(pdfBytes)
-        ipfs.add(editedBuffer, (error,result) => {
+        ipfs.add(editedBuffer, async(error,result) => {
           var ipfsResult = result[0].hash
+          setTimeout(()=>{
+            this.handleCheckBar(20,60)
+          },1000)
+
           if(error){
             console.log(error)
             return
           }
           this.state.contract.methods.mint(ipfsResult).send({ from: this.state.account}).once('receipt', (receipt) => {
+            let timer = setTimeout(()=>{
+              this.handleCheckBar(60,80);
+              let timer1 = setTimeout(()=>{
+               this.handleCheckBar(80,100)
+               return clearTimeout(timer1);
+              },1000)
+              return clearTimeout(timer)
+            },1000)
             var result = {address: this.state.account, transactionHash: receipt.transactionHash, input: ipfsResult, blockNumber: receipt.blockNumber, fileName: this.state.fileName, initialIpfs: url, date: new Date()}
             this.setState({
               hashes: [ipfsResult,...this.state.hashes],
               transaction:[result, ...this.state.transaction],
-              isWaiting: false,
               successAlert: true,
               transactionLink: receipt.transactionHash,
             })
+            this.handleCheckBar(0,20)
             localStorage.setItem('Transaction', JSON.stringify(this.state.transaction))
           })
         })
@@ -406,26 +406,44 @@ class App extends Component {
 
     // PNG & JPG
     if (this.state.fileName.split('.').pop().toLowerCase() === "png" || this.state.fileName.split('.').pop().toLowerCase() === "jpg" || this.state.fileName.split('.').pop().toLowerCase() === "jpeg"){
-      ipfs.add(this.state.buffer, (error,result) => {
+      ipfs.add(this.state.buffer, async(error,result) => {
         var ipfsResult = result[0].hash
+        await this.handleCheckBar(0,20)
         for (let i = 0; i < this.state.hashes.length; i++){
           if(ipfsResult === this.state.transaction[i].input){
             this.setState({failAlert: true})
+            setTimeout(()=>{
+              this.handleCheckBar(20,100)
+             },1000)
             return
-          }
+            }
         }
         if(error){
           console.log(error)
           return
         }
-        this.setState({isWaiting: true})
+        this.setState({successAlert: true})
+        let timer = await setTimeout(()=>{
+          this.handleCheckBar(20,40);
+          let timer1 = setTimeout(()=>{
+           this.handleCheckBar(40,60)
+           return clearTimeout(timer1);
+          },2000)
+          return clearTimeout(timer)
+       },2000)
         this.state.contract.methods.mint(ipfsResult).send({ from: this.state.account}).once('receipt', (receipt) => {
-          var result = {address: this.state.account, transactionHash: receipt.transactionHash, input: ipfsResult, blockNumber: receipt.blockNumber, fileName: this.state.fileName, date: new Date()}
+          let timer = setTimeout(()=>{
+            this.handleCheckBar(60,80);
+            let timer1 = setTimeout(()=>{
+             this.handleCheckBar(80,100)
+             return clearTimeout(timer1);
+            },1000)
+            return clearTimeout(timer)
+          },1000)
+          var result = {address: this.state.account, transactionHash: receipt.transactionHash, input: ipfsResult, blockNumber: receipt.blockNumber, fileName: this.state.fileName, date: new Date(), description: this.state.description}
           this.setState({
             hashes: [ipfsResult,...this.state.hashes],
             transaction:[result, ...this.state.transaction],
-            isWaiting: false,
-            successAlert: true,
             transactionLink: receipt.transactionHash
           })
           localStorage.setItem('Transaction', JSON.stringify(this.state.transaction))
@@ -436,6 +454,7 @@ class App extends Component {
     // Other file type 
     if(this.state.fileName.split('.').pop().toLowerCase() !== "png" && this.state.fileName.split('.').pop().toLowerCase() !== "jpg" &&  this.state.fileName.split('.').pop().toLowerCase() !== "jpeg" && this.state.fileName.split('.').pop().toLowerCase() !== "pdf"){
       alert("Please choose pdf, png, jpg, jpeg file")
+      return
     }
   }
 
@@ -528,33 +547,32 @@ class App extends Component {
           <div className= "fileText">{this.handleFileName(this.state.fileName)}</div>
           <div className= "fileSize">{this.state.fileSize}</div>
           <div className = "borderFile"/>
-          <img style = {{position: "absolute",width: "24px",height: "24px",left: "600px",top: "360px"}} src = {closeAlert} alt="Close alert button" onClick = {this.handleRefresh}/>
+          <img class = "closeButton" src = {closeAlert} alt="Close alert button" onClick = {this.handleRefresh}/>
 
           
           {this.state.isPublished ?
             <div>
               <div className= "publishText" onClick={this.publishFile}>Publish</div>
-
-              {this.state.isWaiting ? 
-                <div>
-                  <div className = "alertBackground" style={{top: "285px", height: "329px"}}/>
-                  <div className = "alertSuccessBigTitle" style ={{left: "693.135px", top: "440px"}}>Waiting...</div> 
-                  <img style = {{position: "absolute",width: "24px",height: "24px",left: "976px",top: "305px"}} src = {closeAlert} alt="Close alert button" onClick = {this.handleRefresh}/>
-                </div> 
-                : 
-                <div/>}
-              {this.state.successAlert ?
+              <input class = "descriptionText" placeholder="Input description here" type = "text" value = {this.state.description} onChange = {this.handleTextChange}/>
+              {this.state.alertBackground ?
               <div>
                 <div className = "alertBackgroundFade"/>
-                <div className = "alertBackground" style={{top: "152px", height: "497px"}}/>
-                <div className="Progress" style = {{height: "293px",left: "617px",top:"317px"}}>
-                  <div className="ProgressBar" style= {{background:"linear-gradient(179.95deg, #23B1EE -3.46%, #005BC7 112.7%)"}}>{this.handleCheckBar(0,20,20)}</div>
-                </div>
+                <div className = "alertBackground"/>
                 <img style = {{position: "absolute",width: "24px",height: "24px",left: "976px",top: "172px"}} src = {closeAlert} alt="Close alert button" onClick = {this.handleRefresh}/>
                 <img style = {{position: "absolute",width: "56px",height: "56px",left: "651px",top: "196px"}} src = {fileImage} alt="File Img"/>
                 <div className= "fileText" style ={{left: "717px", top: "201px", color: "#1E1E1E"}}>{this.handleFileName(this.state.fileName)}</div>
                 <div className= "fileSize" style ={{left: "717px", top: "228px", color: "rgba(30, 30, 30, 0.8)"}}>{this.state.fileSize}</div>
                 <img style = {{position: "absolute",width: "560px;",height: "1px",left: "440px",top: "292px"}} src = {line} alt="line"/>
+                <div className="Progress">
+                  <div className="ProgressBar"/>
+                </div>
+              </div>
+              :
+              <div/>
+              }
+
+              {this.state.successAlert ?
+              <div>
                 <div className = "alertText" style= {{top: "317px"}}>Computing local hash</div>
                 <img style = {{position: "absolute",width: "26px;",height: "26px",left: "611px",top: "313px"}} src = {checkIcon} alt="Check Icon"/>
 
@@ -570,12 +588,11 @@ class App extends Component {
                 <div>
                   <div className = "alertText" style= {{top: "423px"}}>Deploy file on ipfs</div>
                   <img style = {{position: "absolute",width: "26px;",height: "26px",left: "611px",top: "420px"}} src = {checkIcon} alt="Check Icon"/>
-                  {this.handleCheckBar2(40,60,20)}
                 </div> 
                 : 
                 <div/>}
 
-                {this.state.barHeight2 >= 60 ? 
+                {this.state.barHeight >= 60 ? 
                 <div>
                   <div className = "alertText" style= {{top: "474px"}}>Publish file on network</div>
                   <img style = {{position: "absolute",width: "26px;",height: "26px",left: "611px",top: "471px"}} src = {checkIcon} alt="Check Icon"/>
@@ -583,16 +600,15 @@ class App extends Component {
                 : 
                 <div/>}
 
-                {this.state.barHeight2 >= 80 ? 
+                {this.state.barHeight >= 80 ? 
                 <div>
                   <div className = "alertText" style= {{top: "525px"}}>Generate to your collectibles</div>
                   <img style = {{position: "absolute",width: "26px;",height: "26px",left: "611px",top: "522px"}} src = {checkIcon} alt="Check Icon"/>
-                  {this.handleCheckBar3(80,100,20)}
                 </div>
                 : 
                 <div/>}
                 
-                {this.state.barHeight3 >= 100 ? 
+                {this.state.barHeight >= 100 ? 
                 <div>
                   <div className = "alertSuccessBigTitle">PUBLISHED</div>
                   <div className = "alertSuccessTitle" style ={{top: "597px"}}> This file has been published on our network </div>
@@ -600,93 +616,83 @@ class App extends Component {
                   <img style = {{position: "absolute",width: "36px;",height: "36px",left: "606px",top: "585px", filter: "drop-shadow(0px 4px 4px rgba(84, 114, 174, 0.2))"}} src = {bigCheckIcon} alt="Big Check Icon"/>
                 </div>
                 : 
-                <div/>}
-
-                
+                <div/>} 
               </div>
               :
               <div/>}
 
               {this.state.failAlert ?
                 <div>
-                  <div className = "alertBackgroundFade"/>
-                  <div className = "alertBackground" style={{top: "285px", height: "329px"}}/>
-                  <div className="Progress">
-                    <div className="ProgressBar">{this.handleCheckBar(0,50,50)}</div>
-                  </div>
-                  <img style = {{position: "absolute",width: "24px",height: "24px",left: "976px",top: "305px"}} src = {closeAlert} alt="Close alert button" onClick = {this.handleRefresh}/>
-                  <img style = {{position: "absolute",width: "56px",height: "56px",left: "651px",top: "329px"}} src = {fileImage} alt="File Img"/>
-                  <div className= "fileText" style ={{left: "717px", top: "334px", color: "#1E1E1E"}}>{this.state.fileName}</div>
-                  <div className= "fileSize" style ={{left: "717px", top: "361px", color: "rgba(30, 30, 30, 0.8)"}}>{this.state.fileSize}</div>
-                  <img style = {{position: "absolute",width: "560px;",height: "1px",left: "440px",top: "425px"}} src = {line} alt="line"/>
-                  <div className = "alertText" style= {{top: "450px", left: "588px"}}>Computing local hash</div>
-                  <img style = {{position: "absolute",width: "26px;",height: "26px",left: "551px",top: "446px"}} src = {checkIcon} alt="Check Icon"/>
+                  <div className = "alertText" style= {{top: "317px"}}>Computing local hash</div>
+                  <img style = {{position: "absolute",width: "26px;",height: "26px",left: "611px",top: "313px"}} src = {checkIcon} alt="Check Icon"/>
 
-                  {this.state.barHeight >= 50 ? 
+                  {this.state.barHeight >= 20 ? 
                   <div>
-                    <div className = "alertText" style= {{top: "505px", left: "588px"}}>Comparing hash</div>
-                    <img style = {{position: "absolute",width: "26px;",height: "26px",left: "551px",top: "502px"}} src = {crossIcon} alt="Cross Icon"/>
+                    <div className = "alertText" style= {{top: "372px"}}>Comparing hash</div>
+                    <img style = {{position: "absolute",width: "26px;",height: "26px",left: "611px",top: "369px"}} src = {crossIcon} alt="Cross Icon"/>
                   </div> 
                   : 
                   <div/>}
 
                   {this.state.barHeight >= 100 ? 
                   <div>
-                    <div className = "alertFailTitle">This file has been published on our network before</div>
-                    <img style = {{position: "absolute",width: "36px;",height: "36px",left: "546px",top: "558px"}} src = {bigCrossIcon} alt="Big Cross Icon"/>
+                    <div className = "alertFailTitle" style ={{top: "594px", left: "648px"}}>This file has been published on our network before</div>
+                    <img style = {{position: "absolute",width: "36px;",height: "36px",left: "606px",top: "585px"}} src = {bigCrossIcon} alt="Big Cross Icon"/>
                   </div> 
                   : 
                   <div/>}
-
                 </div>
                 :
                 <div/>}
-
             </div>
             : 
             <div>
               <div className= "publishText" onClick={this.verifyFile}>Verify</div>
+
+              {this.state.alertBackground ?
+              <div>
+                <div className = "alertBackgroundFade"/>
+                <div className = "alertBackground"/>
+                <img style = {{position: "absolute",width: "24px",height: "24px",left: "976px",top: "172px"}} src = {closeAlert} alt="Close alert button" onClick = {this.handleRefresh}/>
+                <img style = {{position: "absolute",width: "56px",height: "56px",left: "651px",top: "196px"}} src = {fileImage} alt="File Img"/>
+                <div className= "fileText" style ={{left: "717px", top: "201px", color: "#1E1E1E"}}>{this.handleFileName(this.state.fileName)}</div>
+                <div className= "fileSize" style ={{left: "717px", top: "228px", color: "rgba(30, 30, 30, 0.8)"}}>{this.state.fileSize}</div>
+                <img style = {{position: "absolute",width: "560px;",height: "1px",left: "440px",top: "292px"}} src = {line} alt="line"/>
+                <div className="Progress">
+                  <div className="ProgressBar"/>
+                </div>
+              </div>
+              :
+              <div/>
+              }
               
               {this.state.successAlert ?
               <div>
-                <div className = "alertBackgroundFade"/>
-                <div className = "alertBackground" style={{top: "152px", height: "400px"}}/>
-                <div className="Progress" style = {{height: "190px",left: "617px",top:"317px"}}>
-                  <div className="ProgressBar" style= {{background:"linear-gradient(179.95deg, #23B1EE -3.46%, #005BC7 112.7%)"}}>{this.handleCheckBar(0,33,33)}</div>
-                </div>
-
-                <img style = {{position: "absolute",width: "24px",height: "24px",left: "976px",top: "172px"}} src = {closeAlert} alt="Close alert button" onClick = {this.handleRefresh}/>
-                <img style = {{position: "absolute",width: "56px",height: "56px",left: "651px",top: "196px"}} src = {fileImage} alt="File Img"/>
-                <div className= "fileText" style ={{left: "717px", top: "201px", color: "#1E1E1E"}}>{this.state.fileName}</div>
-                <div className= "fileSize" style ={{left: "717px", top: "228px", color: "rgba(30, 30, 30, 0.8)"}}>{this.state.fileSize}</div>
-                <img style = {{position: "absolute",width: "560px;",height: "1px",left: "440px",top: "292px"}} src = {line} alt="line"/>
                 <div className = "alertText" style= {{top: "317px"}}>Computing local hash</div>
                 <img style = {{position: "absolute",width: "26px;",height: "26px",left: "611px",top: "313px"}} src = {checkIcon} alt="Check Icon"/>
 
                 {this.state.barHeight >= 33 ? 
                 <div>
-                  <div className = "alertText" style= {{top: "372px"}}>Comparing hash</div>
-                  <img style = {{position: "absolute",width: "26px;",height: "26px",left: "611px",top: "369px"}} src = {checkIcon} alt="Check Icon"/>
+                  <div className = "alertText" style= {{top: "400px"}}>Comparing hash</div>
+                  <img style = {{position: "absolute",width: "26px;",height: "26px",left: "611px",top: "397px"}} src = {checkIcon} alt="Check Icon"/>
                 </div> 
                 : 
                 <div/>}
 
                 {this.state.barHeight >= 66 ? 
                 <div>
-                  <div className = "alertText" style= {{top: "423px"}}>Checking receipt</div>
-                  <img style = {{position: "absolute",width: "26px;",height: "26px",left: "611px",top: "420px"}} src = {checkIcon} alt="Check Icon"/>
-                  {this.handleCheckBar2(67,99,33)}
+                  <div className = "alertText" style= {{top: "505px"}}>Checking receipt</div>
+                  <img style = {{position: "absolute",width: "26px;",height: "26px",left: "611px",top: "502px"}} src = {checkIcon} alt="Check Icon"/>
                 </div>
                 : 
                 <div/>}
 
                 {this.state.barHeight >= 99 ? 
                 <div>
-                  <div className = "alertSuccessBigTitle" style ={{top: "474px"}}>VERIFIED</div>
-                  <div className = "alertSuccessTitle" style ={{top: "495px"}}> This is a valid certificate </div>
-                  <a style = {{position: "absolute", width: "252px", height: "32px", left: "648px", top: "511px", fontFamily:"Open Sans", fontStyle: "normal", fontWeight: "normal", fontSize: "12px", lineHeight: "16px", display: "flex", alignItems: "center", color: "#6F6F6F"}}target="_blank" rel="noopener noreferrer" href={'https:testnet.bscscan.com/tx/' + this.state.transactionLink}>View transaction</a>
-                    
-                  <img style = {{position: "absolute",width: "36px;",height: "36px",left: "606px",top: "483px", filter: "drop-shadow(0px 4px 4px rgba(84, 114, 174, 0.2))"}} src = {bigCheckIcon} alt="Big Check Icon"/>
+                  <div className = "alertSuccessBigTitle">VERIFIED</div>
+                  <div className = "alertSuccessTitle" style ={{top: "597px"}}> This is a valid certificate </div>
+                  <a style = {{position: "absolute", width: "252px", height: "32px", left: "648px", top: "613px", fontFamily:"Open Sans", fontStyle: "normal", fontWeight: "normal", fontSize: "12px", lineHeight: "16px", display: "flex", alignItems: "center", color: "#6F6F6F"}}target="_blank" rel="noopener noreferrer" href={'https:testnet.bscscan.com/tx/' + this.state.transactionLink}>View transaction</a>
+                  <img style = {{position: "absolute",width: "36px;",height: "36px",left: "606px",top: "585px", filter: "drop-shadow(0px 4px 4px rgba(84, 114, 174, 0.2))"}} src = {bigCheckIcon} alt="Big Check Icon"/>
                 </div>
                 : 
                 <div/>}
@@ -696,37 +702,28 @@ class App extends Component {
 
               {this.state.failAlert ?
                 <div>
-                  <div className = "alertBackgroundFade"/>
-                  <div className = "alertBackground" style={{top: "285px", height: "329px"}}/>
-                  <div className="Progress">
-                    <div className="ProgressBar">{this.handleCheckBar(0,50,50)}</div>
-                  </div>
-                  <img style = {{position: "absolute",width: "24px",height: "24px",left: "976px",top: "305px"}} src = {closeAlert} alt="Close alert button" onClick = {this.handleRefresh}/>
-                  <img style = {{position: "absolute",width: "56px",height: "56px",left: "651px",top: "329px"}} src = {fileImage} alt="File Img"/>
-                  <div className= "fileText" style ={{left: "717px", top: "334px", color: "#1E1E1E"}}>{this.state.fileName}</div>
-                  <div className= "fileSize" style ={{left: "717px", top: "361px", color: "rgba(30, 30, 30, 0.8)"}}>{this.state.fileSize}</div>
-                  <img style = {{position: "absolute",width: "560px;",height: "1px",left: "440px",top: "425px"}} src = {line} alt="line"/>
-                  <div className = "alertText" style= {{top: "450px", left: "588px"}}>Computing local hash</div>
-                  <img style = {{position: "absolute",width: "26px;",height: "26px",left: "551px",top: "446px"}} src = {checkIcon} alt="Check Icon"/>
-                  {this.state.barHeight >= 50 ? 
+                  
+                  <div className = "alertText" style= {{top: "317px"}}>Computing local hash</div>
+                  <img style = {{position: "absolute",width: "26px;",height: "26px",left: "611px",top: "313px"}} src = {checkIcon} alt="Check Icon"/>
+
+                  {this.state.barHeight >= 33 ? 
                   <div>
-                    <div className = "alertText" style= {{top: "505px", left: "588px"}}>Comparing hash</div>
-                    <img style = {{position: "absolute",width: "26px;",height: "26px",left: "551px",top: "502px"}} src = {crossIcon} alt="Cross Icon"/>
+                    <div className = "alertText" style= {{top: "400px"}}>Comparing hash</div>
+                    <img style = {{position: "absolute",width: "26px;",height: "26px",left: "611px",top: "397px"}} src = {crossIcon} alt="Cross Icon"/>
                   </div> 
                   : 
                   <div/>}
 
-                  {this.state.barHeight >= 100 ? 
+                  {this.state.barHeight >= 99 ? 
                   <div>
-                    <div className = "alertFailTitle">This file has not been published on our network</div>
-                    <img style = {{position: "absolute",width: "36px;",height: "36px",left: "546px",top: "558px"}} src = {bigCrossIcon} alt="Big Cross Icon"/>
+                    <div className = "alertFailTitle" style ={{top: "594px", left: "648px"}}>This file has not been published on our network</div>
+                    <img style = {{position: "absolute",width: "36px;",height: "36px",left: "606px",top: "585px"}} src = {bigCrossIcon} alt="Big Cross Icon"/>
                   </div> 
                   : 
                   <div/>}
-                  
                 </div>
                 :
-                <div/>}
+              <div/>}
             </div>
           }
         </div> 

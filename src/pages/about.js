@@ -13,6 +13,8 @@ class About extends Component {
     await this.loadStorage()
     if (this.state.account !== ''){
       this.setState({connected: true})
+      await this.loadWeb3()
+      await this.loadBlockchainData()
     }
   }
 

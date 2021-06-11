@@ -6,6 +6,7 @@ import { BrowserRouter, Route, Switch} from 'react-router-dom';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import Collectibles from './pages/collectibles'
 import About from "./pages/about"
+import Result from "./pages/result"
 
 
 ReactDOM.render(
@@ -15,6 +16,7 @@ ReactDOM.render(
       <Route path = "/home" component ={App}/>
       <Route path = "/collectibles" component ={Collectibles}/>
       <Route path = "/about" component ={About}/>
+      <Route path = "/result" component = {Result}/>
     </Switch>
   </BrowserRouter>,
   document.getElementById('root')
