@@ -165,7 +165,7 @@ class App extends Component {
 
   handleRefresh = (event) => {
     event.preventDefault()
-    this.setState({isUploaded: false, successAlert: false, failAlert: false, barHeight: 0, alertBackground: false, description: ''})
+    this.setState({isUploaded: false, successAlert: false, failAlert: false, barHeight: 0, alertBackground: false, description: '', transactionLink: ''})
   }
 
   handleTextChange(event) {
@@ -245,50 +245,24 @@ class App extends Component {
       await localStorage.setItem('connectedAddress',JSON.stringify(this.state.connectedAddress))
     }
     
-    if (this.state.fileName.split('.').pop().toLowerCase() === "pdf"){
+    if (this.state.fileName.split('.').pop().toLowerCase() === "pdf" || this.state.fileName.split('.').pop().toLowerCase() === "png" || this.state.fileName.split('.').pop().toLowerCase()  === "jpg" || this.state.fileName.split('.').pop().toLowerCase()  === "jpeg"){
       ipfs.add(this.state.buffer, async(error,result) => {
         const url = 'https:ipfs.infura.io/ipfs/' + result[0].hash
-        await this.handleCheckBar(0,33)
+        this.handleCheckBar(0,3)
         for (let i = 0; i < this.state.hashes.length; i++){
           if(url === this.state.transaction[i].initialIpfs){
-            this.setState({successAlert: true})
+            this.setState({successAlert: true, transactionLink: this.state.transaction[i].transactionHash})
             let timer = await setTimeout(()=>{
-              this.handleCheckBar(33,66);
+              this.handleCheckBar(3,33);
               let timer1 = setTimeout(()=>{
-               this.handleCheckBar(66,99)
+               this.handleCheckBar(33,70)
+               let timer2 = setTimeout(() => {
+                 this.handleCheckBar(70,100)
+                 return clearTimeout(timer2)
+               },1000)
                return clearTimeout(timer1);
               },1000)
               return clearTimeout(timer)
-           },1000)
-           return
-          }
-        }
-        if(error){
-          console.log(error)
-          return
-        }
-        this.setState({failAlert: true})
-        setTimeout(()=>{
-          this.handleCheckBar(33,99)
-         },1000)
-        return
-      })
-    }
-
-    if (this.state.fileName.split('.').pop().toLowerCase() === "png" || this.state.fileName.split('.').pop().toLowerCase()  === "jpg" || this.state.fileName.split('.').pop().toLowerCase()  === "jpeg"){
-      ipfs.add(this.state.buffer, async(error,result) => {
-        var ipfsResult = result[0].hash
-        await this.handleCheckBar(0,33)
-        for (let i = 0; i < this.state.hashes.length; i++){
-          if(ipfsResult === this.state.transaction[i].input){
-            this.setState({successAlert: true, transactionLink: this.state.transaction[i].transactionHash})
-            let timer = await setTimeout(()=>{
-               this.handleCheckBar(33,66);
-               let timer1 = setTimeout(()=>{
-                this.handleCheckBar(66,99)
-                return clearTimeout(timer1);
-               },1000)
-               return clearTimeout(timer)
             },1000)
             return
           }
@@ -298,9 +272,14 @@ class App extends Component {
           return
         }
         this.setState({failAlert: true})
-        setTimeout(()=>{
-          this.handleCheckBar(33,99)
-         },1000)
+        let timer = await setTimeout(()=>{
+          this.handleCheckBar(3,33);
+          let timer1 = setTimeout(()=>{
+           this.handleCheckBar(33,100)
+           return clearTimeout(timer1);
+          },1000)
+          return clearTimeout(timer)
+        },1000)
         return
       })
     }
@@ -316,6 +295,12 @@ class App extends Component {
       alert("input file first")
       return
     }
+    // Other file type 
+    if(this.state.fileName.split('.').pop().toLowerCase() !== "png" && this.state.fileName.split('.').pop().toLowerCase() !== "jpg" &&  this.state.fileName.split('.').pop().toLowerCase() !== "jpeg" && this.state.fileName.split('.').pop().toLowerCase() !== "pdf"){
+      alert("Please choose pdf, png, jpg, jpeg file")
+      return
+    }
+
     this.setState({alertBackground: true})
 
     if (this.state.connectedAddress.includes(this.state.account) === false){
@@ -323,15 +308,21 @@ class App extends Component {
       await localStorage.setItem('connectedAddress',JSON.stringify(this.state.connectedAddress))
     }
 
-    // PDF File
-    if (this.state.fileName.split('.').pop().toLowerCase() === "pdf"){
-      ipfs.add(this.state.buffer, async (error,result) => {
+    if (this.state.fileName.split('.').pop().toLowerCase() === "pdf" || this.state.fileName.split('.').pop().toLowerCase() === "png" || this.state.fileName.split('.').pop().toLowerCase() === "jpg" || this.state.fileName.split('.').pop().toLowerCase() === "jpeg"){
+      ipfs.add(this.state.buffer, async(error,result) => {
         const url = 'https:ipfs.infura.io/ipfs/' + result[0].hash
-        await this.handleCheckBar(0,20)
+        this.handleCheckBar(0,3)
         for (let i = 0; i < this.state.hashes.length; i++){
           if(url === this.state.transaction[i].initialIpfs){
             this.setState({failAlert: true})
-            this.handleCheckBar(0,50)
+            let timer = await setTimeout(()=>{
+              this.handleCheckBar(3,24);
+              let timer1 = setTimeout(()=>{
+               this.handleCheckBar(24,100)
+               return clearTimeout(timer1);
+              },1000)
+              return clearTimeout(timer)
+            },1000)
             return
           }
         }
@@ -339,53 +330,81 @@ class App extends Component {
           console.log(error)
           return
         }
-        const existingPdfBytes = await fetch(url).then(res => res.arrayBuffer())
-        const pdfDoc = await PDFDocument.load(existingPdfBytes)
+        this.setState({successAlert: true})
 
-        const pngImageBytes = await fetch(logoBlackVBC).then(res => res.arrayBuffer())
-        const pngImage = await pdfDoc.embedPng(pngImageBytes)
-        const pngDims = pngImage.scale(0.5)
+        await setTimeout(()=>{
+          this.handleCheckBar(3,24)
+        },1000)
 
-        const helveticaFont = await pdfDoc.embedFont(StandardFonts.Helvetica)
-        const pages = await pdfDoc.getPages()
+        const bytes = await fetch(url).then(res => res.arrayBuffer())
+        const pdfDoc = await PDFDocument.create();
+        
+        // pdf file
+        if (this.state.fileName.split('.').pop().toLowerCase() === "pdf"){
+          const pdfDoc = await PDFDocument.load(bytes)
 
-        const firstPage = pages[0]
-        const { width, height } = firstPage.getSize()
+          const pngImageBytes = await fetch(logoBlackVBC).then(res => res.arrayBuffer())
+          const pngImage = await pdfDoc.embedPng(pngImageBytes)
+          const pngDims = pngImage.scale(0.5)
 
-        for (var i = 0; i < pages.length; i++){
-          pages[i].drawText('Validated by VBC Data Validate', {
-            x: width/4,
-            y: height - (height/4),
-            size: 30,
-            font: helveticaFont,
-            color: rgb(0.753, 0.753, 0.753),
-            rotate: degrees(-45),
-          })
+          const helveticaFont = await pdfDoc.embedFont(StandardFonts.Helvetica)
+          const pages = await pdfDoc.getPages()
 
-          pages[i].drawImage(pngImage, {
-            x: 20,
-            y: 20,
-            width: pngDims.width,
-            height: pngDims.height,
+          const firstPage = pages[0]
+          const { width, height } = firstPage.getSize()
+
+          for (var i = 0; i < pages.length; i++){
+            pages[i].drawText('Validated by VBC Data Validate', {
+              x: width/4,
+              y: height - (height/4),
+              size: 30,
+              font: helveticaFont,
+              color: rgb(0.753, 0.753, 0.753),
+              rotate: degrees(-45),
+            })
+
+            pages[i].drawImage(pngImage, {
+              x: 20,
+              y: 20,
+              width: pngDims.width,
+              height: pngDims.height,
+            })
+          }
+        }
+        //image file
+        else {
+          const image = await pdfDoc.embedJpg(bytes)
+          const page = pdfDoc.addPage()
+
+          page.drawImage(image, {
+            x: page.getWidth() / 2 - image.width / 2,
+            y: page.getHeight() / 2 - image.height / 2 + 250,
+            width: image.width,
+            height: image.height,
           })
         }
+        
         const pdfBytes = await pdfDoc.save()
         const editedBuffer = Buffer(pdfBytes)
+
+        await setTimeout(()=>{
+          this.handleCheckBar(24,40)
+        },2000)
+
         ipfs.add(editedBuffer, async(error,result) => {
           var ipfsResult = result[0].hash
-          setTimeout(()=>{
-            this.handleCheckBar(20,60)
+          await setTimeout(()=>{
+            this.handleCheckBar(40,58)
           },1000)
-
           if(error){
             console.log(error)
             return
           }
           this.state.contract.methods.mint(ipfsResult).send({ from: this.state.account}).once('receipt', (receipt) => {
             let timer = setTimeout(()=>{
-              this.handleCheckBar(60,80);
+              this.handleCheckBar(58,75);
               let timer1 = setTimeout(()=>{
-               this.handleCheckBar(80,100)
+               this.handleCheckBar(75,100)
                return clearTimeout(timer1);
               },1000)
               return clearTimeout(timer)
@@ -397,65 +416,13 @@ class App extends Component {
               successAlert: true,
               transactionLink: receipt.transactionHash,
             })
-            this.handleCheckBar(0,20)
             localStorage.setItem('Transaction', JSON.stringify(this.state.transaction))
           })
         })
       })
     }
 
-    // PNG & JPG
-    if (this.state.fileName.split('.').pop().toLowerCase() === "png" || this.state.fileName.split('.').pop().toLowerCase() === "jpg" || this.state.fileName.split('.').pop().toLowerCase() === "jpeg"){
-      ipfs.add(this.state.buffer, async(error,result) => {
-        var ipfsResult = result[0].hash
-        await this.handleCheckBar(0,20)
-        for (let i = 0; i < this.state.hashes.length; i++){
-          if(ipfsResult === this.state.transaction[i].input){
-            this.setState({failAlert: true})
-            setTimeout(()=>{
-              this.handleCheckBar(20,100)
-             },1000)
-            return
-            }
-        }
-        if(error){
-          console.log(error)
-          return
-        }
-        this.setState({successAlert: true})
-        let timer = await setTimeout(()=>{
-          this.handleCheckBar(20,40);
-          let timer1 = setTimeout(()=>{
-           this.handleCheckBar(40,60)
-           return clearTimeout(timer1);
-          },2000)
-          return clearTimeout(timer)
-       },2000)
-        this.state.contract.methods.mint(ipfsResult).send({ from: this.state.account}).once('receipt', (receipt) => {
-          let timer = setTimeout(()=>{
-            this.handleCheckBar(60,80);
-            let timer1 = setTimeout(()=>{
-             this.handleCheckBar(80,100)
-             return clearTimeout(timer1);
-            },1000)
-            return clearTimeout(timer)
-          },1000)
-          var result = {address: this.state.account, transactionHash: receipt.transactionHash, input: ipfsResult, blockNumber: receipt.blockNumber, fileName: this.state.fileName, date: new Date(), description: this.state.description}
-          this.setState({
-            hashes: [ipfsResult,...this.state.hashes],
-            transaction:[result, ...this.state.transaction],
-            transactionLink: receipt.transactionHash
-          })
-          localStorage.setItem('Transaction', JSON.stringify(this.state.transaction))
-        })
-      })
-    }
-
-    // Other file type 
-    if(this.state.fileName.split('.').pop().toLowerCase() !== "png" && this.state.fileName.split('.').pop().toLowerCase() !== "jpg" &&  this.state.fileName.split('.').pop().toLowerCase() !== "jpeg" && this.state.fileName.split('.').pop().toLowerCase() !== "pdf"){
-      alert("Please choose pdf, png, jpg, jpeg file")
-      return
-    }
+    
   }
 
   render(){
@@ -548,7 +515,6 @@ class App extends Component {
           <div className= "fileSize">{this.state.fileSize}</div>
           <div className = "borderFile"/>
           <img class = "closeButton" src = {closeAlert} alt="Close alert button" onClick = {this.handleRefresh}/>
-
           
           {this.state.isPublished ?
             <div>
@@ -571,12 +537,17 @@ class App extends Component {
               <div/>
               }
 
+              {this.state.barHeight >= 3 ?
+              <div>
+                <div className = "alertText" style= {{top: "317px"}}>Hash file with ipfs</div>
+                <img style = {{position: "absolute",width: "26px;",height: "26px",left: "611px",top: "313px"}} src = {checkIcon} alt="Check Icon"/>
+              </div> 
+              : 
+              <div/>}
+
               {this.state.successAlert ?
               <div>
-                <div className = "alertText" style= {{top: "317px"}}>Computing local hash</div>
-                <img style = {{position: "absolute",width: "26px;",height: "26px",left: "611px",top: "313px"}} src = {checkIcon} alt="Check Icon"/>
-
-                {this.state.barHeight >= 20 ? 
+                {this.state.barHeight >= 24 ? 
                 <div>
                   <div className = "alertText" style= {{top: "372px"}}>Comparing hash</div>
                   <img style = {{position: "absolute",width: "26px;",height: "26px",left: "611px",top: "369px"}} src = {checkIcon} alt="Check Icon"/>
@@ -586,23 +557,23 @@ class App extends Component {
 
                 {this.state.barHeight >= 40 ? 
                 <div>
-                  <div className = "alertText" style= {{top: "423px"}}>Deploy file on ipfs</div>
+                  <div className = "alertText" style= {{top: "423px"}}>Certificate created</div>
                   <img style = {{position: "absolute",width: "26px;",height: "26px",left: "611px",top: "420px"}} src = {checkIcon} alt="Check Icon"/>
                 </div> 
                 : 
                 <div/>}
 
-                {this.state.barHeight >= 60 ? 
+                {this.state.barHeight >= 58 ? 
                 <div>
-                  <div className = "alertText" style= {{top: "474px"}}>Publish file on network</div>
+                  <div className = "alertText" style= {{top: "474px"}}>Upload certificate to ipfs</div>
                   <img style = {{position: "absolute",width: "26px;",height: "26px",left: "611px",top: "471px"}} src = {checkIcon} alt="Check Icon"/>
                 </div>
                 : 
                 <div/>}
 
-                {this.state.barHeight >= 80 ? 
+                {this.state.barHeight >= 75 ? 
                 <div>
-                  <div className = "alertText" style= {{top: "525px"}}>Generate to your collectibles</div>
+                  <div className = "alertText" style= {{top: "525px"}}>Upload certificate to blockchain network</div>
                   <img style = {{position: "absolute",width: "26px;",height: "26px",left: "611px",top: "522px"}} src = {checkIcon} alt="Check Icon"/>
                 </div>
                 : 
@@ -623,10 +594,7 @@ class App extends Component {
 
               {this.state.failAlert ?
                 <div>
-                  <div className = "alertText" style= {{top: "317px"}}>Computing local hash</div>
-                  <img style = {{position: "absolute",width: "26px;",height: "26px",left: "611px",top: "313px"}} src = {checkIcon} alt="Check Icon"/>
-
-                  {this.state.barHeight >= 20 ? 
+                  {this.state.barHeight >= 24 ? 
                   <div>
                     <div className = "alertText" style= {{top: "372px"}}>Comparing hash</div>
                     <img style = {{position: "absolute",width: "26px;",height: "26px",left: "611px",top: "369px"}} src = {crossIcon} alt="Cross Icon"/>
@@ -648,7 +616,6 @@ class App extends Component {
             : 
             <div>
               <div className= "publishText" onClick={this.verifyFile}>Verify</div>
-
               {this.state.alertBackground ?
               <div>
                 <div className = "alertBackgroundFade"/>
@@ -665,12 +632,16 @@ class App extends Component {
               :
               <div/>
               }
+              {this.state.barHeight >= 3 ?
+              <div>
+                <div className = "alertText" style= {{top: "317px"}}>Hash file with ipfs</div>
+                <img style = {{position: "absolute",width: "26px;",height: "26px",left: "611px",top: "313px"}} src = {checkIcon} alt="Check Icon"/>
+              </div> 
+              : 
+              <div/>}
               
               {this.state.successAlert ?
               <div>
-                <div className = "alertText" style= {{top: "317px"}}>Computing local hash</div>
-                <img style = {{position: "absolute",width: "26px;",height: "26px",left: "611px",top: "313px"}} src = {checkIcon} alt="Check Icon"/>
-
                 {this.state.barHeight >= 33 ? 
                 <div>
                   <div className = "alertText" style= {{top: "400px"}}>Comparing hash</div>
@@ -702,10 +673,6 @@ class App extends Component {
 
               {this.state.failAlert ?
                 <div>
-                  
-                  <div className = "alertText" style= {{top: "317px"}}>Computing local hash</div>
-                  <img style = {{position: "absolute",width: "26px;",height: "26px",left: "611px",top: "313px"}} src = {checkIcon} alt="Check Icon"/>
-
                   {this.state.barHeight >= 33 ? 
                   <div>
                     <div className = "alertText" style= {{top: "400px"}}>Comparing hash</div>
