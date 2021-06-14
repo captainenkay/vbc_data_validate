@@ -169,7 +169,6 @@ class Collectibles extends Component {
                           <div className = "detailBackground"/>
                           <div className = "date">Posted in {transaction.date.slice(8,10)} / {transaction.date.slice(5,7)} / {transaction.date.slice(0,4)}</div>
                           <div className = "detailText">{transaction.description}</div>
-                          
                         </UncontrolledCollapse>
                       </div>
                     </Col>
@@ -213,14 +212,20 @@ class Collectibles extends Component {
           </div>
           <div className="collectiblesFooter"/>
         </div>}
+
+
+
         {this.state.isShare ? 
-        <div className = "shareBackground">
-          <img class = "closeButton" style = {{left: "1220px",top: "40px"}} src = {closeAlert} alt="Close alert button" onClick = {this.handleRefresh}/>
-          <QRCode
-          // value = {'https:ipfs.infura.io/ipfs/' + this.state.linkQR}
-          value = "http://192.168.123.209:3000/result"
-          size = {200}
-          />
+        <div>
+          <div className = "shareBackground">
+            <img class = "closeButton" style = {{left: "1220px",top: "40px"}} src = {closeAlert} alt="Close alert button" onClick = {this.handleRefresh}/>
+            <QRCode
+            value = {'https:ipfs.infura.io/ipfs/' + this.state.linkQR}
+            size = {200}
+            />
+          </div>
+          <div className= "browseFilesBackground" style ={{backgroundColor: "rgba(0, 117, 255, 0.6)", mixBlendMode: "normal"}}/>
+          <div className= "publishText" onClick={this.verifyFile}>Verify</div>
         </div> 
         : 
         <div/>}

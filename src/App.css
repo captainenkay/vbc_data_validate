@@ -216,7 +216,7 @@
     top: 287px;
 
     background: rgba(0, 117, 255, 0.6);
-mix-blend-mode: screen;
+    mix-blend-mode: screen;
 }
 
 .dragFilesText{
