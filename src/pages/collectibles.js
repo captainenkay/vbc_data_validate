@@ -179,7 +179,7 @@ class Collectibles extends Component {
                     <Col key = {key} className = 'col-sm-3'>
                       <Card style ={{marginBottom: "112px", paddingLeft: "0px"}}>
                         <div class="editedImg-container">
-                          <img class="editedImg" src={transaction.initialIpfs} alt = "source"/>
+                          <img class="editedImg" src={'https:ipfs.infura.io/ipfs/' + transaction.initialIpfs} alt = "source"/>
                         </div>
                         <div className= "fileName">{transaction.fileName}</div>
                         <img style = {{position: "absolute",width: "274px",height: "1px",left: "13px",top: "265px"}}src = {collectiblesLine} alt="Collectibles Line"/>

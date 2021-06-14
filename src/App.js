@@ -21,6 +21,7 @@ import {Link} from "react-router-dom"
 import DataValidate from './abis/DataValidate.json'
 import {degrees, PDFDocument, rgb, StandardFonts } from 'pdf-lib'
 import Dropzone from 'react-dropzone'
+import download from "downloadjs";
 
 const ipfsClient = require('ipfs-http-client')
 const ipfs = ipfsClient({ host: 'ipfs.infura.io', port: '5001', protocol: 'https' })
@@ -247,10 +248,10 @@ class App extends Component {
     
     if (this.state.fileName.split('.').pop().toLowerCase() === "pdf" || this.state.fileName.split('.').pop().toLowerCase() === "png" || this.state.fileName.split('.').pop().toLowerCase()  === "jpg" || this.state.fileName.split('.').pop().toLowerCase()  === "jpeg"){
       ipfs.add(this.state.buffer, async(error,result) => {
-        const url = 'https:ipfs.infura.io/ipfs/' + result[0].hash
+        const url =  result[0].hash
         this.handleCheckBar(0,3)
         for (let i = 0; i < this.state.hashes.length; i++){
-          if(url === this.state.transaction[i].initialIpfs){
+          if(url === this.state.transaction[i].initialIpfs || url === this.state.transaction[i].input){
             this.setState({successAlert: true, transactionLink: this.state.transaction[i].transactionHash})
             let timer = await setTimeout(()=>{
               this.handleCheckBar(3,33);
@@ -310,10 +311,10 @@ class App extends Component {
 
     if (this.state.fileName.split('.').pop().toLowerCase() === "pdf" || this.state.fileName.split('.').pop().toLowerCase() === "png" || this.state.fileName.split('.').pop().toLowerCase() === "jpg" || this.state.fileName.split('.').pop().toLowerCase() === "jpeg"){
       ipfs.add(this.state.buffer, async(error,result) => {
-        const url = 'https:ipfs.infura.io/ipfs/' + result[0].hash
+        const url = result[0].hash
         this.handleCheckBar(0,3)
         for (let i = 0; i < this.state.hashes.length; i++){
-          if(url === this.state.transaction[i].initialIpfs){
+          if(url === this.state.transaction[i].initialIpfs || url === this.state.transaction[i].input){
             this.setState({failAlert: true})
             let timer = await setTimeout(()=>{
               this.handleCheckBar(3,24);
@@ -336,7 +337,7 @@ class App extends Component {
           this.handleCheckBar(3,24)
         },1000)
 
-        const bytes = await fetch(url).then(res => res.arrayBuffer())
+        const bytes = await fetch('https:ipfs.infura.io/ipfs/' + url).then(res => res.arrayBuffer())
         const pdfDoc = await PDFDocument.create();
         
         // pdf file
@@ -376,16 +377,22 @@ class App extends Component {
           const image = await pdfDoc.embedJpg(bytes)
           const page = pdfDoc.addPage()
 
+          const dims = image.scale(0.2)
+
+
           page.drawImage(image, {
-            x: page.getWidth() / 2 - image.width / 2,
-            y: page.getHeight() / 2 - image.height / 2 + 250,
-            width: image.width,
-            height: image.height,
+            x: page.getWidth() / 2 - dims.width / 2,
+            y: page.getHeight() / 2 - dims.height / 2 + 250,
+            width: dims.width,
+            height: dims.height,
           })
         }
         
         const pdfBytes = await pdfDoc.save()
         const editedBuffer = Buffer(pdfBytes)
+
+        download(pdfBytes, "text.pdf", "application/pdf");
+
 
         await setTimeout(()=>{
           this.handleCheckBar(24,40)
@@ -421,8 +428,6 @@ class App extends Component {
         })
       })
     }
-
-    
   }
 
   render(){

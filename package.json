@@ -11,6 +11,8 @@
     "@testing-library/user-event": "^12.1.10",
     "@truffle/hdwallet-provider": "^1.4.0",
     "bootstrap": "^4.6.0",
+    "browserfs": "^1.4.3",
+    "downloadjs": "^1.4.7",
     "install": "^0.13.0",
     "ipfs-http-client": "^33.1.1",
     "npm": "^7.13.0",
