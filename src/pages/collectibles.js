@@ -161,8 +161,8 @@ class Collectibles extends Component {
                         <img style = {{position: "absolute",width: "84px",height: "84px",left: "108px",top: "47px"}}src = {pdfPicture} alt="Pdf pic"/>
                         <div className= "fileName">{transaction.fileName}</div>
                         <img style = {{position: "absolute",width: "274px",height: "1px",left: "13px",top: "265px"}}src = {collectiblesLine} alt="Collectibles Line"/>
-                        <div className = "detailButtonText" style ={{left: "123px", top:"279px"}} id={"toggler"+ key}>Detail</div>
-                        <img style = {{position: "absolute",width: "9px",height: "5px",left: "168px",top: "285px"}}src = {detailIcon} alt="Detail icon"/>
+                        <div className = "detailButtonText" style ={{left: "23px", top:"279px"}} id={"toggler"+ key}>Detail</div>
+                        <img style = {{position: "absolute",width: "9px",height: "5px",left: "68px",top: "285px"}}src = {detailIcon} alt="Detail icon"/>
                         <div className = "detailButtonText" style ={{left: "223px", top:"279px"}} onClick = {(() => this.handleQR(transaction.input))}>Share</div>
 
                         <UncontrolledCollapse toggler={"#toggler" + key}>
@@ -222,8 +222,6 @@ class Collectibles extends Component {
             size = {200}
             />
           </div>
-          <div className= "browseFilesBackground" style ={{backgroundColor: "rgba(0, 117, 255, 0.6)", mixBlendMode: "normal"}}/>
-          <div className= "publishText" onClick={this.verifyFile}>Verify</div>
         </div> 
         : 
         <div/>}

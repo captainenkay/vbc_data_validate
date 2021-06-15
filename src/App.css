@@ -222,8 +222,8 @@
 .dragFilesText{
     position: absolute;
     height: 25px;
-    left: 573px;
-    top: 401px;
+    left: 273px;
+    top: 114px;
 
     font-family: Open Sans;
     font-style: normal;
@@ -279,20 +279,24 @@
     position: absolute;
     width: 130px;
     height: 38px;
-    left: 656px;
-    top: 461px;
+    left: 356px;
+    top: 174px;
     
     background: rgba(255, 255, 255, 0.7);
     mix-blend-mode: screen;
     border-radius: 100px;
 }
 
-label{
+.browseFilesBackground:hover{
+    cursor: pointer;
+}
+
+.browseFile{
     position: absolute;
     width: 94px;
     height: 22px;
-    left: 674px;
-    top: 469px;
+    left: 374px;
+    top: 182px;
 
     font-family: Open Sans;
     font-style: normal;
@@ -305,7 +309,8 @@ label{
 
     color: #052D79;
 }
-label:hover{
+
+.browseFile:hover{
     cursor: pointer;
 }
 
