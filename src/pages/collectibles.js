@@ -47,6 +47,7 @@ class Collectibles extends Component {
 
   async loadStorage(){
     if (JSON.parse(localStorage.getItem('Transaction')) != null){
+      console.log(localStorage.getItem('Transaction'))
       this.setState({transaction: JSON.parse(localStorage.getItem('Transaction'))})
     }
     if (localStorage.getItem("address") != null){
@@ -103,12 +104,19 @@ class Collectibles extends Component {
 
   handleQR(input){
     this.setState({isShare: true, linkQR: input})
-    localStorage.setItem('imageLink', input)
   }
 
   handleRefresh = (event) => {
     event.preventDefault()
     this.setState({isShare: false, linkQR: ''})
+  }
+
+  handleURL(){
+    for (var i = 0 ; i < this.state.transaction.length; i++ ){
+      if (this.state.transaction[i].initialIpfs === this.state.linkQR){
+        return 'http://192.168.123.211:3000/verify?' + this.state.linkQR + "#" + this.state.transaction[i].address + "#" + this.state.transaction[i].transactionHash + "#" + this.state.transaction[i].input + "#" + this.state.transaction[i].blockNumber + "#" + this.state.transaction[i].fileName + "#" + this.state.transaction[i].initialIpfs + "#" + this.state.transaction[i].description
+      }
+    }
   }
 
   render(){
@@ -163,7 +171,7 @@ class Collectibles extends Component {
                         <img style = {{position: "absolute",width: "274px",height: "1px",left: "13px",top: "265px"}}src = {collectiblesLine} alt="Collectibles Line"/>
                         <div className = "detailButtonText" style ={{left: "23px", top:"279px"}} id={"toggler"+ key}>Detail</div>
                         <img style = {{position: "absolute",width: "9px",height: "5px",left: "68px",top: "285px"}}src = {detailIcon} alt="Detail icon"/>
-                        <div className = "detailButtonText" style ={{left: "223px", top:"279px"}} onClick = {(() => this.handleQR(transaction.input))}>Share</div>
+                        <div className = "detailButtonText" style ={{left: "223px", top:"279px"}} onClick = {(() => this.handleQR(transaction.initialIpfs))}>Share</div>
 
                         <UncontrolledCollapse toggler={"#toggler" + key}>
                           <div className = "detailBackground"/>
@@ -179,13 +187,13 @@ class Collectibles extends Component {
                     <Col key = {key} className = 'col-sm-3'>
                       <Card style ={{marginBottom: "112px", paddingLeft: "0px"}}>
                         <div class="editedImg-container">
-                          <img class="editedImg" src={'https:ipfs.infura.io/ipfs/' + transaction.initialIpfs} alt = "source"/>
+                          <img class="editedImg" src={'https://ipfs.infura.io/ipfs/' + transaction.initialIpfs} alt = "source"/>
                         </div>
                         <div className= "fileName">{transaction.fileName}</div>
                         <img style = {{position: "absolute",width: "274px",height: "1px",left: "13px",top: "265px"}}src = {collectiblesLine} alt="Collectibles Line"/>
                         <div className = "detailButtonText" style ={{left: "23px", top:"279px"}} id={"toggler"+ key}>Detail</div>
                         <img style = {{position: "absolute",width: "9px",height: "5px",left: "68px",top: "285px"}}src = {detailIcon} alt="Detail icon"/>
-                        <div className = "detailButtonText" style ={{left: "223px", top:"279px"}} onClick = {(() => this.handleQR(transaction.input))}>Share</div>
+                        <div className = "detailButtonText" style ={{left: "223px", top:"279px"}} onClick = {(() => this.handleQR(transaction.initialIpfs))}>Share</div>
                                 
                         <UncontrolledCollapse toggler={"#toggler"+ key}>
                           <div className = "detailBackground"/>
@@ -218,7 +226,7 @@ class Collectibles extends Component {
           <div className = "shareBackground">
             <img class = "closeButton" style = {{left: "1220px",top: "40px"}} src = {closeAlert} alt="Close alert button" onClick = {this.handleRefresh}/>
             <QRCode
-            value = {'https:ipfs.infura.io/ipfs/' + this.state.linkQR}
+            value = {this.handleURL()}
             size = {200}
             />
           </div>

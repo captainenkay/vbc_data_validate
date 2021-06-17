@@ -317,7 +317,7 @@ class App extends Component {
           this.handleCheckBar(3,24)
         },1000)
 
-        const bytes = await fetch('https:ipfs.infura.io/ipfs/' + url).then(res => res.arrayBuffer())
+        const bytes = await fetch('https://ipfs.infura.io/ipfs/' + url).then(res => res.arrayBuffer())
         var pdfDoc = await PDFDocument.create();
         
         // pdf file
@@ -326,17 +326,23 @@ class App extends Component {
         }
         //image file
         else {
-          const image = await pdfDoc.embedJpg(bytes)
+          var image
+          if (this.state.fileName.split('.').pop().toLowerCase() === "png"){
+            image = await pdfDoc.embedPng(bytes)
+          }
+          else{
+            image = await pdfDoc.embedJpg(bytes)
+          }
           const page = pdfDoc.addPage()
 
           const scaled = image.scaleToFit(page.getWidth(),page.getHeight())
-          const {height } = page.getSize()
+          const {height} = page.getSize()
 
           page.drawImage(image, {
             x: 0,
-            y: height - scaled.height,
-            width: scaled.width,
-            height: scaled.height,
+            y: height - ((scaled.height) * 5/6),
+            width: (scaled.width) * 5/6,
+            height: (scaled.height) * 5/6,
           })
         }
 
@@ -352,15 +358,9 @@ class App extends Component {
         const firstPage = pages[0]
 
         firstPage.drawText('http://192.168.123.211:3000/verify', {
-          x: 460,
-          y: 25,
-          size: 7,
-          color: rgb(1, 1, 1),
-        })
-        firstPage.drawText('http://192.168.123.211:3000/verify', {
-          x: 460,
-          y: 35,
-          size: 7,
+          x: 350,
+          y: 20,
+          size: 16,
           color: rgb(1, 1, 1),
         })
 
@@ -390,9 +390,7 @@ class App extends Component {
           firstPage.doc.context.obj({
             Type: 'Annot',
             Subtype: 'Link',
-            Rect: [0, 30, 40, 230],
-            Border: [0, 0, 2],
-            C: [0, 0, 1],
+            width: "200px",
             A: {
               Type: 'Action',
               S: 'URI',
@@ -401,7 +399,7 @@ class App extends Component {
           }),
         );
         firstPage.node.set(PDFName.of('Annots'), pdfDoc.context.obj([link]));
-        
+
         const pdfBytes = await pdfDoc.save()
         const editedBuffer = Buffer(pdfBytes)
 
@@ -601,7 +599,7 @@ class App extends Component {
                 <div>
                   <div className = "alertSuccessBigTitle">PUBLISHED</div>
                   <div className = "alertSuccessTitle" style ={{top: "597px"}}> This file has been published on our network </div>
-                  <a style = {{position: "absolute", width: "252px", height: "32px", left: "648px", top: "613px", fontFamily:"Open Sans", fontStyle: "normal", fontWeight: "normal", fontSize: "12px", lineHeight: "16px", display: "flex", alignItems: "center", color: "#6F6F6F"}}target="_blank" rel="noopener noreferrer" href={'https:testnet.bscscan.com/tx/' + this.state.transactionLink}>View transaction</a>
+                  <a style = {{position: "absolute", width: "252px", height: "32px", left: "648px", top: "613px", fontFamily:"Open Sans", fontStyle: "normal", fontWeight: "normal", fontSize: "12px", lineHeight: "16px", display: "flex", alignItems: "center", color: "#6F6F6F"}}target="_blank" rel="noopener noreferrer" href={'https://testnet.bscscan.com/tx/' + this.state.transactionLink}>View transaction</a>
                   <img style = {{position: "absolute",width: "36px;",height: "36px",left: "606px",top: "585px", filter: "drop-shadow(0px 4px 4px rgba(84, 114, 174, 0.2))"}} src = {bigCheckIcon} alt="Big Check Icon"/>
                 </div>
                 : 
@@ -681,7 +679,7 @@ class App extends Component {
                 <div>
                   <div className = "alertSuccessBigTitle">VERIFIED</div>
                   <div className = "alertSuccessTitle" style ={{top: "597px"}}> This is a valid certificate </div>
-                  <a style = {{position: "absolute", width: "252px", height: "32px", left: "648px", top: "613px", fontFamily:"Open Sans", fontStyle: "normal", fontWeight: "normal", fontSize: "12px", lineHeight: "16px", display: "flex", alignItems: "center", color: "#6F6F6F"}}target="_blank" rel="noopener noreferrer" href={'https:testnet.bscscan.com/tx/' + this.state.transactionLink}>View transaction</a>
+                  <a style = {{position: "absolute", width: "252px", height: "32px", left: "648px", top: "613px", fontFamily:"Open Sans", fontStyle: "normal", fontWeight: "normal", fontSize: "12px", lineHeight: "16px", display: "flex", alignItems: "center", color: "#6F6F6F"}}target="_blank" rel="noopener noreferrer" href={'https://testnet.bscscan.com/tx/' + this.state.transactionLink}>View transaction</a>
                   <img style = {{position: "absolute",width: "36px;",height: "36px",left: "606px",top: "585px", filter: "drop-shadow(0px 4px 4px rgba(84, 114, 174, 0.2))"}} src = {bigCheckIcon} alt="Big Check Icon"/>
                 </div>
                 : 
