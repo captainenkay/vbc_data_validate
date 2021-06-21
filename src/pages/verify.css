@@ -1,5 +1,7 @@
-.image{
-    position: absolute;
+.edited-container {
+    overflow: hidden;
+    position: relative;
+
     top: 20px;
     left: 38px;
     width: 300px;
@@ -9,12 +11,20 @@
     mix-blend-mode: normal;
 }
 
+.edited {
+    display: block;
+    width: 100%;
+    height: auto;
+    position: absolute;
+    top: 0;
+ }
+
 .verifyButton{
     position: absolute;
     width: 130px;
     height: 38px;
     left: 123px;
-    top: 350px;
+    top: 485px;
 
     background: rgba(255, 255, 255, 0.7);
     mix-blend-mode: screen;
@@ -50,6 +60,55 @@
     left: 38px;
     width: 300px;
     height: 300px;
+    border-radius: 15px;
 
     background: #FFFFFF;
+}
+
+.txDetailText{
+    position: absolute;
+    left: 48px;
+    max-width: 300px;
+
+    font-family: Open Sans;
+    font-style: normal;
+    font-weight: normal;
+    font-size: 14px;
+    line-height: 19px;
+
+    color: #ffffff
+}
+
+.verifyAlertText{
+    position: absolute;
+    height: 19px;
+    left: 80px;
+
+    font-family: Open Sans;
+    font-style: normal;
+    font-weight: normal;
+    font-size: 14px;
+    line-height: 19px;
+    /* identical to box height */
+
+    display: flex;
+    align-items: center;
+
+    color: #000000;
+}
+
+.VerifyProgress{
+    position: absolute;
+    width: 13px;
+    height: 200px;
+    left: 36px;
+    top: 31px;
+}
+
+.VerifyProgressBar{
+    height: 0%;
+    width: 100%;
+    background: linear-gradient(179.95deg, #23B1EE -3.46%, #F84949 112.7%);
+    color: black;
+    border-radius: 100px;
 }

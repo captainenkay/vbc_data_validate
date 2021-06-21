@@ -14,4 +14,5 @@ contract DataValidate is ERC721Full {
         _mint(msg.sender, _id);
         _dataValidateHashExists[_dataValidateHash] = true;
     }
+
 }

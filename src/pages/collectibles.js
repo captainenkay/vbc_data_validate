@@ -47,7 +47,6 @@ class Collectibles extends Component {
 
   async loadStorage(){
     if (JSON.parse(localStorage.getItem('Transaction')) != null){
-      console.log(localStorage.getItem('Transaction'))
       this.setState({transaction: JSON.parse(localStorage.getItem('Transaction'))})
     }
     if (localStorage.getItem("address") != null){
@@ -114,7 +113,9 @@ class Collectibles extends Component {
   handleURL(){
     for (var i = 0 ; i < this.state.transaction.length; i++ ){
       if (this.state.transaction[i].initialIpfs === this.state.linkQR){
-        return 'http://192.168.123.211:3000/verify?' + this.state.linkQR + "#" + this.state.transaction[i].address + "#" + this.state.transaction[i].transactionHash + "#" + this.state.transaction[i].input + "#" + this.state.transaction[i].blockNumber + "#" + this.state.transaction[i].fileName + "#" + this.state.transaction[i].initialIpfs + "#" + this.state.transaction[i].description
+        var tokenId = this.state.transaction.length - i
+        console.log('http://192.168.123.211:3000/verify#'+ this.state.transaction[i].transactionHash + "#" + this.state.transaction[i].blockNumber + "#" + this.state.transaction[i].fileName + "#" + this.state.transaction[i].initialIpfs + "#" + this.state.transaction[i].description + "#" + tokenId)
+        return 'http://192.168.123.211:3000/verify#'+ this.state.transaction[i].transactionHash + "#" + this.state.transaction[i].blockNumber + "#" + this.state.transaction[i].fileName + "#" + this.state.transaction[i].initialIpfs + "#" + this.state.transaction[i].description + "#" + tokenId
       }
     }
   }

@@ -104,7 +104,7 @@ class App extends Component {
       for (var i = 1; i <= totalSupply; i++) {
         const hash = await contract.methods.dataValidateHashes(i - 1).call()
         this.setState({
-          hashes: [...this.state.hashes, hash]
+          hashes: [hash, ...this.state.hashes]
         })
       }
     }
@@ -231,7 +231,7 @@ class App extends Component {
         const url =  result[0].hash
         this.handleCheckBar(0,3)
         for (let i = 0; i < this.state.hashes.length; i++){
-          if(url === this.state.transaction[i].initialIpfs || url === this.state.transaction[i].input){
+          if(url === this.state.transaction[i].initialIpfs || url === this.state.hashes[i]){
             this.setState({successAlert: true, transactionLink: this.state.transaction[i].transactionHash})
             let timer = await setTimeout(()=>{
               this.handleCheckBar(3,33);
@@ -294,7 +294,7 @@ class App extends Component {
         const url = result[0].hash
         this.handleCheckBar(0,3)
         for (let i = 0; i < this.state.hashes.length; i++){
-          if(url === this.state.transaction[i].initialIpfs || url === this.state.transaction[i].input){
+          if(url === this.state.transaction[i].initialIpfs || url === this.state.hashes[i]){
             this.setState({failAlert: true})
             let timer = await setTimeout(()=>{
               this.handleCheckBar(3,24);
@@ -427,7 +427,7 @@ class App extends Component {
               },1000)
               return clearTimeout(timer)
             },1000)
-            var result = {address: this.state.account, transactionHash: receipt.transactionHash, input: ipfsResult, blockNumber: receipt.blockNumber, fileName: this.state.fileName, initialIpfs: url, date: new Date(), description: this.state.description}
+            var result = {address: this.state.account, transactionHash: receipt.transactionHash, blockNumber: receipt.blockNumber, fileName: this.state.fileName, initialIpfs: url, date: new Date(), description: this.state.description}
             this.setState({
               hashes: [ipfsResult,...this.state.hashes],
               transaction:[result, ...this.state.transaction],
@@ -435,6 +435,7 @@ class App extends Component {
               transactionLink: receipt.transactionHash,
             })
             localStorage.setItem('Transaction', JSON.stringify(this.state.transaction))
+            localStorage.setItem('Hashes', JSON.stringify(this.state.hashes))
           })
         })
       })
