@@ -57,7 +57,7 @@
 .verifyBackground{
     position: absolute;
     top: 20px;
-    left: 38px;
+    left: 56px;
     width: 300px;
     height: 300px;
     border-radius: 15px;
@@ -111,4 +111,10 @@
     background: linear-gradient(179.95deg, #23B1EE -3.46%, #F84949 112.7%);
     color: black;
     border-radius: 100px;
+}
+
+a:visited {
+    color: pink;
+    background-color: transparent;
+    text-decoration: none;
 }

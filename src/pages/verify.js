@@ -22,6 +22,10 @@ class Verify extends Component {
   async loadData(){
     await this.setState({url: decodeURIComponent(window.location.href.split('?').pop())})
     await this.setState({urlLoad: this.state.url.split('#')})
+    if (this.state.url === '' || this.state.urlLoad === []){
+      alert("This is an invalid url")
+      return
+    }
   }
 
   async loadWeb3() {
@@ -90,11 +94,21 @@ class Verify extends Component {
 
   async handleVerify(){
     this.setState({isVerify: true})
-    if (this.state.urlLoad[5] === this.state.transactionData[2]){
+    if (this.state.urlLoad[5] === this.state.transactionData[2] && this.state.urlLoad[7] === this.state.transactionData[3]){
       this.handleCheckBar(0,6)
-    }
-    if(this.state.owner === this.state.account){
-      this.setState({successAlert: true})
+      if(this.state.owner === this.state.account){
+        this.setState({successAlert: true})
+        let timer = await setTimeout(()=>{
+          this.handleCheckBar(6,50);
+          let timer1 = setTimeout(()=>{
+           this.handleCheckBar(50,100)
+           return clearTimeout(timer1);
+          },1000)
+          return clearTimeout(timer)
+        },1000)
+        return
+      }
+      this.setState({failAlert: true})
       let timer = await setTimeout(()=>{
         this.handleCheckBar(6,50);
         let timer1 = setTimeout(()=>{
@@ -105,17 +119,18 @@ class Verify extends Component {
       },1000)
       return
     }
-    this.setState({failAlert: true})
+    this.setState({hashFailAlert: true})
     let timer = await setTimeout(()=>{
-      this.handleCheckBar(6,50);
+      this.handleCheckBar(0,6);
       let timer1 = setTimeout(()=>{
-       this.handleCheckBar(50,100)
+       this.handleCheckBar(6,100)
        return clearTimeout(timer1);
       },1000)
       return clearTimeout(timer)
     },1000)
     return
   }
+    
 
   handleRefresh = (event) => {
     event.preventDefault()
@@ -123,7 +138,11 @@ class Verify extends Component {
   }
 
   async handleTxFileName(){
-    console.log(this.state.urlLoad[4])
+    if (this.state.urlLoad[4] === ""){
+      alert("This is an invalid url")
+      return
+    }
+
     if (this.state.urlLoad[4].length > 15){
       this.setState({transactionFileName: this.state.urlLoad[4].slice(0,10).toLowerCase() + '... .' + this.state.urlLoad[4].split('.').pop().toLowerCase()})
     }
@@ -142,6 +161,10 @@ class Verify extends Component {
   }
 
   async handletransactionData(){
+    if (this.state.urlLoad[1] === ""){
+      alert("This is an invalid url")
+      return
+    }
     this.setState({transactionHash: this.state.urlLoad[1].slice(0,18) + '...' + this.state.urlLoad[1].slice(60,66)})
   }
 
@@ -171,7 +194,7 @@ class Verify extends Component {
 
               {this.state.barHeight >= 6 ?
               <div>
-                <div className = "verifyAlertText" style= {{top: "30px"}}>Valid hash</div>
+                <div className = "verifyAlertText" style= {{top: "30px"}}>Valid hash & valid certificate</div>
                 <img style = {{position: "absolute",width: "26px;",height: "26px",left: "30px",top: "30px"}} src = {checkIcon} alt="Check Icon"/>
               </div> 
               : 
@@ -204,7 +227,7 @@ class Verify extends Component {
 
               {this.state.barHeight >= 6 ?
               <div>
-                <div className = "verifyAlertText" style= {{top: "30px"}}>Valid hash</div>
+                <div className = "verifyAlertText" style= {{top: "30px"}}>Valid hash & valid certificate</div>
                 <img style = {{position: "absolute",width: "26px;",height: "26px",left: "30px",top: "30px"}} src = {checkIcon} alt="Check Icon"/>
               </div> 
               : 
@@ -212,7 +235,7 @@ class Verify extends Component {
 
               {this.state.barHeight >= 50 ?
               <div>
-                <div className = "verifyAlertText" style= {{top: "115px"}}>Not valid owner address</div>
+                <div className = "verifyAlertText" style= {{top: "115px"}}>Invalid owner address</div>
                 <img style = {{position: "absolute",width: "26px;",height: "26px",left: "30px",top: "115px"}} src = {crossIcon} alt="Cross Icon"/>
               </div> 
               : 
@@ -228,6 +251,32 @@ class Verify extends Component {
             </div> 
             : 
             <div/>}
+
+            {this.state.hashFailAlert?
+            <div>
+            <div className="VerifyProgress">
+                <div className="VerifyProgressBar"/>
+            </div>
+
+            {this.state.barHeight >= 6 ?
+            <div>
+              <div className = "verifyAlertText" style= {{top: "30px"}}>Invalid hash</div>
+              <img style = {{position: "absolute",width: "26px;",height: "26px",left: "30px",top: "30px"}} src = {crossIcon} alt="Cross Icon"/>
+            </div> 
+            : 
+            <div/>}
+
+            {this.state.barHeight >= 100 ?
+            <div>
+              <div className = "verifyAlertText" style= {{top: "215px"}}>This is not a valid hash</div>
+              <img style = {{position: "absolute",width: "26px;",height: "26px",left: "30px",top: "215px"}} src = {crossIcon} alt="Cross Icon"/>
+            </div> 
+            : 
+            <div/>}
+          </div> 
+          : 
+          <div/>}
+
           </div>
         </div> 
         : 

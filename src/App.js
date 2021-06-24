@@ -359,7 +359,7 @@ class App extends Component {
         const pages = await pdfDoc.getPages()
         const firstPage = pages[0]
 
-        firstPage.drawText('http://192.168.123.211:3000/verify', {
+        firstPage.drawText('http://192.168.123.208:3000/', {
           x: 350,
           y: 20,
           size: 16,
@@ -396,7 +396,7 @@ class App extends Component {
             A: {
               Type: 'Action',
               S: 'URI',
-              URI: PDFString.of('http://192.168.123.211:3000/home'),
+              URI: PDFString.of('http://192.168.123.208:3000/'),
             },
           }),
         );
