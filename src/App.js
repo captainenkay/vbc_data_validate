@@ -557,8 +557,15 @@ class App extends Component {
 
               {this.state.barHeight >= 3 ?
               <div>
-                <div className = "alertText" style= {{top: "317px"}}>Hash file with ipfs</div>
+                <div className = "alertText" style= {{top: "317px"}}>File is encrypted with ipfs</div>
                 <img style = {{position: "absolute",width: "26px;",height: "26px",left: "611px",top: "313px"}} src = {checkIcon} alt="Check Icon"/>
+                {this.state.barHeight === 3 ? 
+                <div>
+                  <div className = "alertText" style= {{top: "372px"}}>Waiting ...</div>
+                  <div class="loader" style = {{top: "369px"}}/>
+                </div> 
+                : 
+                <div/>}
               </div> 
               : 
               <div/>}
@@ -567,8 +574,15 @@ class App extends Component {
               <div>
                 {this.state.barHeight >= 24 ? 
                 <div>
-                  <div className = "alertText" style= {{top: "372px"}}>Comparing hash</div>
+                  <div className = "alertText" style= {{top: "372px"}}>Compared the hash</div>
                   <img style = {{position: "absolute",width: "26px;",height: "26px",left: "611px",top: "369px"}} src = {checkIcon} alt="Check Icon"/>
+                  {this.state.barHeight === 24 ? 
+                  <div>
+                    <div className = "alertText" style= {{top: "423px"}}>Waiting ...</div>
+                    <div class="loader" style = {{top: "420px"}}/>
+                  </div> 
+                  : 
+                  <div/>}
                 </div> 
                 : 
                 <div/>}
@@ -577,22 +591,43 @@ class App extends Component {
                 <div>
                   <div className = "alertText" style= {{top: "423px"}}>Certificate created</div>
                   <img style = {{position: "absolute",width: "26px;",height: "26px",left: "611px",top: "420px"}} src = {checkIcon} alt="Check Icon"/>
+                  {this.state.barHeight === 40 ? 
+                  <div>
+                    <div className = "alertText" style= {{top: "474px"}}>Waiting ...</div>
+                    <div class="loader" style = {{top: "471px"}}/>
+                  </div> 
+                  : 
+                  <div/>}
                 </div> 
                 : 
                 <div/>}
 
                 {this.state.barHeight >= 58 ? 
                 <div>
-                  <div className = "alertText" style= {{top: "474px"}}>Upload certificate to ipfs</div>
+                  <div className = "alertText" style= {{top: "474px"}}>Certificate uploaded to ipfs</div>
                   <img style = {{position: "absolute",width: "26px;",height: "26px",left: "611px",top: "471px"}} src = {checkIcon} alt="Check Icon"/>
+                  {this.state.barHeight === 58 ? 
+                  <div>
+                    <div className = "alertText" style= {{top: "525px"}}>Waiting ...</div>
+                    <div class="loader" style = {{top: "522px"}}/>
+                  </div> 
+                  : 
+                  <div/>}
                 </div>
                 : 
                 <div/>}
 
                 {this.state.barHeight >= 75 ? 
                 <div>
-                  <div className = "alertText" style= {{top: "525px"}}>Upload certificate to blockchain network</div>
+                  <div className = "alertText" style= {{top: "525px"}}>Certificate uploaded to blockchain network</div>
                   <img style = {{position: "absolute",width: "26px;",height: "26px",left: "611px",top: "522px"}} src = {checkIcon} alt="Check Icon"/>
+                  {this.state.barHeight === 75 ? 
+                  <div>
+                    <div className = "alertText" style= {{top: "597px"}}>Waiting ...</div>
+                    <div class="loader" style = {{top: "585px"}}/>
+                  </div> 
+                  : 
+                  <div/>}
                 </div>
                 : 
                 <div/>}
@@ -614,7 +649,7 @@ class App extends Component {
                 <div>
                   {this.state.barHeight >= 24 ? 
                   <div>
-                    <div className = "alertText" style= {{top: "372px"}}>Comparing hash</div>
+                    <div className = "alertText" style= {{top: "372px"}}>Compared the hash</div>
                     <img style = {{position: "absolute",width: "26px;",height: "26px",left: "611px",top: "369px"}} src = {crossIcon} alt="Cross Icon"/>
                   </div> 
                   : 
@@ -653,7 +688,7 @@ class App extends Component {
               }
               {this.state.barHeight >= 3 ?
               <div>
-                <div className = "alertText" style= {{top: "317px"}}>Hash file with ipfs</div>
+                <div className = "alertText" style= {{top: "317px"}}>File is encrypted with ipfs</div>
                 <img style = {{position: "absolute",width: "26px;",height: "26px",left: "611px",top: "313px"}} src = {checkIcon} alt="Check Icon"/>
               </div> 
               : 
@@ -663,7 +698,7 @@ class App extends Component {
               <div>
                 {this.state.barHeight >= 33 ? 
                 <div>
-                  <div className = "alertText" style= {{top: "400px"}}>Comparing hash</div>
+                  <div className = "alertText" style= {{top: "400px"}}>Compared the hash</div>
                   <img style = {{position: "absolute",width: "26px;",height: "26px",left: "611px",top: "397px"}} src = {checkIcon} alt="Check Icon"/>
                 </div> 
                 : 
@@ -694,7 +729,7 @@ class App extends Component {
                 <div>
                   {this.state.barHeight >= 33 ? 
                   <div>
-                    <div className = "alertText" style= {{top: "400px"}}>Comparing hash</div>
+                    <div className = "alertText" style= {{top: "400px"}}>Compared the hash</div>
                     <img style = {{position: "absolute",width: "26px;",height: "26px",left: "611px",top: "397px"}} src = {crossIcon} alt="Cross Icon"/>
                   </div> 
                   : 
