@@ -102,9 +102,9 @@ class App extends Component {
       const totalSupply = await contract.methods.totalSupply().call()
       this.setState({ totalSupply })
       for (var i = 1; i <= totalSupply; i++) {
-        const hash = await contract.methods.dataValidateHashes(i - 1).call()
+        const data = await contract.methods.dataValidateTransactionDetails(i - 1).call()
         this.setState({
-          hashes: [hash, ...this.state.hashes]
+          transactionData: [data, ...this.state.transactionData]
         })
       }
     }
@@ -136,7 +136,7 @@ class App extends Component {
       buffer: null,
       contract: null,
       totalSupply: 0,
-      hashes: [],
+      transactionData: [],
       transaction: [],
       fileName: '',
       isUploaded: false,
@@ -228,10 +228,11 @@ class App extends Component {
     
     if (this.state.fileName.split('.').pop().toLowerCase() === "pdf" || this.state.fileName.split('.').pop().toLowerCase() === "png" || this.state.fileName.split('.').pop().toLowerCase()  === "jpg" || this.state.fileName.split('.').pop().toLowerCase()  === "jpeg"){
       ipfs.add(this.state.buffer, async(error,result) => {
-        const url =  result[0].hash
+        const url =  "https://ipfs.infura.io/ipfs/" + result[0].hash
         this.handleCheckBar(0,3)
-        for (let i = 0; i < this.state.hashes.length; i++){
-          if(url === this.state.transaction[i].initialIpfs || url === this.state.hashes[i]){
+        for (let i = 0; i < this.state.transactionData.length; i++){
+          var data = this.state.transactionData[i].split('#')
+          if(url === data[2]|| url === data[3]){
             this.setState({successAlert: true, transactionLink: this.state.transaction[i].transactionHash})
             let timer = await setTimeout(()=>{
               this.handleCheckBar(3,33);
@@ -291,10 +292,11 @@ class App extends Component {
 
     if (this.state.fileName.split('.').pop().toLowerCase() === "pdf" || this.state.fileName.split('.').pop().toLowerCase() === "png" || this.state.fileName.split('.').pop().toLowerCase() === "jpg" || this.state.fileName.split('.').pop().toLowerCase() === "jpeg"){
       ipfs.add(this.state.buffer, async(error,result) => {
-        const url = result[0].hash
+        const url =  "https://ipfs.infura.io/ipfs/" + result[0].hash
         this.handleCheckBar(0,3)
-        for (let i = 0; i < this.state.hashes.length; i++){
-          if(url === this.state.transaction[i].initialIpfs || url === this.state.hashes[i]){
+        for (let i = 0; i < this.state.transactionData.length; i++){
+          var data = this.state.transactionData[i].split('#')
+          if(url === data[2]|| url === data[3]){
             this.setState({failAlert: true})
             let timer = await setTimeout(()=>{
               this.handleCheckBar(3,24);
@@ -317,7 +319,7 @@ class App extends Component {
           this.handleCheckBar(3,24)
         },1000)
 
-        const bytes = await fetch('https://ipfs.infura.io/ipfs/' + url).then(res => res.arrayBuffer())
+        const bytes = await fetch(url).then(res => res.arrayBuffer())
         var pdfDoc = await PDFDocument.create();
         
         // pdf file
@@ -394,7 +396,7 @@ class App extends Component {
             A: {
               Type: 'Action',
               S: 'URI',
-              URI: PDFString.of('http://192.168.123.211:3000/verify'),
+              URI: PDFString.of('http://192.168.123.211:3000/home'),
             },
           }),
         );
@@ -408,7 +410,7 @@ class App extends Component {
         },2000)
 
         ipfs.add(editedBuffer, async(error,result) => {
-          var ipfsResult = result[0].hash
+          var ipfsResult = "https://ipfs.infura.io/ipfs/" + result[0].hash
           await setTimeout(()=>{
             this.handleCheckBar(40,58)
           },1000)
@@ -416,7 +418,8 @@ class App extends Component {
             console.log(error)
             return
           }
-          this.state.contract.methods.mint(ipfsResult).send({ from: this.state.account}).once('receipt', (receipt) => {
+          var mintItem = this.state.fileName + "#" + this.state.description + "#" + url + "#"+ ipfsResult + "#" + this.state.account + "#" + new Date()
+          this.state.contract.methods.mint(mintItem).send({ from: this.state.account}).once('receipt', (receipt) => {
             download(pdfBytes, "Certificate", "application/pdf");
 
             let timer = setTimeout(()=>{
@@ -427,15 +430,14 @@ class App extends Component {
               },1000)
               return clearTimeout(timer)
             },1000)
-            var result = {address: this.state.account, transactionHash: receipt.transactionHash, blockNumber: receipt.blockNumber, fileName: this.state.fileName, initialIpfs: url, date: new Date(), description: this.state.description}
+            var result = {transactionHash: receipt.transactionHash, blockNumber: receipt.blockNumber}
             this.setState({
-              hashes: [ipfsResult,...this.state.hashes],
+              transactionData: [mintItem,...this.state.transactionData],
               transaction:[result, ...this.state.transaction],
               successAlert: true,
               transactionLink: receipt.transactionHash,
             })
             localStorage.setItem('Transaction', JSON.stringify(this.state.transaction))
-            localStorage.setItem('Hashes', JSON.stringify(this.state.hashes))
           })
         })
       })

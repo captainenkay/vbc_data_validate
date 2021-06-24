@@ -12,16 +12,16 @@ import crossIcon from "./../assets/crossIcon.png"
 class Verify extends Component {
   async componentWillMount(){
     await this.loadData()
-    await this.handleTxDetail()
-    await this.handleTxDescription()
-    await this.handleTxFileName()
     await this.loadWeb3()
     await this.loadBlockchainData()
+    await this.handleTxFileName()
+    await this.handleTxDescription()
+    await this.handletransactionData()
   }
 
   async loadData(){
     await this.setState({url: decodeURIComponent(window.location.href.split('?').pop())})
-    await this.setState({txDetail: this.state.url.split('#')})
+    await this.setState({urlLoad: this.state.url.split('#')})
   }
 
   async loadWeb3() {
@@ -47,7 +47,8 @@ class Verify extends Component {
       const abi = DataValidate.abi
       const address = networkData.address
       const contract = new web3.eth.Contract(abi, address)
-      this.setState({owner: await contract.methods.ownerOf(this.state.txDetail[6]).call(), hash: await contract.methods.dataValidateHashes(this.state.txDetail[6]-1).call()}) 
+      const data = await contract.methods.dataValidateTransactionDetails(this.state.urlLoad[3] - 1).call()
+      this.setState({owner: await contract.methods.ownerOf(this.state.urlLoad[3]).call(), transactionData: data.split("#")}) 
     }
     else{
       alert("smart contract do not deploy to detect network")
@@ -59,11 +60,11 @@ class Verify extends Component {
     this.state = {
         url: '',
         isVerify: false,
-        txDetail: [],
+        transactionData: [],
+        urlLoad: [],
         transactionHash: '',
         transactionDescription: '',
         transactionFileName: '',
-        hashes: [],
         owner: '',
         successAlert: false,
         failAlert: false,
@@ -90,8 +91,6 @@ class Verify extends Component {
   async handleVerify(){
     this.setState({isVerify: true})
     this.handleCheckBar(0,6)
-    console.log(this.state.owner)
-    console.log(this.state.account)
     if(this.state.owner === this.state.account){
       this.setState({successAlert: true})
       let timer = await setTimeout(()=>{
@@ -104,7 +103,6 @@ class Verify extends Component {
       },1000)
       return
     }
-    console.log("failed")
     this.setState({failAlert: true})
     let timer = await setTimeout(()=>{
       this.handleCheckBar(6,50);
@@ -123,37 +121,37 @@ class Verify extends Component {
   }
 
   async handleTxDescription(){
-    if (this.state.txDetail[5].length > 20){
-      this.setState({transactionDescription: this.state.txDetail[5].slice(0,25).toLowerCase() + '...'})
+    if (this.state.transactionData[1].length > 20){
+      this.setState({transactionDescription: this.state.transactionData[1].slice(0,20).toLowerCase() + '...'})
     }
     else {
-      this.setState({transactionDescription: this.state.txDetail[5].toLowerCase()})
+      this.setState({transactionDescription: this.state.transactionData[1].toLowerCase()})
     }
   }
 
   async handleTxFileName(){
-    if (this.state.txDetail[3].length > 15){
-      this.setState({transactionFileName: this.state.txDetail[3].slice(0,10).toLowerCase() + '... .' + this.state.txDetail[3].split('.').pop().toLowerCase()})
+    if (this.state.transactionData[0].length > 15){
+      this.setState({transactionFileName: this.state.transactionData[0].slice(0,10).toLowerCase() + '... .' + this.state.transactionData[0].split('.').pop().toLowerCase()})
     }
     else {
-      this.setState({transactionFileName: this.state.txDetail[3].toLowerCase()})
+      this.setState({transactionFileName: this.state.transactionData[0].toLowerCase()})
     }
   }
 
-  async handleTxDetail(){
-    this.setState({transactionHash: this.state.txDetail[1].slice(0,18) + '...' + this.state.txDetail[1].slice(60,66)})
+  async handletransactionData(){
+    this.setState({transactionHash: this.state.urlLoad[1].slice(0,18) + '...' + this.state.urlLoad[1].slice(60,66)})
   }
 
   render(){
     return (
       <div className = "fullPage" style = {{width: "376px" ,height:"560px"}}>
         <div class="edited-container">
-          <img class="edited" src={'https://ipfs.infura.io/ipfs/' + this.state.txDetail[4]} alt = "source"/>
+          <img class="edited" src={this.state.transactionData[2]} alt = "source"/>
         </div>
         <div className = "txDetailText" style ={{top: "340px", fontWeight: "bold", fontSize: "18px", color: "#3BCCFA"}}>File name: {this.state.transactionFileName}</div>
         <div className = "txDetailText" style ={{top: "375px"}}>Description: {this.state.transactionDescription}</div>
         <div className = "txDetailText" style ={{top: "410px"}}>Tx Hash: {this.state.transactionHash}</div>
-        <div className = "txDetailText" style ={{top: "445px"}}>Block Number: {this.state.txDetail[2]}</div>
+        <div className = "txDetailText" style ={{top: "445px"}}>Block Number: {this.state.urlLoad[2]}</div>
 
         <div className = "verifyButton" onClick = {(() => this.handleVerify())}>
           <div className = "verifyText"> Verify</div>
