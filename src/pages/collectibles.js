@@ -13,7 +13,6 @@ import closeAlert from "./../assets/closeAlert.png"
 import {Link} from "react-router-dom"
 import {Row, Col, Card, UncontrolledCollapse} from "reactstrap"
 import QRCode from "react-qr-code"
-import DataValidate from './../abis/DataValidate.json'
 
 
 class Collectibles extends Component {
@@ -74,25 +73,6 @@ class Collectibles extends Component {
     const accounts = await web3.eth.getAccounts()
     this.setState({account: accounts[0],connected: true})
     localStorage.setItem('address',this.state.account)
-    const networkId = await web3.eth.net.getId()
-    const networkData = DataValidate.networks[networkId]
-    if(networkData) {
-      const abi = DataValidate.abi
-      const address = networkData.address
-      const contract = new web3.eth.Contract(abi, address)
-      this.setState({ contract })
-      const totalSupply = await contract.methods.totalSupply().call()
-      this.setState({ totalSupply })
-      for (var i = 1; i <= totalSupply; i++) {
-        const data = await contract.methods.dataValidateTransactionDetails(i - 1).call()
-        this.setState({
-          transactionData: [data, ...this.state.transactionData]
-        })
-      }
-    }
-    else{
-      window.alert("smart contract do not deploy to detect network")
-    }
   }
 
   constructor(props){
@@ -100,7 +80,6 @@ class Collectibles extends Component {
     this.state = {
       account: '',
       contract: null,
-      transactionData: [],
       transaction: [],
       collapse: false,
       haveCollectibles: false,
@@ -112,9 +91,8 @@ class Collectibles extends Component {
   }
 
   async hanldeCollectibles(){
-    for (var i = 0 ; i < this.state.transactionData.length; i++ ){
-      var data = this.state.transactionData[i].split('#')
-      if (data[4] === this.state.account){
+    for (var i = 0 ; i < this.state.transaction.length; i++ ){
+      if (this.state.transaction[i].fileOwner === this.state.account){
         this.setState({haveCollectibles: true})
         return
       }
@@ -135,12 +113,11 @@ class Collectibles extends Component {
   }
 
   handleURL(){
-    for (var i = 0 ; i < this.state.transactionData.length; i++ ){
-      var data = this.state.transactionData[i].split("#")
-      if (data[2] === this.state.linkQR){
-        var tokenId = this.state.transactionData.length - i
-        console.log('http://192.168.123.208:3000/verify#'+ this.state.transaction[i].transactionHash + "#" + this.state.transaction[i].blockNumber + "#" + tokenId)
-        return 'http://192.168.123.208:3000/verify#'+ this.state.transaction[i].transactionHash + "#" + this.state.transaction[i].blockNumber + "#" + tokenId
+    for (var i = 0 ; i < this.state.transaction.length; i++ ){
+      if (this.state.transaction[i].initialFile === this.state.linkQR){
+        var tokenId = this.state.transaction.length - i
+        console.log('http://192.168.123.208:3000/verify#'+ this.state.transaction[i].transactionHash + "#" + this.state.transaction[i].blockNumber + "#" + tokenId + "#" + this.state.transaction[i].fileName + "#" + this.state.transaction[i].initialFile + "#" + this.state.transaction[i].fileDescription )
+        return 'http://192.168.123.208:3000/verify#'+ this.state.transaction[i].transactionHash + "#" + this.state.transaction[i].blockNumber + "#" + tokenId + "#" + this.state.transaction[i].fileName + "#" + this.state.transaction[i].initialFile + "#" + this.state.transaction[i].fileDescription 
       }
     }
   }
@@ -185,47 +162,46 @@ class Collectibles extends Component {
 
         <div className = "content" style={{background: "black"}}>
           <Row style= {{margin: "0 0 0 0"}}>
-            {this.state.transactionData.map((transactionData, key) => {
-              var data = transactionData.split("#")
-              if (data[4] === this.state.account){
-                if (data[0].split('.').pop().toLowerCase() === "pdf"){
+            {this.state.transaction.map((transaction, key) => {
+              if (transaction.fileOwner === this.state.account){
+                if (transaction.fileName.split('.').pop().toLowerCase() === "pdf"){
                   return(
                     <Col key = {key} className = 'col-sm-3'>
                       <div className = "card" style ={{marginBottom: "112px", paddingLeft: "0px"}}>
                         <div className = "pdfBackground"/>
                         <img style = {{position: "absolute",width: "84px",height: "84px",left: "108px",top: "47px"}}src = {pdfPicture} alt="Pdf pic"/>
-                        <div className= "fileName">{data[1].fileName}</div>
+                        <div className= "fileName">{transaction.fileName}</div>
                         <img style = {{position: "absolute",width: "274px",height: "1px",left: "13px",top: "265px"}}src = {collectiblesLine} alt="Collectibles Line"/>
                         <div className = "detailButtonText" style ={{left: "23px", top:"279px"}} id={"toggler"+ key}>Detail</div>
                         <img style = {{position: "absolute",width: "9px",height: "5px",left: "68px",top: "285px"}}src = {detailIcon} alt="Detail icon"/>
-                        <div className = "detailButtonText" style ={{left: "223px", top:"279px"}} onClick = {(() => this.handleQR(data[2]))}>Share</div>
+                        <div className = "detailButtonText" style ={{left: "223px", top:"279px"}} onClick = {(() => this.handleQR(transaction.initialFile))}>Share</div>
 
                         <UncontrolledCollapse toggler={"#toggler" + key}>
                           <div className = "detailBackground"/>
-                          <div className = "date">Posted in {data[5].slice(8,10)} / {data[5].slice(5,7)} / {data[5].slice(0,4)}</div>
-                          <div className = "detailText">{data[1]}</div>
+                          <div className = "date">Posted in {transaction.date.slice(8,10)} / {transaction.date.slice(5,7)} / {transaction.date.slice(0,4)}</div>
+                          <div className = "detailText">{transaction.fileDescription}</div>
                         </UncontrolledCollapse>
                       </div>
                     </Col>
                   )
                 }
-                if (data[0].split('.').pop().toLowerCase() === "png" || data[0].split('.').pop().toLowerCase() === "jpg" || data[0].split('.').pop().toLowerCase() === "jpeg"){
+                if (transaction.fileName.split('.').pop().toLowerCase() === "png" || transaction.fileName.split('.').pop().toLowerCase() === "jpg" || transaction.fileName.split('.').pop().toLowerCase() === "jpeg"){
                   return(
                     <Col key = {key} className = 'col-sm-3'>
                       <Card style ={{marginBottom: "112px", paddingLeft: "0px"}}>
                         <div class="editedImg-container">
-                          <img class="editedImg" src={data[2]} alt = "source"/>
+                          <img class="editedImg" src={transaction.initialFile} alt = "source"/>
                         </div>
-                        <div className= "fileName">{data[0]}</div>
+                        <div className= "fileName">{transaction.fileName}</div>
                         <img style = {{position: "absolute",width: "274px",height: "1px",left: "13px",top: "265px"}}src = {collectiblesLine} alt="Collectibles Line"/>
                         <div className = "detailButtonText" style ={{left: "23px", top:"279px"}} id={"toggler"+ key}>Detail</div>
                         <img style = {{position: "absolute",width: "9px",height: "5px",left: "68px",top: "285px"}}src = {detailIcon} alt="Detail icon"/>
-                        <div className = "detailButtonText" style ={{left: "223px", top:"279px"}} onClick = {(() => this.handleQR(data[2]))}>Share</div>
+                        <div className = "detailButtonText" style ={{left: "223px", top:"279px"}} onClick = {(() => this.handleQR(transaction.initialFile))}>Share</div>
                                 
                         <UncontrolledCollapse toggler={"#toggler"+ key}>
                           <div className = "detailBackground"/>
-                          <div className = "date">Posted in {data[5].slice(8,10)} / {data[5].slice(5,7)} / {data[5].slice(0,4)}</div>
-                          <div className = "detailText">{data[1]}</div>
+                          <div className = "date">Posted in {transaction.date.slice(8,10)} / {transaction.date.slice(5,7)} / {transaction.date.slice(0,4)}</div>
+                          <div className = "detailText">{transaction.fileDescription}</div>
                         </UncontrolledCollapse>
                       </Card>
                     </Col>

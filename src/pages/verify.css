@@ -3,7 +3,7 @@
     position: relative;
 
     top: 20px;
-    left: 38px;
+    left: 56px;
     width: 300px;
     height: 300px;
     border-radius: 15px;
@@ -23,7 +23,7 @@
     position: absolute;
     width: 130px;
     height: 38px;
-    left: 123px;
+    left: 141px;
     top: 485px;
 
     background: rgba(255, 255, 255, 0.7);
@@ -67,7 +67,7 @@
 
 .txDetailText{
     position: absolute;
-    left: 48px;
+    left: 66px;
     max-width: 300px;
 
     font-family: Open Sans;

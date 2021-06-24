@@ -90,7 +90,9 @@ class Verify extends Component {
 
   async handleVerify(){
     this.setState({isVerify: true})
-    this.handleCheckBar(0,6)
+    if (this.state.urlLoad[5] === this.state.transactionData[2]){
+      this.handleCheckBar(0,6)
+    }
     if(this.state.owner === this.state.account){
       this.setState({successAlert: true})
       let timer = await setTimeout(()=>{
@@ -120,21 +122,22 @@ class Verify extends Component {
     this.setState({isVerify: false,successAlert: false, failAlert: false, barHeight: 0})
   }
 
-  async handleTxDescription(){
-    if (this.state.transactionData[1].length > 20){
-      this.setState({transactionDescription: this.state.transactionData[1].slice(0,20).toLowerCase() + '...'})
+  async handleTxFileName(){
+    console.log(this.state.urlLoad[4])
+    if (this.state.urlLoad[4].length > 15){
+      this.setState({transactionFileName: this.state.urlLoad[4].slice(0,10).toLowerCase() + '... .' + this.state.urlLoad[4].split('.').pop().toLowerCase()})
     }
     else {
-      this.setState({transactionDescription: this.state.transactionData[1].toLowerCase()})
+      this.setState({transactionFileName: this.state.urlLoad[4].toLowerCase()})
     }
   }
 
-  async handleTxFileName(){
-    if (this.state.transactionData[0].length > 15){
-      this.setState({transactionFileName: this.state.transactionData[0].slice(0,10).toLowerCase() + '... .' + this.state.transactionData[0].split('.').pop().toLowerCase()})
+  async handleTxDescription(){
+    if (this.state.urlLoad[6].length > 20){
+      this.setState({transactionDescription: this.state.urlLoad[6].slice(0,20).toLowerCase() + '...'})
     }
     else {
-      this.setState({transactionFileName: this.state.transactionData[0].toLowerCase()})
+      this.setState({transactionDescription: this.state.urlLoad[6].toLowerCase()})
     }
   }
 
@@ -144,9 +147,9 @@ class Verify extends Component {
 
   render(){
     return (
-      <div className = "fullPage" style = {{width: "376px" ,height:"560px"}}>
+      <div className = "fullPage" style = {{width: "412px" ,height:"652px"}}>
         <div class="edited-container">
-          <img class="edited" src={this.state.transactionData[2]} alt = "source"/>
+          <img class="edited" src={this.state.urlLoad[5]} alt = "source"/>
         </div>
         <div className = "txDetailText" style ={{top: "340px", fontWeight: "bold", fontSize: "18px", color: "#3BCCFA"}}>File name: {this.state.transactionFileName}</div>
         <div className = "txDetailText" style ={{top: "375px"}}>Description: {this.state.transactionDescription}</div>

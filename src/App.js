@@ -418,10 +418,9 @@ class App extends Component {
             console.log(error)
             return
           }
-          var mintItem = this.state.fileName + "#" + this.state.description + "#" + url + "#"+ ipfsResult + "#" + this.state.account + "#" + new Date()
+          var mintItem = this.state.fileName + "#" + this.state.description + "#" + url + "#"+ ipfsResult
           this.state.contract.methods.mint(mintItem).send({ from: this.state.account}).once('receipt', (receipt) => {
             download(pdfBytes, "Certificate", "application/pdf");
-
             let timer = setTimeout(()=>{
               this.handleCheckBar(58,75);
               let timer1 = setTimeout(()=>{
@@ -430,7 +429,7 @@ class App extends Component {
               },1000)
               return clearTimeout(timer)
             },1000)
-            var result = {transactionHash: receipt.transactionHash, blockNumber: receipt.blockNumber}
+            var result = {transactionHash: receipt.transactionHash, blockNumber: receipt.blockNumber,fileName: this.state.fileName,fileDescription: this.state.description, fileOwner: this.state.account, initialFile: url, certificateFile: ipfsResult,date: new Date()}
             this.setState({
               transactionData: [mintItem,...this.state.transactionData],
               transaction:[result, ...this.state.transaction],
