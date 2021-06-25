@@ -112,9 +112,3 @@
     color: black;
     border-radius: 100px;
 }
-
-a:visited {
-    color: pink;
-    background-color: transparent;
-    text-decoration: none;
-}

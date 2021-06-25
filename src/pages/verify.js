@@ -176,7 +176,7 @@ class Verify extends Component {
         </div>
         <div className = "txDetailText" style ={{top: "340px", fontWeight: "bold", fontSize: "18px", color: "#3BCCFA"}}>File name: {this.state.transactionFileName}</div>
         <div className = "txDetailText" style ={{top: "375px"}}>Description: {this.state.transactionDescription}</div>
-        <div className = "txDetailText" style ={{top: "410px"}}>Tx Hash: {this.state.transactionHash}</div>
+        <a className = "txDetailText" style ={{top: "410px"}} target="_blank" rel="noopener noreferrer" href={'https://testnet.bscscan.com/tx/' + this.state.urlLoad[1]} >Tx Hash: {this.state.transactionHash}</a>
         <div className = "txDetailText" style ={{top: "445px"}}>Block Number: {this.state.urlLoad[2]}</div>
 
         <div className = "verifyButton" onClick = {(() => this.handleVerify())}>

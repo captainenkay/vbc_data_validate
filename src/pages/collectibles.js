@@ -13,6 +13,7 @@ import closeAlert from "./../assets/closeAlert.png"
 import {Link} from "react-router-dom"
 import {Row, Col, Card, UncontrolledCollapse} from "reactstrap"
 import QRCode from "react-qr-code"
+import * as htmlToImage from "html-to-image"
 
 
 class Collectibles extends Component {
@@ -85,7 +86,8 @@ class Collectibles extends Component {
       haveCollectibles: false,
       connected: false,
       isShare: false,
-      linkQR: ''
+      linkQR: '',
+      link: ''
     }
     this.toggle = this.toggle.bind(this);
   }
@@ -122,9 +124,23 @@ class Collectibles extends Component {
     }
   }
 
+  handleDownloadQRCode = (event) =>{
+    event.preventDefault()
+
+    htmlToImage.toJpeg(document.getElementById('qrcode'))
+    .then(function (dataUrl) {
+      console.log(dataUrl)
+      var link = document.createElement('a');
+      link.download = 'QR_Code.jpeg';
+      link.href = dataUrl;
+      link.click();
+    });
+
+  }
+
   render(){
     return (
-      <div style = {{width: "100%", background: "black"}}>
+      <div style = {{width: "1440px", background: "black"}}>
         <img style = {{width: "159px",height: "39px",marginLeft: "75px", marginTop: "18px"}} src = {logoVBC} alt="logo VBC"/>
 
         {/* Home Button */}
@@ -178,7 +194,7 @@ class Collectibles extends Component {
 
                         <UncontrolledCollapse toggler={"#toggler" + key}>
                           <div className = "detailBackground"/>
-                          <div className = "date">Posted in {transaction.date.slice(8,10)} / {transaction.date.slice(5,7)} / {transaction.date.slice(0,4)}</div>
+                          <div className = "date">Minted in {transaction.date.slice(8,10)} / {transaction.date.slice(5,7)} / {transaction.date.slice(0,4)}</div>
                           <div className = "detailText">{transaction.fileDescription}</div>
                         </UncontrolledCollapse>
                       </div>
@@ -200,7 +216,7 @@ class Collectibles extends Component {
                                 
                         <UncontrolledCollapse toggler={"#toggler"+ key}>
                           <div className = "detailBackground"/>
-                          <div className = "date">Posted in {transaction.date.slice(8,10)} / {transaction.date.slice(5,7)} / {transaction.date.slice(0,4)}</div>
+                          <div className = "date">Minted in {transaction.date.slice(8,10)} / {transaction.date.slice(5,7)} / {transaction.date.slice(0,4)}</div>
                           <div className = "detailText">{transaction.fileDescription}</div>
                         </UncontrolledCollapse>
                       </Card>
@@ -218,7 +234,7 @@ class Collectibles extends Component {
         </div> 
         : 
         <div>
-          <div style= {{width: "100%", height: "380px"}}> 
+          <div style= {{width: "1440px", height: "380px"}}> 
             <div style= {{textAlign: "center", color: "#ffffff"}}>You dont have any collectibles </div>
           </div>
           <div className="collectiblesFooter"/>
@@ -227,11 +243,18 @@ class Collectibles extends Component {
         {this.state.isShare ? 
         <div>
           <div className = "shareBackground">
-            <img class = "closeButton" style = {{left: "1220px",top: "40px"}} src = {closeAlert} alt="Close alert button" onClick = {this.handleRefresh}/>
-            <QRCode
-            value = {this.handleURL()}
-            size = {200}
-            />
+            <img class = "closeButton" style = {{left: "350px",top: "20px"}} src = {closeAlert} alt="Close alert button" onClick = {this.handleRefresh}/>
+            <div style = {{position: "absolute",left: "85px",top: "50px",width: "230px",height: "230px",backgroundColor: "#ffffff",borderRadius: "15px",borderStyle: "solid",borderColor: "black"}}>
+             <div id = "qrcode" style = {{padding: "12px 12px", backgroundColor: 'white',borderRadius: "15px"}}>
+                <QRCode style ={{justifyContent: "center", alignItems: "center"}} value = {this.handleURL()} size = {200}/>
+              </div>
+            </div>
+            <div className = "linkQRBackground">
+              <div className = "qrText">{this.handleURL().slice(0,71) + "..."}</div>
+            </div>
+            <div className = "qrSave">
+              <div className = "qrSaveText" onClick = {this.handleDownloadQRCode}>SAVE QR CODE</div>
+            </div>
           </div>
         </div> 
         : 
