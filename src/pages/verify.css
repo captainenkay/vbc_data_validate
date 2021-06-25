@@ -1,11 +1,16 @@
+body{
+    background-image: url("./../assets/backgroundImage.png");
+}
+
 .edited-container {
     overflow: hidden;
     position: relative;
 
-    top: 20px;
-    left: 56px;
-    width: 300px;
-    height: 300px;
+    margin-left: 25%;
+    margin-top: 5%;
+
+    width: 50%;
+    height: 35%;
     border-radius: 15px;
 
     mix-blend-mode: normal;
@@ -15,16 +20,18 @@
     display: block;
     width: 100%;
     height: auto;
-    position: absolute;
-    top: 0;
  }
 
+a:link, a:visited {
+    color: white;
+}
+
 .verifyButton{
-    position: absolute;
-    width: 130px;
+    margin-left: 35%;
+    margin-top: 5%;
+    width: 30%;
     height: 38px;
-    left: 141px;
-    top: 485px;
+    
 
     background: rgba(255, 255, 255, 0.7);
     mix-blend-mode: screen;
@@ -36,79 +43,406 @@
 }
 
 .verifyText{
-    position: absolute;
-    width: 88px;
-    height: 22px;
-    left: 20px;
-    top: 7px;
+    width: 100%;
+    height: 100%;
     
     font-family: Open Sans;
     font-style: normal;
     font-weight: 600;
     font-size: 16px;
     line-height: 22px;
-    /* identical to box height */
     
-    text-align: center;
-    
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
     color: #052D79;
 }
 
 .verifyBackground{
-    position: absolute;
-    top: 20px;
-    left: 56px;
-    width: 300px;
-    height: 300px;
+    margin-left: 20%;
+    margin-top: 5%;
+
+    width: 60%;
+    height: 35%;
     border-radius: 15px;
 
-    background: #FFFFFF;
-}
-
-.txDetailText{
-    position: absolute;
-    left: 66px;
-    max-width: 300px;
-
-    font-family: Open Sans;
-    font-style: normal;
-    font-weight: normal;
-    font-size: 14px;
-    line-height: 19px;
-
-    color: #ffffff
-}
-
-.verifyAlertText{
-    position: absolute;
-    height: 19px;
-    left: 80px;
-
-    font-family: Open Sans;
-    font-style: normal;
-    font-weight: normal;
-    font-size: 14px;
-    line-height: 19px;
-    /* identical to box height */
-
+    background: #ffffff;
     display: flex;
+    position: relative;
     align-items: center;
-
-    color: #000000;
 }
 
-.VerifyProgress{
+.verifyCloseButton{
+    right: 10px;
+    top: 10px;
+    height: 8%;
+    width: auto;
     position: absolute;
-    width: 13px;
-    height: 200px;
-    left: 36px;
-    top: 31px;
 }
 
-.VerifyProgressBar{
-    height: 0%;
+.verifyProgress{
+    margin-left: 8%;
+    width: 3%;
+    height: 70%;
+}
+
+.verifyProgressBar{
+    height: 0;
     width: 100%;
     background: linear-gradient(179.95deg, #23B1EE -3.46%, #F84949 112.7%);
-    color: black;
     border-radius: 100px;
+}
+
+.verifyDetail{
+    margin-left: 10%;
+    height: 70%;
+}
+
+@media (width: 1440px) {
+    .txDetailFileName{
+        margin-left: 20%;
+        margin-top: 3%;
+        width: 70%;
+    
+        font-family: Open Sans;
+        font-style: normal;
+        font-weight: bold;
+        font-size: 140%;
+        line-height: 19px;
+    
+        color: #3BCCFA
+    }
+    .txDetailText{
+        margin-left: 20%;
+        margin-top: 3%;
+        width: 70%;
+    
+        font-family: Open Sans;
+        font-style: normal;
+        font-weight: normal;
+        font-size: 100%;
+        line-height: 19px;
+    
+        color: #ffffff
+    }
+
+    .verifyAlertText1{
+        font-family: Open Sans;
+        font-style: normal;
+        font-weight: normal;
+        font-size: 100%;
+        line-height: 19px;
+    
+        display: flex;
+        align-items: center;
+    
+        color: #000000;
+    }
+
+    .verifyAlertText2{
+        font-family: Open Sans;
+        font-style: normal;
+        font-weight: normal;
+        font-size: 100%;
+        line-height: 19px;
+    
+        display: flex;
+        align-items: center;
+        padding-top: 32%;
+    
+        color: #000000;
+    }
+
+    .verifyAlertText3{
+        font-family: Open Sans;
+        font-style: normal;
+        font-weight: normal;
+        font-size: 100%;
+        line-height: 19px;
+    
+        display: flex;
+        align-items: center;
+        padding-top: 25%;
+    
+        color: #000000;
+    }
+
+    .verifyAlertText4{
+        font-family: Open Sans;
+        font-style: normal;
+        font-weight: normal;
+        font-size: 100%;
+        line-height: 19px;
+    
+        display: flex;
+        align-items: center;
+        padding-top: 11%;
+    
+        color: #000000;
+    }
+
+    .verifyAlertText5{
+        font-family: Open Sans;
+        font-style: normal;
+        font-size: 100%;
+        line-height: 19px;
+    
+        display: flex;
+        align-items: center;
+        padding-top: 90%;
+    
+        color: #000000;
+    }
+
+   .checkBoxVerify1{
+        position: absolute;
+        left: 64px;
+        top: 40px;
+        height: 35px;
+   }
+   .checkBoxVerify2{
+        position: absolute;
+        left: 64px;
+        top: 125px;
+        height: 35px;
+   }
+   .checkBoxVerify3{
+        position: absolute;
+        left: 64px;
+        top: 218px;
+        height: 35px;
+   }
+}
+
+@media (width: 1024px) {
+    .txDetailFileName{
+        margin-left: 20%;
+        margin-top: 3%;
+        width: 70%;
+    
+        font-family: Open Sans;
+        font-style: normal;
+        font-weight: bold;
+        font-size: 120%;
+        line-height: 19px;
+    
+        color: #3BCCFA
+    }
+    .txDetailText{
+        margin-left: 20%;
+        margin-top: 3%;
+        width: 70%;
+    
+        font-family: Open Sans;
+        font-style: normal;
+        font-weight: normal;
+        font-size: 90%;
+        line-height: 19px;
+    
+        color: #ffffff
+    }
+
+    .verifyAlertText1{
+        font-family: Open Sans;
+        font-style: normal;
+        font-weight: normal;
+        font-size: 90%;
+        line-height: 19px;
+    
+        display: flex;
+        align-items: center;
+    
+        color: #000000;
+    }
+
+    .verifyAlertText2{
+        font-family: Open Sans;
+        font-style: normal;
+        font-weight: normal;
+        font-size: 90%;
+        line-height: 19px;
+    
+        display: flex;
+        align-items: center;
+        padding-top: 32%;
+    
+        color: #000000;
+    }
+
+    .verifyAlertText3{
+        font-family: Open Sans;
+        font-style: normal;
+        font-weight: normal;
+        font-size: 90%;
+        line-height: 19px;
+    
+        display: flex;
+        align-items: center;
+        padding-top: 21%;
+    
+        color: #000000;
+    }
+
+    .verifyAlertText4{
+        font-family: Open Sans;
+        font-style: normal;
+        font-weight: normal;
+        font-size: 90%;
+        line-height: 19px;
+    
+        display: flex;
+        align-items: center;
+        padding-top: 11%;
+    
+        color: #000000;
+    }
+
+    .verifyAlertText5{
+        font-family: Open Sans;
+        font-style: normal;
+        font-size: 90%;
+        line-height: 19px;
+    
+        display: flex;
+        align-items: center;
+        padding-top: 80%;
+    
+        color: #000000;
+    }
+
+   .checkBoxVerify1{
+        position: absolute;
+        left: 45px;
+        top: 35px;
+        height: 26px;
+   }
+   .checkBoxVerify2{
+        position: absolute;
+        left: 45px;
+        top: 112px;
+        height: 26px;
+   }
+   .checkBoxVerify3{
+        position: absolute;
+        left: 45px;
+        top: 185px;
+        height: 26px;
+   }
+}
+
+@media (width: 412px) {
+    .txDetailFileName{
+        margin-left: 20%;
+        margin-top: 3%;
+        width: 70%;
+    
+        font-family: Open Sans;
+        font-style: normal;
+        font-weight: bold;
+        font-size: 100%;
+        line-height: 19px;
+    
+        color: #3BCCFA
+    }
+    .txDetailText{
+        margin-left: 20%;
+        margin-top: 3%;
+        width: 70%;
+    
+        font-family: Open Sans;
+        font-style: normal;
+        font-weight: normal;
+        font-size: 75%;
+        line-height: 19px;
+    
+        color: #ffffff
+    }
+
+    .verifyAlertText1{
+        font-family: Open Sans;
+        font-style: normal;
+        font-weight: normal;
+        font-size: 75%;
+        line-height: 19px;
+    
+        display: flex;
+        align-items: center;
+    
+        color: #000000;
+    }
+
+    .verifyAlertText2{
+        font-family: Open Sans;
+        font-style: normal;
+        font-weight: normal;
+        font-size: 75%;
+        line-height: 19px;
+    
+        display: flex;
+        align-items: center;
+        padding-top: 34%;
+    
+        color: #000000;
+    }
+
+    .verifyAlertText3{
+        font-family: Open Sans;
+        font-style: normal;
+        font-weight: normal;
+        font-size: 75%;
+        line-height: 19px;
+    
+        display: flex;
+        align-items: center;
+        padding-top: 28%;
+    
+        color: #000000;
+    }
+
+    .verifyAlertText4{
+        font-family: Open Sans;
+        font-style: normal;
+        font-weight: normal;
+        font-size: 75%;
+        line-height: 19px;
+    
+        display: flex;
+        align-items: center;
+        padding-top: 30%;
+    
+        color: #000000;
+    }
+
+    .verifyAlertText5{
+        font-family: Open Sans;
+        font-style: normal;
+        font-size: 75%;
+        line-height: 19px;
+    
+        display: flex;
+        align-items: center;
+        padding-top: 103%;
+    
+        color: #000000;
+    }
+
+   .checkBoxVerify1{
+        position: absolute;
+        left: 14px;
+        top: 37px;
+        height: 20px;
+   }
+   .checkBoxVerify2{
+        position: absolute;
+        left: 14px;
+        top: 114px;
+        height: 20px;
+   }
+   .checkBoxVerify3{
+        position: absolute;
+        left: 14px;
+        top: 198px;
+        height: 20px;
+   }
 }

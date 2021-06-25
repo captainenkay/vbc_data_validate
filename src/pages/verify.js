@@ -1,5 +1,5 @@
 import { Component } from 'react';
-import "./../App.css"
+// import "./../App.css"
 import "./verify.css"
 import closeAlert from "./../assets/closeAlert.png"
 import Web3 from "web3"
@@ -16,7 +16,8 @@ class Verify extends Component {
     await this.loadBlockchainData()
     await this.handleTxFileName()
     await this.handleTxDescription()
-    await this.handletransactionData()
+    await this.handleTxData()
+    await this.handleTxOwner()
   }
 
   async loadData(){
@@ -59,6 +60,13 @@ class Verify extends Component {
     }
   }
 
+  componentDidMount(){
+    window.ethereum.on('accountsChanged', function (accounts){
+      localStorage.setItem('address', accounts[0])
+      window.location.reload()
+    });
+  }
+
   constructor(props){
     super(props)
     this.state = {
@@ -69,16 +77,19 @@ class Verify extends Component {
         transactionHash: '',
         transactionDescription: '',
         transactionFileName: '',
+        transactionOwner: '',
         owner: '',
         successAlert: false,
         failAlert: false,
         barHeight: 0,
+        verifyEndTrue: false,
+        verifyEndFalse: false,
     }
   }
 
   handleCheckBar(min, max){
     if (this.state.barHeight >= 99) return
-    var elem = document.getElementsByClassName("VerifyProgressBar");
+    var elem = document.getElementsByClassName("verifyProgressBar");
     var height = min;
     var id = setInterval(() => {
       if(height >= max){
@@ -95,28 +106,30 @@ class Verify extends Component {
   async handleVerify(){
     this.setState({isVerify: true})
     if (this.state.urlLoad[5] === this.state.transactionData[2] && this.state.urlLoad[7] === this.state.transactionData[3]){
-      this.handleCheckBar(0,6)
+      this.handleCheckBar(0,8)
       if(this.state.owner === this.state.account){
         this.setState({successAlert: true})
         let timer = await setTimeout(()=>{
-          this.handleCheckBar(6,50);
+          this.handleCheckBar(8,55);
           let timer1 = setTimeout(()=>{
-           this.handleCheckBar(50,100)
+           this.handleCheckBar(55,100)
            return clearTimeout(timer1);
           },1000)
           return clearTimeout(timer)
         },1000)
+        this.setState({verifyEndTrue: true})
         return
       }
       this.setState({failAlert: true})
       let timer = await setTimeout(()=>{
-        this.handleCheckBar(6,50);
+        this.handleCheckBar(8,55);
         let timer1 = setTimeout(()=>{
-         this.handleCheckBar(50,100)
+         this.handleCheckBar(55,100)
          return clearTimeout(timer1);
         },1000)
         return clearTimeout(timer)
       },1000)
+      this.setState({verifyEndFalse: true})
       return
     }
     this.setState({hashFailAlert: true})
@@ -143,75 +156,101 @@ class Verify extends Component {
       return
     }
 
-    if (this.state.urlLoad[4].length > 15){
+    if (window.innerWidth < 1024){
+      if (this.state.urlLoad[4].length < 15){
+        this.setState({transactionFileName: this.state.urlLoad[4].toLowerCase()})
+        return
+      }
       this.setState({transactionFileName: this.state.urlLoad[4].slice(0,10).toLowerCase() + '... .' + this.state.urlLoad[4].split('.').pop().toLowerCase()})
+      return
     }
-    else {
-      this.setState({transactionFileName: this.state.urlLoad[4].toLowerCase()})
-    }
+    this.setState({transactionFileName: this.state.urlLoad[4].toLowerCase()})
   }
 
   async handleTxDescription(){
-    if (this.state.urlLoad[6].length > 20){
+    if (window.innerWidth < 1024){
       this.setState({transactionDescription: this.state.urlLoad[6].slice(0,20).toLowerCase() + '...'})
+      return
     }
-    else {
-      this.setState({transactionDescription: this.state.urlLoad[6].toLowerCase()})
-    }
+    this.setState({transactionDescription: this.state.urlLoad[6].toLowerCase()})
   }
 
-  async handletransactionData(){
+  async handleTxOwner(){
+    if (window.innerWidth < 1024){
+      this.setState({transactionOwner: this.state.owner.slice(0,18) + '...' + this.state.owner.slice(38,42)})
+      return
+    }
+    this.setState({transactionOwner: this.state.owner})
+  }
+
+  async handleTxData(){
     if (this.state.urlLoad[1] === ""){
       alert("This is an invalid url")
       return
     }
-    this.setState({transactionHash: this.state.urlLoad[1].slice(0,18) + '...' + this.state.urlLoad[1].slice(60,66)})
+    if (window.innerWidth < 1024){
+      this.setState({transactionHash: this.state.urlLoad[1].slice(0,18) + '...' + this.state.urlLoad[1].slice(60,66)})
+      return
+    }
+    this.setState({transactionHash: this.state.urlLoad[1]})
   }
 
   render(){
     return (
-      <div className = "fullPage" style = {{width: "412px" ,height:"652px"}}>
+      <div id = "screen" style ={{height: "100vh", width: "100%"}}>
         <div class="edited-container">
           <img class="edited" src={this.state.urlLoad[5]} alt = "source"/>
         </div>
-        <div className = "txDetailText" style ={{top: "340px", fontWeight: "bold", fontSize: "18px", color: "#3BCCFA"}}>File name: {this.state.transactionFileName}</div>
-        <div className = "txDetailText" style ={{top: "375px"}}>Description: {this.state.transactionDescription}</div>
-        <a className = "txDetailText" style ={{top: "410px"}} target="_blank" rel="noopener noreferrer" href={'https://testnet.bscscan.com/tx/' + this.state.urlLoad[1]} >Tx Hash: {this.state.transactionHash}</a>
-        <div className = "txDetailText" style ={{top: "445px"}}>Block Number: {this.state.urlLoad[2]}</div>
-
-        <div className = "verifyButton" onClick = {(() => this.handleVerify())}>
-          <div className = "verifyText"> Verify</div>
+        <div className = "txDetailFileName">File name: {this.state.transactionFileName}</div>
+        {this.state.verifyEndTrue ?
+        <div className = "txDetailText" style = {{color: "green" , fontWeight: "bold"}}>File owner: {this.state.transactionOwner}</div>
+        :
+        <div/>
+        }
+        {this.state.verifyEndFalse ?
+        <div className = "txDetailText" style = {{color: "red" , fontWeight: "bold"}}>File owner: {this.state.transactionOwner}</div>
+        :
+        <div/>
+        }
+        <div className = "txDetailText">Description: {this.state.transactionDescription}</div>
+        <div className = "txDetailText">
+          <a target="_blank" rel="noopener noreferrer" href={'https://testnet.bscscan.com/tx/' + this.state.urlLoad[1]}>
+          Tx Hash: {this.state.transactionHash}
+          </a>
         </div>
+        <div className = "txDetailText">Block Number: {this.state.urlLoad[2]}</div>
+        
         {this.state.isVerify? 
-        <div>
+        <div style = {{width: "100%", height: "100%"}}>
           <div className = "verifyBackground">
-            <img class = "closeButton" style = {{left: "270px",top: "5px"}} src = {closeAlert} alt="Close alert button" onClick = {this.handleRefresh}/>
+            <img class = "verifyCloseButton" src = {closeAlert} alt="Close alert button" onClick = {this.handleRefresh}/>
+            <div className="verifyProgress">
+              <div className="verifyProgressBar"/>
+            </div>
             {this.state.successAlert? 
-            <div>
-              <div className="VerifyProgress">
-                  <div className="VerifyProgressBar"/>
-              </div>
-
-              {this.state.barHeight >= 6 ?
+            <div className = "verifyDetail">
+              {this.state.barHeight >= 8 ?
               <div>
-                <div className = "verifyAlertText" style= {{top: "30px"}}>Valid hash & valid certificate</div>
-                <img style = {{position: "absolute",width: "26px;",height: "26px",left: "30px",top: "30px"}} src = {checkIcon} alt="Check Icon"/>
+                <div className = "verifyAlertText1">Valid hash & valid certificate</div>
+                <img className='checkBoxVerify1' src = {checkIcon} alt="Check Icon"/>
               </div> 
               : 
               <div/>}
 
-              {this.state.barHeight >= 50 ?
+              {this.state.barHeight === 55 ?
               <div>
-                <div className = "verifyAlertText" style= {{top: "115px"}}>Valid owner address</div>
-                <img style = {{position: "absolute",width: "26px;",height: "26px",left: "30px",top: "115px"}} src = {checkIcon} alt="Check Icon"/>
+                <div className = "verifyAlertText2">Valid owner address</div>
+                <img className = "checkBoxVerify2" src = {checkIcon} alt="Check Icon"/>
               </div> 
               : 
               <div/>}
 
               {this.state.barHeight >= 100 ?
               <div>
-                <div className = "verifyAlertText" style= {{top: "215px"}}>You are the owner of this collectible</div>
-                <img style = {{position: "absolute",width: "26px;",height: "26px",left: "30px",top: "215px"}} src = {checkIcon} alt="Check Icon"/>
+                <div className = "verifyAlertText3">Valid owner address</div>
+                <img className = "checkBoxVerify2" src = {checkIcon} alt="Check Icon"/>
+                <div className = "verifyAlertText3" style ={{color: "#1FA7EA", fontWeight: "bold"}}>You are the owner of this collectible</div>
+                <img className = "checkBoxVerify3" src = {checkIcon} alt="Check Icon"/>
               </div> 
               : 
               <div/>}
@@ -220,31 +259,29 @@ class Verify extends Component {
             <div/>}
 
             {this.state.failAlert? 
+            <div className = "verifyDetail">
+              {this.state.barHeight >= 8 ?
               <div>
-              <div className="VerifyProgress">
-                  <div className="VerifyProgressBar"/>
-              </div>
-
-              {this.state.barHeight >= 6 ?
-              <div>
-                <div className = "verifyAlertText" style= {{top: "30px"}}>Valid hash & valid certificate</div>
-                <img style = {{position: "absolute",width: "26px;",height: "26px",left: "30px",top: "30px"}} src = {checkIcon} alt="Check Icon"/>
+                <div className = "verifyAlertText1">Valid hash & valid certificate</div>
+                <img className='checkBoxVerify1' src = {checkIcon} alt="Check Icon"/>
               </div> 
               : 
               <div/>}
 
-              {this.state.barHeight >= 50 ?
+              {this.state.barHeight === 55 ?
               <div>
-                <div className = "verifyAlertText" style= {{top: "115px"}}>Invalid owner address</div>
-                <img style = {{position: "absolute",width: "26px;",height: "26px",left: "30px",top: "115px"}} src = {crossIcon} alt="Cross Icon"/>
+                <div className = "verifyAlertText2" style = {{color: "#F84949"}}>Invalid owner address</div>
+                <img className = "checkBoxVerify2" src = {crossIcon} alt="Cross Icon"/>
               </div> 
               : 
               <div/>}
 
               {this.state.barHeight >= 100 ?
               <div>
-                <div className = "verifyAlertText" style= {{top: "215px"}}>The owner of this collectible: {this.state.owner.slice(0,18) + '...' + this.state.owner.slice(38,42)}</div>
-                <img style = {{position: "absolute",width: "26px;",height: "26px",left: "30px",top: "215px"}} src = {crossIcon} alt="Cross Icon"/>
+                <div className = "verifyAlertText4" style = {{color: "#F84949"}}>Invalid owner address</div>
+                <img className = "checkBoxVerify2" src = {crossIcon} alt="Cross Icon"/>
+                <div className = "verifyAlertText4">The owner of this collectible is {this.state.transactionOwner}</div>
+                <img className = "checkBoxVerify3" src = {crossIcon} alt="Cross Icon"/>
               </div> 
               : 
               <div/>}
@@ -253,34 +290,35 @@ class Verify extends Component {
             <div/>}
 
             {this.state.hashFailAlert?
-            <div>
-            <div className="VerifyProgress">
-                <div className="VerifyProgressBar"/>
-            </div>
+            <div className = "verifyDetail">
+              {this.state.barHeight >= 6 ?
+              <div>
+                <div className = "verifyAlertText1" style = {{color: "#F84949"}}>Invalid hash</div>
+                <img className='checkBoxVerify1' src = {crossIcon} alt="Cross Icon"/>
+              </div> 
+              : 
+              <div/>}
 
-            {this.state.barHeight >= 6 ?
-            <div>
-              <div className = "verifyAlertText" style= {{top: "30px"}}>Invalid hash</div>
-              <img style = {{position: "absolute",width: "26px;",height: "26px",left: "30px",top: "30px"}} src = {crossIcon} alt="Cross Icon"/>
+              {this.state.barHeight >= 100 ?
+              <div>
+                <div className = "verifyAlertText5" style ={{color: "#F84949", fontWeight:"bold"}}>This is not a valid hash</div>
+                <img className='checkBoxVerify3' src = {crossIcon} alt="Cross Icon"/>
+              </div> 
+              : 
+              <div/>}
             </div> 
             : 
             <div/>}
-
-            {this.state.barHeight >= 100 ?
-            <div>
-              <div className = "verifyAlertText" style= {{top: "215px"}}>This is not a valid hash</div>
-              <img style = {{position: "absolute",width: "26px;",height: "26px",left: "30px",top: "215px"}} src = {crossIcon} alt="Cross Icon"/>
-            </div> 
-            : 
-            <div/>}
-          </div> 
-          : 
-          <div/>}
 
           </div>
         </div> 
         : 
-        <div/>}
+        <div>
+          <div className = "verifyButton" onClick = {(() => this.handleVerify())}>
+            <div className = "verifyText"> Verify</div>
+          </div>
+        </div>
+        }
       </div>
     );
   }
