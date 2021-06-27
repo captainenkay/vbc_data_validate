@@ -51,10 +51,12 @@ class App extends Component {
   }
 
   componentDidMount(){
-    window.ethereum.on('accountsChanged', function (accounts){
-      localStorage.setItem('address', accounts[0])
-      window.location.reload()
-    });
+    if (window.ethereum){
+      window.ethereum.on('accountsChanged', function (accounts){
+        localStorage.setItem('address', accounts[0])
+        window.location.reload()
+      });
+    }
   }
 
   async loadWeb3() {
@@ -71,8 +73,8 @@ class App extends Component {
   }
 
   async loadStorage(){
-    if (JSON.parse(localStorage.getItem('Transaction')) != null){
-      this.setState({transaction: JSON.parse(localStorage.getItem('Transaction'))})
+    if (JSON.parse(localStorage.getItem('transaction')) != null){
+      this.setState({transaction: JSON.parse(localStorage.getItem('transaction'))})
     }
 
     if (localStorage.getItem('verifiedFiles') != null){
@@ -359,7 +361,7 @@ class App extends Component {
         const pages = await pdfDoc.getPages()
         const firstPage = pages[0]
 
-        firstPage.drawText('http://192.168.123.208:3000/', {
+        firstPage.drawText('http://192.168.1.8:3000/', {
           x: 350,
           y: 20,
           size: 16,
@@ -396,7 +398,7 @@ class App extends Component {
             A: {
               Type: 'Action',
               S: 'URI',
-              URI: PDFString.of('http://192.168.123.208:3000/'),
+              URI: PDFString.of('http://192.168.1.8:3000/'),
             },
           }),
         );
@@ -436,7 +438,7 @@ class App extends Component {
               successAlert: true,
               transactionLink: receipt.transactionHash,
             })
-            localStorage.setItem('Transaction', JSON.stringify(this.state.transaction))
+            localStorage.setItem('transaction', JSON.stringify(this.state.transaction))
           })
         })
       })
@@ -496,7 +498,6 @@ class App extends Component {
         <div className = "number" style ={{left: "1004px"}}>{this.state.connectedAddress.length}</div>
         <div className = "text" style ={{left: "1004px"}}>Connected Address</div>
         <div className="footer"/>
-
 
         <img style = {{position: "absolute", width: "159px",height: "39px",left: "75px",top: "18px"}} src = {logoVBC} alt="logo VBC"/>
 

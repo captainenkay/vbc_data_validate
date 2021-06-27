@@ -31,10 +31,12 @@ class About extends Component {
   }
 
   componentDidMount(){
-    window.ethereum.on('accountsChanged', function (accounts) {
-      localStorage.setItem('address', accounts[0])
-      window.location.reload()
-    });
+    if (window.ethereum){
+      window.ethereum.on('accountsChanged', function (accounts) {
+        localStorage.setItem('address', accounts[0])
+        window.location.reload()
+      });
+    }
   }
 
   async loadStorage(){

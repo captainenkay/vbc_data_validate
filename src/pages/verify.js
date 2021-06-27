@@ -1,11 +1,12 @@
 import { Component } from 'react';
-// import "./../App.css"
 import "./verify.css"
 import closeAlert from "./../assets/closeAlert.png"
 import Web3 from "web3"
 import DataValidate from './../abis/DataValidate.json'
 import checkIcon from "./../assets/checkIcon.png"
 import crossIcon from "./../assets/crossIcon.png"
+import logoVBC from "./../assets/logoVBC.png"
+
 
 
 
@@ -13,7 +14,7 @@ class Verify extends Component {
   async componentWillMount(){
     await this.loadData()
     await this.loadWeb3()
-    await this.loadBlockchainData()
+    // await this.loadBlockchainData()
     await this.handleTxFileName()
     await this.handleTxDescription()
     await this.handleTxData()
@@ -61,10 +62,12 @@ class Verify extends Component {
   }
 
   componentDidMount(){
-    window.ethereum.on('accountsChanged', function (accounts){
-      localStorage.setItem('address', accounts[0])
-      window.location.reload()
-    });
+    if (window.ethereum){
+      window.ethereum.on('accountsChanged', function (accounts){
+        localStorage.setItem('address', accounts[0])
+        window.location.reload()
+      });
+    }
   }
 
   constructor(props){
@@ -103,6 +106,11 @@ class Verify extends Component {
     } , 20);
   }
 
+  async handleVerifyAgain(){
+    await this.handleRefresh()
+    await this.handleVerify()
+  }
+
   async handleVerify(){
     this.setState({isVerify: true})
     if (this.state.urlLoad[5] === this.state.transactionData[2] && this.state.urlLoad[7] === this.state.transactionData[3]){
@@ -110,26 +118,30 @@ class Verify extends Component {
       if(this.state.owner === this.state.account){
         this.setState({successAlert: true})
         let timer = await setTimeout(()=>{
-          this.handleCheckBar(8,55);
+          this.handleCheckBar(8,54);
           let timer1 = setTimeout(()=>{
-           this.handleCheckBar(55,100)
+           this.handleCheckBar(54,100)
            return clearTimeout(timer1);
           },1000)
           return clearTimeout(timer)
         },1000)
-        this.setState({verifyEndTrue: true})
+        await setTimeout(()=>{
+          this.setState({verifyEndTrue: true})
+        },3000)
         return
       }
       this.setState({failAlert: true})
       let timer = await setTimeout(()=>{
-        this.handleCheckBar(8,55);
+        this.handleCheckBar(8,54);
         let timer1 = setTimeout(()=>{
-         this.handleCheckBar(55,100)
+         this.handleCheckBar(54,100)
          return clearTimeout(timer1);
         },1000)
         return clearTimeout(timer)
       },1000)
-      this.setState({verifyEndFalse: true})
+      await setTimeout(()=>{
+        this.setState({verifyEndFalse: true})
+      },3000)
       return
     }
     this.setState({hashFailAlert: true})
@@ -145,9 +157,8 @@ class Verify extends Component {
   }
     
 
-  handleRefresh = (event) => {
-    event.preventDefault()
-    this.setState({isVerify: false,successAlert: false, failAlert: false, barHeight: 0})
+  handleRefresh = () => {
+    this.setState({isVerify: false, successAlert: false, failAlert: false, barHeight: 0})
   }
 
   async handleTxFileName(){
@@ -201,6 +212,7 @@ class Verify extends Component {
         <div class="edited-container">
           <img class="edited" src={this.state.urlLoad[5]} alt = "source"/>
         </div>
+        <img className = "applicationLogo" src = {logoVBC} alt="logo VBC"/>
         <div className = "txDetailFileName">File name: {this.state.transactionFileName}</div>
         {this.state.verifyEndTrue ?
         <div className = "txDetailText" style = {{color: "green" , fontWeight: "bold"}}>File owner: {this.state.transactionOwner}</div>
@@ -223,7 +235,7 @@ class Verify extends Component {
         {this.state.isVerify? 
         <div style = {{width: "100%", height: "100%"}}>
           <div className = "verifyBackground">
-            <img class = "verifyCloseButton" src = {closeAlert} alt="Close alert button" onClick = {this.handleRefresh}/>
+            <img class = "verifyCloseButton" src = {closeAlert} alt = "Close alert button" onClick = {this.handleRefresh}/>
             <div className="verifyProgress">
               <div className="verifyProgressBar"/>
             </div>
@@ -237,7 +249,7 @@ class Verify extends Component {
               : 
               <div/>}
 
-              {this.state.barHeight === 55 ?
+              {this.state.barHeight === 54 ?
               <div>
                 <div className = "verifyAlertText2">Valid owner address</div>
                 <img className = "checkBoxVerify2" src = {checkIcon} alt="Check Icon"/>
@@ -268,7 +280,7 @@ class Verify extends Component {
               : 
               <div/>}
 
-              {this.state.barHeight === 55 ?
+              {this.state.barHeight === 54 ?
               <div>
                 <div className = "verifyAlertText2" style = {{color: "#F84949"}}>Invalid owner address</div>
                 <img className = "checkBoxVerify2" src = {crossIcon} alt="Cross Icon"/>
@@ -309,13 +321,15 @@ class Verify extends Component {
             </div> 
             : 
             <div/>}
-
           </div>
         </div> 
         : 
         <div>
           <div className = "verifyButton" onClick = {(() => this.handleVerify())}>
-            <div className = "verifyText"> Verify</div>
+            {this.state.verifyEndTrue || this.state.verifyEndFalse ? 
+            <div className = "verifyText"> Verify again </div>
+            : 
+            <div className = "verifyText"> Verify</div>}
           </div>
         </div>
         }

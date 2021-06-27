@@ -41,15 +41,17 @@ class Collectibles extends Component {
   }
 
   componentDidMount(){
-    window.ethereum.on('accountsChanged', function (accounts) {
-      localStorage.setItem('address', accounts[0])
-      window.location.reload()
-    });
+    if (window.ethereum){
+      window.ethereum.on('accountsChanged', function (accounts) {
+        localStorage.setItem('address', accounts[0])
+        window.location.reload()
+      });
+    }
   }
 
   async loadStorage(){
-    if (localStorage.getItem("Transaction") != null){
-      this.setState({transaction: JSON.parse(localStorage.getItem("Transaction"))})
+    if (localStorage.getItem("transaction") != null){
+      this.setState({transaction: JSON.parse(localStorage.getItem("transaction"))})
     }
     if (localStorage.getItem("address") != null){
       this.setState({account: localStorage.getItem("address")})
@@ -87,7 +89,7 @@ class Collectibles extends Component {
       connected: false,
       isShare: false,
       linkQR: '',
-      link: ''
+      link: '',
     }
     this.toggle = this.toggle.bind(this);
   }
@@ -118,8 +120,8 @@ class Collectibles extends Component {
     for (var i = 0 ; i < this.state.transaction.length; i++ ){
       if (this.state.transaction[i].initialFile === this.state.linkQR){
         var tokenId = this.state.transaction.length - i
-        console.log('http://192.168.123.208:3000/verify#'+ this.state.transaction[i].transactionHash + "#" + this.state.transaction[i].blockNumber + "#" + tokenId + "#" + this.state.transaction[i].fileName + "#" + this.state.transaction[i].initialFile + "#" + this.state.transaction[i].fileDescription + "#" + this.state.transaction[i].certificateFile )
-        return 'http://192.168.123.208:3000/verify#'+ this.state.transaction[i].transactionHash + "#" + this.state.transaction[i].blockNumber + "#" + tokenId + "#" + this.state.transaction[i].fileName + "#" + this.state.transaction[i].initialFile + "#" + this.state.transaction[i].fileDescription + "#" + this.state.transaction[i].certificateFile
+        console.log('http://192.168.1.8:3000/verify#'+ this.state.transaction[i].transactionHash + "#" + this.state.transaction[i].blockNumber + "#" + tokenId + "#" + this.state.transaction[i].fileName + "#" + this.state.transaction[i].initialFile + "#" + this.state.transaction[i].fileDescription + "#" + this.state.transaction[i].certificateFile )
+        return 'http://192.168.1.8:3000/verify#'+ this.state.transaction[i].transactionHash + "#" + this.state.transaction[i].blockNumber + "#" + tokenId + "#" + this.state.transaction[i].fileName + "#" + this.state.transaction[i].initialFile + "#" + this.state.transaction[i].fileDescription + "#" + this.state.transaction[i].certificateFile
       }
     }
   }
@@ -129,13 +131,11 @@ class Collectibles extends Component {
 
     htmlToImage.toJpeg(document.getElementById('qrcode'))
     .then(function (dataUrl) {
-      console.log(dataUrl)
       var link = document.createElement('a');
       link.download = 'QR_Code.jpeg';
       link.href = dataUrl;
       link.click();
     });
-
   }
 
   render(){
