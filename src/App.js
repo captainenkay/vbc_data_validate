@@ -43,7 +43,6 @@ class App extends Component {
     if (window.ethereum){
       await this.loadWeb3()
       await this.loadBlockchainData()
-      await this.handleTxOwner()
     }
     else{
       alert("this device dont have metamask extension")
@@ -195,6 +194,7 @@ class App extends Component {
     reader.onloadend = () => {
       this.setState({buffer: Buffer(reader.result), fileName: file.name, isUploaded: true, fileSize: this.handleFileSize(file.size)})
     }
+
     reader.onerror = () => {
       console.log('file error', reader.error)
     }
@@ -437,7 +437,7 @@ class App extends Component {
               },1000)
               return clearTimeout(timer)
             },1000)
-            var result = {transactionHash: receipt.transactionHash, blockNumber: receipt.blockNumber,fileName: this.state.fileName,fileDescription: this.state.description, fileOwner: this.state.account, initialFile: url, certificateFile: ipfsResult,date: new Date()}
+            var result = {transactionHash: receipt.transactionHash, blockNumber: receipt.blockNumber,fileName: this.state.fileName,fileDescription: this.state.description, fileOwner: this.state.account, initialFile: url, certificateFile: ipfsResult,date: new Date(), tokenID: parseInt(this.state.totalSupply) + 1}
             this.setState({
               transactionData: [mintItem,...this.state.transactionData],
               transaction:[result, ...this.state.transaction],

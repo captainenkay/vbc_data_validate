@@ -6,7 +6,8 @@ import DataValidate from './../abis/DataValidate.json'
 import checkIcon from "./../assets/checkIcon.png"
 import crossIcon from "./../assets/crossIcon.png"
 import logoVBC from "./../assets/logoVBC.png"
-import bigCheckIcon from "./../assets/bigCheckIcon.png"
+import pdfPicture from "./../assets/pdfPicture.png"
+
 
 class Verify extends Component {
   async componentWillMount(){
@@ -39,7 +40,6 @@ class Verify extends Component {
   }
 
   async loadBlockchainData(){
-    this.setState({canVerify: true})
     const web3 = window.web3
     const accounts = await web3.eth.getAccounts()
     this.setState({account: accounts[0],connected: true})
@@ -55,7 +55,7 @@ class Verify extends Component {
     else{
       alert("smart contract do not deploy to detect network")
     }
-    alert("loading data success")
+    this.setState({canVerify: true})
   }
 
   async componentDidMount(){
@@ -89,6 +89,8 @@ class Verify extends Component {
         canVerify: false,
         fileHash: '',
         fileCerificateHash: '',
+        isPDF: false,
+        isNotPDF: false,
     }
   }
 
@@ -181,6 +183,14 @@ class Verify extends Component {
       return
     }
 
+    if (this.state.urlLoad[4].split('.').pop().toLowerCase() === "pdf"){
+      this.setState({isPDF: true})
+    }
+
+    else {
+      this.setState({isNotPDF: true})
+    }
+
     if (window.innerWidth < 1024){
       if (this.state.urlLoad[4].length < 15){
         this.setState({transactionFileName: this.state.urlLoad[4].toLowerCase()})
@@ -224,9 +234,26 @@ class Verify extends Component {
   render(){
     return (
       <div id = "screen" style ={{height: "100vh", width: "100%"}}>
+        {this.state.isPDF ? 
+        <div>
+          <div className = "verifyPdfBackground">
+            <div style = {{padding: "12px 12px", backgroundColor: '#1A1B20',borderRadius: "15px"}}>
+              <img className = "verifyPdfImage" src = {pdfPicture} alt="Pdf pic"/>
+              </div>
+          </div>
+        </div> 
+        : 
+        <div/>
+        }
+
+        {this.state.isNotPDF ? 
         <div class="edited-container">
           <img class="edited" src={this.state.urlLoad[5]} alt = "source"/>
         </div>
+        : 
+        <div/>}
+        
+        
         <img className = "applicationLogo" src = {logoVBC} alt="logo VBC"/>
         <div className = "txDetailFileName">File name: {this.state.transactionFileName}</div>
 
@@ -235,7 +262,6 @@ class Verify extends Component {
           {this.state.verifyEndTrue ?
           <div>
             <div className = "txDetailText" style = {{color: "green" , fontWeight: "bold"}}>File owner: {this.state.transactionOwner} </div>
-            <img className = "bigCheckIcon" src = {bigCheckIcon} alt="Big Check Icon"/>
             <div className = "txDetailText" style = {{color: "green"}}>File hash: {this.state.fileHash}</div>
             <div className = "txDetailText" style = {{color: "green"}}>Certificate hash: {this.state.fileCerificateHash}</div>
           </div>

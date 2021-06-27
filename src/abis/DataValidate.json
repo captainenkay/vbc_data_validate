@@ -1919,12 +1919,12 @@
     "97": {
       "events": {},
       "links": {},
-      "address": "0xD477466276ed9096a8e9c07eEa38F00955eDd4e1",
-      "transactionHash": "0x46b7a206f3128dcbdfbeafa17d0ff853bc13eea4e69be4fb84543ab8db06baba"
+      "address": "0x95308B69Bf61d47a83E735b2a158a82c69f90736",
+      "transactionHash": "0x78ffb78e3b7466afc4fd85456005eb90599f7c3b74240277c554b7c67ddead2f"
     }
   },
   "schemaVersion": "3.4.1",
-  "updatedAt": "2021-06-27T09:54:47.639Z",
+  "updatedAt": "2021-06-27T15:25:26.806Z",
   "networkType": "ethereum",
   "devdoc": {
     "methods": {
