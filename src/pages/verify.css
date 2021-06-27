@@ -10,7 +10,7 @@ body{
     margin-top: 5%;
 
     width: 50%;
-    height: 35%;
+    height: auto;
     border-radius: 15px;
 
     mix-blend-mode: normal;
@@ -104,6 +104,15 @@ a:link, a:visited {
 }
 
 @media (width: 1440px) {
+    .bigCheckIcon{
+        position: absolute;
+        width: 30px;
+        height: auto;
+        left: 240px;
+        top: 1075px;
+        filter: drop-shadow(0px 4px 4px rgba(84, 114, 174, 0.2));
+    }
+
     .applicationLogo{
         position: absolute;
         width: 170px;
@@ -228,6 +237,14 @@ a:link, a:visited {
 }
 
 @media (width: 1024px) {
+    .bigCheckIcon{
+        position: absolute;
+        width: 25px;
+        height: auto;
+        left: 160px;
+        top: 770px;
+        filter: drop-shadow(0px 4px 4px rgba(84, 114, 174, 0.2));
+    }
     .applicationLogo{
         position: absolute;
         width: 150px;
@@ -351,6 +368,22 @@ a:link, a:visited {
 }
 
 @media (width: 412px) {
+    .bigCheckIcon{
+        position: absolute;
+        width: 20px;
+        height: auto;
+        left: 50px;
+        top: 323px;
+        filter: drop-shadow(0px 4px 4px rgba(84, 114, 174, 0.2));
+    }
+    .applicationLogo{
+        position: absolute;
+        width: 60px;
+        height: auto;
+        left: 20px;
+        top: 20px
+    }
+
     .txDetailFileName{
         margin-left: 20%;
         margin-top: 3%;
@@ -467,6 +500,14 @@ a:link, a:visited {
 }
 
 @media (width: 375px) {
+    .bigCheckIcon{
+        position: absolute;
+        width: 18px;
+        height: auto;
+        left: 40px;
+        top: 298px;
+        filter: drop-shadow(0px 4px 4px rgba(84, 114, 174, 0.2));
+    }
     .applicationLogo{
         position: absolute;
         width: 60px;
@@ -496,7 +537,7 @@ a:link, a:visited {
         font-family: Open Sans;
         font-style: normal;
         font-weight: normal;
-        font-size: 90%;
+        font-size: 75%;
         line-height: 19px;
     
         color: #ffffff
@@ -506,7 +547,7 @@ a:link, a:visited {
         font-family: Open Sans;
         font-style: normal;
         font-weight: normal;
-        font-size: 90%;
+        font-size: 75%;
         line-height: 19px;
     
         display: flex;
@@ -519,7 +560,7 @@ a:link, a:visited {
         font-family: Open Sans;
         font-style: normal;
         font-weight: normal;
-        font-size: 90%;
+        font-size: 75%;
         line-height: 19px;
     
         display: flex;
@@ -533,12 +574,12 @@ a:link, a:visited {
         font-family: Open Sans;
         font-style: normal;
         font-weight: normal;
-        font-size: 90%;
+        font-size: 75%;
         line-height: 19px;
     
         display: flex;
         align-items: center;
-        padding-top: 25%;
+        padding-top: 30%;
     
         color: #000000;
     }
@@ -547,7 +588,7 @@ a:link, a:visited {
         font-family: Open Sans;
         font-style: normal;
         font-weight: normal;
-        font-size: 90%;
+        font-size: 75%;
         line-height: 19px;
     
         display: flex;
@@ -560,7 +601,7 @@ a:link, a:visited {
     .verifyAlertText5{
         font-family: Open Sans;
         font-style: normal;
-        font-size: 90%;
+        font-size: 75%;
         line-height: 19px;
     
         display: flex;
@@ -579,13 +620,14 @@ a:link, a:visited {
    .checkBoxVerify2{
         position: absolute;
         left: 9px;
-        top: 50px;
+        top: 108px;
         height: 25px;
    }
    .checkBoxVerify3{
         position: absolute;
         left: 9px;
-        top: 170px;
+        top: 185px;
         height: 25px;
    }
 }
+

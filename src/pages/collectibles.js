@@ -29,9 +29,14 @@ class Collectibles extends Component {
 
   connectMetamask = async(event) => {
     event.preventDefault()
-    await this.loadWeb3()
-    await this.loadBlockchainData()
-    await this.hanldeCollectibles()
+    if (window.ethereum){
+      await this.loadWeb3()
+      await this.loadBlockchainData()
+      await this.hanldeCollectibles()
+    }
+    else{
+      alert("this device dont have metamask extension")
+    }
   }
 
   disconnectMetamask = (event) => {
@@ -120,8 +125,8 @@ class Collectibles extends Component {
     for (var i = 0 ; i < this.state.transaction.length; i++ ){
       if (this.state.transaction[i].initialFile === this.state.linkQR){
         var tokenId = this.state.transaction.length - i
-        console.log('http://192.168.1.8:3000/verify#'+ this.state.transaction[i].transactionHash + "#" + this.state.transaction[i].blockNumber + "#" + tokenId + "#" + this.state.transaction[i].fileName + "#" + this.state.transaction[i].initialFile + "#" + this.state.transaction[i].fileDescription + "#" + this.state.transaction[i].certificateFile )
-        return 'http://192.168.1.8:3000/verify#'+ this.state.transaction[i].transactionHash + "#" + this.state.transaction[i].blockNumber + "#" + tokenId + "#" + this.state.transaction[i].fileName + "#" + this.state.transaction[i].initialFile + "#" + this.state.transaction[i].fileDescription + "#" + this.state.transaction[i].certificateFile
+        console.log('http://192.168.1.8:3000/verify#'+ this.state.transaction[i].transactionHash + "#" + this.state.transaction[i].blockNumber + "#" + tokenId + "#" + this.state.transaction[i].fileName + "#" + this.state.transaction[i].initialFile + "#" + this.state.transaction[i].fileDescription + "#" + this.state.transaction[i].certificateFile + "#" + this.state.account )
+        return 'http://192.168.1.8:3000/verify#'+ this.state.transaction[i].transactionHash + "#" + this.state.transaction[i].blockNumber + "#" + tokenId + "#" + this.state.transaction[i].fileName + "#" + this.state.transaction[i].initialFile + "#" + this.state.transaction[i].fileDescription + "#" + this.state.transaction[i].certificateFile + "#" + this.state.account
       }
     }
   }

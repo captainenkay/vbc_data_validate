@@ -6,19 +6,14 @@ import DataValidate from './../abis/DataValidate.json'
 import checkIcon from "./../assets/checkIcon.png"
 import crossIcon from "./../assets/crossIcon.png"
 import logoVBC from "./../assets/logoVBC.png"
-
-
-
+import bigCheckIcon from "./../assets/bigCheckIcon.png"
 
 class Verify extends Component {
   async componentWillMount(){
     await this.loadData()
-    await this.loadWeb3()
-    // await this.loadBlockchainData()
     await this.handleTxFileName()
     await this.handleTxDescription()
-    await this.handleTxData()
-    await this.handleTxOwner()
+    await this.handleFile()
   }
 
   async loadData(){
@@ -44,6 +39,7 @@ class Verify extends Component {
   }
 
   async loadBlockchainData(){
+    this.setState({canVerify: true})
     const web3 = window.web3
     const accounts = await web3.eth.getAccounts()
     this.setState({account: accounts[0],connected: true})
@@ -59,9 +55,10 @@ class Verify extends Component {
     else{
       alert("smart contract do not deploy to detect network")
     }
+    alert("loading data success")
   }
 
-  componentDidMount(){
+  async componentDidMount(){
     if (window.ethereum){
       window.ethereum.on('accountsChanged', function (accounts){
         localStorage.setItem('address', accounts[0])
@@ -87,6 +84,11 @@ class Verify extends Component {
         barHeight: 0,
         verifyEndTrue: false,
         verifyEndFalse: false,
+        verifyEnd: false,
+        fileOwner: '',
+        canVerify: false,
+        fileHash: '',
+        fileCerificateHash: '',
     }
   }
 
@@ -111,6 +113,18 @@ class Verify extends Component {
     await this.handleVerify()
   }
 
+  connectMetamask = async(event) => {
+    event.preventDefault()
+    if (window.ethereum){
+      await this.loadWeb3()
+      await this.loadBlockchainData()
+      await this.handleTxOwner()
+    }
+    else{
+      alert("this device dont have metamask extension")
+    }
+  }
+
   async handleVerify(){
     this.setState({isVerify: true})
     if (this.state.urlLoad[5] === this.state.transactionData[2] && this.state.urlLoad[7] === this.state.transactionData[3]){
@@ -126,7 +140,7 @@ class Verify extends Component {
           return clearTimeout(timer)
         },1000)
         await setTimeout(()=>{
-          this.setState({verifyEndTrue: true})
+          this.setState({verifyEndTrue: true, verifyEnd: true})
         },3000)
         return
       }
@@ -140,11 +154,10 @@ class Verify extends Component {
         return clearTimeout(timer)
       },1000)
       await setTimeout(()=>{
-        this.setState({verifyEndFalse: true})
+        this.setState({verifyEndFalse: true, verifyEnd: true})
       },3000)
       return
     }
-    this.setState({hashFailAlert: true})
     let timer = await setTimeout(()=>{
       this.handleCheckBar(0,6);
       let timer1 = setTimeout(()=>{
@@ -153,6 +166,7 @@ class Verify extends Component {
       },1000)
       return clearTimeout(timer)
     },1000)
+    this.setState({hashFailAlert: true, verifyEnd: true})
     return
   }
     
@@ -194,16 +208,17 @@ class Verify extends Component {
     this.setState({transactionOwner: this.state.owner})
   }
 
-  async handleTxData(){
-    if (this.state.urlLoad[1] === ""){
+  async handleFile(){
+    if (this.state.urlLoad[5] === "" || this.state.urlLoad[7] === "" || this.state.urlLoad[8] === ""){
       alert("This is an invalid url")
       return
     }
+
     if (window.innerWidth < 1024){
-      this.setState({transactionHash: this.state.urlLoad[1].slice(0,18) + '...' + this.state.urlLoad[1].slice(60,66)})
+      this.setState({fileOwner: this.state.urlLoad[8].slice(0,18) + '...' + this.state.urlLoad[8].slice(38,42), fileHash: this.state.urlLoad[5].split("/")[4].slice(0,18), fileCerificateHash: this.state.urlLoad[7].split("/")[4].slice(0,18), transactionHash: this.state.urlLoad[1].slice(0,18) + '...' + this.state.urlLoad[1].slice(60,66)})
       return
     }
-    this.setState({transactionHash: this.state.urlLoad[1]})
+    this.setState({fileOwner: this.state.urlLoad[8], fileHash: this.state.urlLoad[5].split("/")[4], fileCerificateHash: this.state.urlLoad[7].split("/")[4], transactionHash: this.state.urlLoad[1]})
   }
 
   render(){
@@ -214,16 +229,45 @@ class Verify extends Component {
         </div>
         <img className = "applicationLogo" src = {logoVBC} alt="logo VBC"/>
         <div className = "txDetailFileName">File name: {this.state.transactionFileName}</div>
-        {this.state.verifyEndTrue ?
-        <div className = "txDetailText" style = {{color: "green" , fontWeight: "bold"}}>File owner: {this.state.transactionOwner}</div>
-        :
-        <div/>
+
+        {this.state.verifyEnd ? 
+        <div>
+          {this.state.verifyEndTrue ?
+          <div>
+            <div className = "txDetailText" style = {{color: "green" , fontWeight: "bold"}}>File owner: {this.state.transactionOwner} </div>
+            <img className = "bigCheckIcon" src = {bigCheckIcon} alt="Big Check Icon"/>
+            <div className = "txDetailText" style = {{color: "green"}}>File hash: {this.state.fileHash}</div>
+            <div className = "txDetailText" style = {{color: "green"}}>Certificate hash: {this.state.fileCerificateHash}</div>
+          </div>
+          :
+          <div/>}
+
+          {this.state.verifyEndFalse ?
+          <div>
+            <div className = "txDetailText" style = {{color: "red", fontWeight: "bold"}}>File owner: {this.state.transactionOwner}</div>
+            <div className = "txDetailText" style = {{color: "green"}}>File hash: {this.state.fileHash}</div>
+            <div className = "txDetailText" style = {{color: "green"}}>Certificate hash: {this.state.fileCerificateHash}</div>
+          </div>
+          :
+          <div/>}
+
+          {this.state.hashFailAlert ?
+          <div>
+            <div className = "txDetailText" style = {{fontWeight: "bold"}}>File owner: {this.state.transactionOwner}</div>
+            <div className = "txDetailText" style = {{color: "red"}}>File hash: {this.state.fileHash}</div>
+            <div className = "txDetailText" style = {{color: "red"}}>Certificate hash: {this.state.fileCerificateHash}</div>
+          </div>
+          :
+          <div/>}
+        </div>
+      : 
+        <div>
+          <div className = "txDetailText" style = {{fontWeight: "bold"}}>File owner: {this.state.fileOwner}</div>
+          <div className = "txDetailText">File hash: {this.state.fileHash}</div>
+          <div className = "txDetailText">Certificate hash: {this.state.fileCerificateHash}</div>
+        </div>
         }
-        {this.state.verifyEndFalse ?
-        <div className = "txDetailText" style = {{color: "red" , fontWeight: "bold"}}>File owner: {this.state.transactionOwner}</div>
-        :
-        <div/>
-        }
+        
         <div className = "txDetailText">Description: {this.state.transactionDescription}</div>
         <div className = "txDetailText">
           <a target="_blank" rel="noopener noreferrer" href={'https://testnet.bscscan.com/tx/' + this.state.urlLoad[1]}>
@@ -325,12 +369,18 @@ class Verify extends Component {
         </div> 
         : 
         <div>
-          <div className = "verifyButton" onClick = {(() => this.handleVerify())}>
-            {this.state.verifyEndTrue || this.state.verifyEndFalse ? 
-            <div className = "verifyText"> Verify again </div>
+          <div className = "verifyButton">
+            {this.state.canVerify ? 
+            <div className = "verifyText" onClick = {(() => this.handleVerify())}>
+              {this.state.verifyEnd ? 
+              <div > Verify again </div>
+              : 
+              <div> Verify</div>}
+            </div>
             : 
-            <div className = "verifyText"> Verify</div>}
-          </div>
+            <div className = "verifyText" onClick = {this.connectMetamask}> Connect </div>
+            }
+            </div>
         </div>
         }
       </div>

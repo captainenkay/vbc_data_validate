@@ -40,8 +40,14 @@ class App extends Component {
 
   connectMetamask = async(event) => {
     event.preventDefault()
-    await this.loadWeb3()
-    await this.loadBlockchainData()
+    if (window.ethereum){
+      await this.loadWeb3()
+      await this.loadBlockchainData()
+      await this.handleTxOwner()
+    }
+    else{
+      alert("this device dont have metamask extension")
+    }
   }
 
   disconnectMetamask = (event) => {
