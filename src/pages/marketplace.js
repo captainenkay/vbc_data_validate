@@ -1,12 +1,12 @@
 import { Component } from 'react';
 import Web3 from 'web3';
 import "./../App.css"
-import "./collectibles.css"
+import "./marketplace.css"
 import homeLogo from "./../assets/homeLogo.png"
 import logoVBC from "./../assets/logoVBC.png"
 import collectiblesLine from "./../assets/collectiblesLine.png"
-import collectiblesLogoActive from "./../assets/collectiblesLogoActive.png"
 import collectiblesLogo from "./../assets/collectiblesLogo.png"
+import collectiblesLogoActive from "./../assets/collectiblesLogoActive.png"
 import detailIcon from "./../assets/detailIcon.png"
 import aboutLogo from "./../assets/aboutLogo.png"
 import pdfPicture from "./../assets/pdfPicture.png"
@@ -17,7 +17,7 @@ import QRCode from "react-qr-code"
 import * as htmlToImage from "html-to-image"
 
 
-class Collectibles extends Component {
+class Marketplace extends Component {
   async componentWillMount(){
     await this.loadStorage()
     if (this.state.account !== ''){
@@ -96,11 +96,6 @@ class Collectibles extends Component {
       isShare: false,
       linkQR: '',
       link: '',
-      isSell: false,
-      sellFileName: '',
-      sellFileDescription: '',
-      sellInitialFile: '',
-      sellStatus: '',
     }
     this.toggle = this.toggle.bind(this);
   }
@@ -119,17 +114,12 @@ class Collectibles extends Component {
   }
 
   handleQR(input){
-    this.handleRefresh()
     this.setState({isShare: true, linkQR: input})
   }
 
-  handleSellable(fileName, fileDescription, initialFile, sellable){
-    this.handleRefresh()
-    this.setState({isSell: true, sellFileName: fileName, sellFileDescription: fileDescription, sellInitialFile: initialFile, sellStatus: sellable })
-  }
-
-  handleRefresh = () => {
-    this.setState({isShare: false, linkQR: '', isSell: false, tokenID: 0})
+  handleRefresh = (event) => {
+    event.preventDefault()
+    this.setState({isShare: false, linkQR: ''})
   }
 
   handleURL(){
@@ -137,17 +127,6 @@ class Collectibles extends Component {
       if (this.state.transaction[i].initialFile === this.state.linkQR){
         console.log('http://192.168.123.208:3000/verify#'+ this.state.transaction[i].transactionHash + "#" + this.state.transaction[i].blockNumber + "#" + this.state.transaction[i].tokenID + "#" + this.state.transaction[i].fileName + "#" + this.state.transaction[i].initialFile + "#" + this.state.transaction[i].fileDescription + "#" + this.state.transaction[i].certificateFile + "#" + this.state.account + "#" + this.state.transaction[i].initialFileSHA256 )
         return 'http://192.168.123.208:3000/verify#'+ this.state.transaction[i].transactionHash + "#" + this.state.transaction[i].blockNumber + "#" + this.state.transaction[i].tokenID + "#" + this.state.transaction[i].fileName + "#" + this.state.transaction[i].initialFile + "#" + this.state.transaction[i].fileDescription + "#" + this.state.transaction[i].certificateFile + "#" + this.state.account + "#" + this.state.transaction[i].initialFileSHA256
-      }
-    }
-  }
-
-  handlePublishMartketplace = (event) =>{
-    event.preventDefault()
-    for (var i = 0 ; i < this.state.transaction.length; i++ ){
-      if (this.state.transaction[i].initialFile === this.state.sellInitialFile){
-        this.state.transaction[i].sellable = "sellable"
-        localStorage.setItem('transaction', JSON.stringify(this.state.transaction))
-        this.setState({sellStatus: this.state.transaction[i].sellable})
       }
     }
   }
@@ -171,20 +150,20 @@ class Collectibles extends Component {
 
         {/* Home Button */}
         <Link to= "/home">
-           <img style = {{position: "absolute",width: "20px", height: "19px", left:"375px", top: "27px"}} src = {homeLogo} alt="Home Logo Active"/>
+           <img style = {{position: "absolute",width: "20px", height: "19px", left:"375px", top: "27px"}} src = {homeLogo} alt="Home Logo"/>
            <div className = "inactivePageText" style ={{left: "404px"}}>Home</div>
         </Link>
 
         {/* Collectibles Button */}
         <Link to= "/collectibles">
-          <img style = {{position: "absolute",width: "26px", height: "26px", left:"532px", top: "24px"}} src = {collectiblesLogoActive} alt="Collectibles Logo"/>
-          <div className = "activePageText" style ={{left: "564px"}}>Collectibles</div>
+          <img style = {{position: "absolute",width: "26px", height: "26px", left:"532px", top: "24px"}} src = {collectiblesLogo} alt="Collectibles Logo"/>
+          <div className = "inactivePageText" style ={{left: "564px"}}>Collectibles</div>
         </Link>
 
         {/* Collectibles Button */}
         <Link to= "/marketplace">
-          <img style = {{position: "absolute",width: "26px", height: "26px", left:"748px", top: "24px"}} src = {collectiblesLogo} alt="Collectibles Logo"/>
-          <div className = "inactivePageText" style ={{left: "780px"}}>Marketplace</div>
+          <img style = {{position: "absolute",width: "26px", height: "26px", left:"748px", top: "24px"}} src = {collectiblesLogoActive} alt="Collectibles Logo Active"/>
+          <div className = "activePageText" style ={{left: "780px"}}>Marketplace</div>
         </Link>
 
         {/* About Button */}
@@ -222,7 +201,6 @@ class Collectibles extends Component {
                         <img style = {{position: "absolute",width: "274px",height: "1px",left: "13px",top: "265px"}}src = {collectiblesLine} alt="Collectibles Line"/>
                         <div className = "detailButtonText" style ={{left: "23px", top:"279px"}} id={"toggler"+ key}>Detail</div>
                         <img style = {{position: "absolute",width: "9px",height: "5px",left: "68px",top: "285px"}}src = {detailIcon} alt="Detail icon"/>
-                        <div className = "detailButtonText" style ={{left: "123px", top:"279px"}} onClick = {(() => this.handleSellable(transaction.fileName, transaction.fileDescription, transaction.initialFile))}>Publish</div>
                         <div className = "detailButtonText" style ={{left: "223px", top:"279px"}} onClick = {(() => this.handleQR(transaction.initialFile))}>Share</div>
 
                         <UncontrolledCollapse toggler={"#toggler" + key}>
@@ -245,7 +223,6 @@ class Collectibles extends Component {
                         <img style = {{position: "absolute",width: "274px",height: "1px",left: "13px",top: "265px"}}src = {collectiblesLine} alt="Collectibles Line"/>
                         <div className = "detailButtonText" style ={{left: "23px", top:"279px"}} id={"toggler"+ key}>Detail</div>
                         <img style = {{position: "absolute",width: "9px",height: "5px",left: "68px",top: "285px"}}src = {detailIcon} alt="Detail icon"/>
-                        <div className = "detailButtonText" style ={{left: "123px", top:"279px"}} onClick = {(() => this.handleSellable(transaction.fileName, transaction.fileDescription, transaction.initialFile, transaction.sellable))}>Publish</div>
                         <div className = "detailButtonText" style ={{left: "223px", top:"279px"}} onClick = {(() => this.handleQR(transaction.initialFile))}>Share</div>
                                 
                         <UncontrolledCollapse toggler={"#toggler"+ key}>
@@ -274,28 +251,6 @@ class Collectibles extends Component {
           <div className="collectiblesFooter"/>
         </div>}
 
-        {this.state.isSell ? 
-        <div>
-          <div className = "shareBackground">
-            <img class = "closeButton" style = {{left: "350px",top: "20px"}} src = {closeAlert} alt="Close alert button" onClick = {this.handleRefresh}/>
-            <div style = {{position: "absolute",left: "65px",top: "50px",width: "270px",height: "190px",borderRadius: "15px"}}>
-              <div class="editedImg-container" style = {{borderRadius: "15px"}}>
-                <img class="editedImg" src={this.state.sellInitialFile} alt = "source"/>
-              </div>
-            </div>
-            <div className = "linkQRBackground" style = {{top: "260px", width: "270px", left: "65px", height: "120px"}}>
-              <div className= "fileName" style ={{color: "black", top: "0px"}}>File name: {this.state.sellFileName}</div>
-              <div className = "fileName" style ={{color: "black", top: "35px"}}>Description: {this.state.sellFileDescription}</div>
-              <div className = "fileName" style ={{color: "black", top: "70px"}}>Status: {this.state.sellStatus}</div>
-            </div>
-            <div className = "qrSave" onClick = {this.handlePublishMartketplace}>
-              <div className = "qrSaveText" style = {{left: "40px"}}>PUBLISH</div>
-            </div>
-          </div>
-        </div> 
-        : 
-        <div/>}
-
         {this.state.isShare ? 
         <div>
           <div className = "shareBackground">
@@ -308,8 +263,8 @@ class Collectibles extends Component {
             <div className = "linkQRBackground">
               <div className = "qrText">{this.handleURL().slice(0,71) + "..."}</div>
             </div>
-            <div className = "qrSave" onClick = {this.handleDownloadQRCode}>
-              <div className = "qrSaveText">SAVE QR CODE</div>
+            <div className = "qrSave">
+              <div className = "qrSaveText" onClick = {this.handleDownloadQRCode}>SAVE QR CODE</div>
             </div>
           </div>
         </div> 
@@ -319,4 +274,4 @@ class Collectibles extends Component {
     );
   }
 }
-export default Collectibles;
+export default Marketplace;

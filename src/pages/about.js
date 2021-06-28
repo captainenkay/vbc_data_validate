@@ -85,20 +85,26 @@ class About extends Component {
         
         {/* Home Button */}
         <Link to= "/home">
-          <img style = {{position: "absolute",width: "20px", height: "19px", left:"475px", top: "27px"}} src = {homeLogo} alt="Home Logo Active"/>
-          <div className = "inactivePageText" style ={{left: "504px"}}>Home</div>
+           <img style = {{position: "absolute",width: "20px", height: "19px", left:"375px", top: "27px"}} src = {homeLogo} alt="Home Logo"/>
+           <div className = "inactivePageText" style ={{left: "404px"}}>Home</div>
         </Link>
 
         {/* Collectibles Button */}
         <Link to= "/collectibles">
-          <img style = {{position: "absolute",width: "26px", height: "26px", left:"652px", top: "24px"}} src = {collectiblesLogo} alt="Collectibles Logo"/>
-          <div className = "inactivePageText" style ={{left: "684px"}}>Collectibles</div>
+          <img style = {{position: "absolute",width: "26px", height: "26px", left:"532px", top: "24px"}} src = {collectiblesLogo} alt="Collectibles Logo"/>
+          <div className = "inactivePageText" style ={{left: "564px"}}>Collectibles</div>
+        </Link>
+
+        {/* Collectibles Button */}
+        <Link to= "/marketplace">
+          <img style = {{position: "absolute",width: "26px", height: "26px", left:"748px", top: "24px"}} src = {collectiblesLogo} alt="Collectibles Logo"/>
+          <div className = "inactivePageText" style ={{left: "780px"}}>Marketplace</div>
         </Link>
 
         {/* About Button */}
         <Link to= "/about">
-          <img style = {{position: "absolute",width: "26px", height: "26px", left:"880px", top: "24px"}} src = {aboutLogoActive} alt="About Logo"/>
-          <div className = "activePageText" style={{left: "912px"}}>About</div>
+          <img style = {{position: "absolute",width: "26px", height: "26px", left:"980px", top: "24px"}} src = {aboutLogoActive} alt="About Logo Active"/>
+          <div className = "activePageText" style={{left: "1012px"}}>About</div>
         </Link>
 
         {/* Metamask Button */}

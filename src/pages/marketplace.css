@@ -63,6 +63,7 @@
 .editedImg-container {
     overflow: hidden;
     height: 190px;
+    max-height: 300px;
     position: relative;
 }
 
