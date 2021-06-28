@@ -128,11 +128,10 @@ a:link, a:visited {
 
 @media (width: 1440px) {
     .bigCheckIcon{
-        position: absolute;
-        width: 30px;
+        width: 25px;
         height: auto;
-        left: 240px;
-        top: 1075px;
+        margin-right: 5%;
+
         filter: drop-shadow(0px 4px 4px rgba(84, 114, 174, 0.2));
     }
 
@@ -261,11 +260,10 @@ a:link, a:visited {
 
 @media (width: 1024px) {
     .bigCheckIcon{
-        position: absolute;
-        width: 25px;
+        width: 20px;
         height: auto;
-        left: 160px;
-        top: 770px;
+        margin-right: 5%;
+
         filter: drop-shadow(0px 4px 4px rgba(84, 114, 174, 0.2));
     }
     .applicationLogo{
@@ -392,11 +390,10 @@ a:link, a:visited {
 
 @media (width: 412px) {
     .bigCheckIcon{
-        position: absolute;
-        width: 20px;
+        width: 15px;
         height: auto;
-        left: 50px;
-        top: 323px;
+        margin-right: 5%;
+
         filter: drop-shadow(0px 4px 4px rgba(84, 114, 174, 0.2));
     }
     .applicationLogo{

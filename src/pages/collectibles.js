@@ -124,8 +124,8 @@ class Collectibles extends Component {
   handleURL(){
     for (var i = 0 ; i < this.state.transaction.length; i++ ){
       if (this.state.transaction[i].initialFile === this.state.linkQR){
-        console.log('http://192.168.1.8:3000/verify#'+ this.state.transaction[i].transactionHash + "#" + this.state.transaction[i].blockNumber + "#" + this.state.transaction[i].tokenID + "#" + this.state.transaction[i].fileName + "#" + this.state.transaction[i].initialFile + "#" + this.state.transaction[i].fileDescription + "#" + this.state.transaction[i].certificateFile + "#" + this.state.account )
-        return 'http://192.168.1.8:3000/verify#'+ this.state.transaction[i].transactionHash + "#" + this.state.transaction[i].blockNumber + "#" + this.state.transaction[i].tokenID + "#" + this.state.transaction[i].fileName + "#" + this.state.transaction[i].initialFile + "#" + this.state.transaction[i].fileDescription + "#" + this.state.transaction[i].certificateFile + "#" + this.state.account
+        console.log('http://192.168.123.208:3000/verify#'+ this.state.transaction[i].transactionHash + "#" + this.state.transaction[i].blockNumber + "#" + this.state.transaction[i].tokenID + "#" + this.state.transaction[i].fileName + "#" + this.state.transaction[i].initialFile + "#" + this.state.transaction[i].fileDescription + "#" + this.state.transaction[i].certificateFile + "#" + this.state.account + "#" + this.state.transaction[i].initialFileSHA256 )
+        return 'http://192.168.123.208:3000/verify#'+ this.state.transaction[i].transactionHash + "#" + this.state.transaction[i].blockNumber + "#" + this.state.transaction[i].tokenID + "#" + this.state.transaction[i].fileName + "#" + this.state.transaction[i].initialFile + "#" + this.state.transaction[i].fileDescription + "#" + this.state.transaction[i].certificateFile + "#" + this.state.account + "#" + this.state.transaction[i].initialFileSHA256
       }
     }
   }

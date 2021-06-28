@@ -23,6 +23,7 @@ import DataValidate from './abis/DataValidate.json'
 import {PDFDocument, rgb, StandardFonts, PDFString, PDFName } from 'pdf-lib'
 import Dropzone from 'react-dropzone'
 import download from "downloadjs";
+import sha256 from 'crypto-js/sha256';
 
 const ipfsClient = require('ipfs-http-client')
 const ipfs = ipfsClient({ host: 'ipfs.infura.io', port: '5001', protocol: 'https' })
@@ -107,7 +108,7 @@ class App extends Component {
       const contract = new web3.eth.Contract(abi, address)
       this.setState({ contract })
       const totalSupply = await contract.methods.totalSupply().call()
-      this.setState({ totalSupply })
+      this.setState({ totalSupply ,tokenID: totalSupply})
       for (var i = 1; i <= totalSupply; i++) {
         const data = await contract.methods.dataValidateTransactionDetails(i - 1).call()
         this.setState({
@@ -139,6 +140,7 @@ class App extends Component {
   constructor(props){
     super(props);
     this.state = {
+      tokenID: 0,
       account: '',
       buffer: null,
       contract: null,
@@ -158,6 +160,7 @@ class App extends Component {
       barHeight: 0,
       alertBackground: false,
       description: '',
+      initialFileSHA256: '',
     }
     this.handleTextChange = this.handleTextChange.bind(this);
   }
@@ -188,15 +191,27 @@ class App extends Component {
       return
     }
 
-    const reader = new FileReader();
-    reader.readAsArrayBuffer(file);
-
-    reader.onloadend = () => {
-      this.setState({buffer: Buffer(reader.result), fileName: file.name, isUploaded: true, fileSize: this.handleFileSize(file.size)})
+    const readerAsText = new FileReader();
+    readerAsText.readAsText(file);
+    
+    readerAsText.onloadend = () => {
+      var hash = sha256(readerAsText.result)
+      this.setState({initialFileSHA256: hash.toString()})
     }
 
-    reader.onerror = () => {
-      console.log('file error', reader.error)
+    readerAsText.onerror = () => {
+      console.log('file error', readerAsText.error)
+    }
+
+    const readerAsArrayBuffer = new FileReader();
+    readerAsArrayBuffer.readAsArrayBuffer(file);
+
+    readerAsArrayBuffer.onloadend = () => {
+      this.setState({buffer: Buffer(readerAsArrayBuffer.result), fileName: file.name, isUploaded: true, fileSize: this.handleFileSize(file.size)})
+    }
+
+    readerAsArrayBuffer.onerror = () => {
+      console.log('file error', readerAsArrayBuffer.error)
     }
   }
 
@@ -240,7 +255,7 @@ class App extends Component {
         this.handleCheckBar(0,3)
         for (let i = 0; i < this.state.transactionData.length; i++){
           var data = this.state.transactionData[i].split('#')
-          if(url === data[2]|| url === data[3]){
+          if(url === data[2]|| url === data[3] || this.state.initialFileSHA256 === this.state.transaction[i].initialFileSHA256){
             this.setState({successAlert: true, transactionLink: this.state.transaction[i].transactionHash})
             let timer = await setTimeout(()=>{
               this.handleCheckBar(3,33);
@@ -304,7 +319,7 @@ class App extends Component {
         this.handleCheckBar(0,3)
         for (let i = 0; i < this.state.transactionData.length; i++){
           var data = this.state.transactionData[i].split('#')
-          if(url === data[2]|| url === data[3]){
+          if(url === data[2]|| url === data[3] || this.state.initialFileSHA256 === this.state.transaction[i].initialFileSHA256){
             this.setState({failAlert: true})
             let timer = await setTimeout(()=>{
               this.handleCheckBar(3,24);
@@ -367,7 +382,7 @@ class App extends Component {
         const pages = await pdfDoc.getPages()
         const firstPage = pages[0]
 
-        firstPage.drawText('http://192.168.1.8:3000/', {
+        firstPage.drawText('http://192.168.123.208:3000/', {
           x: 350,
           y: 20,
           size: 16,
@@ -404,7 +419,7 @@ class App extends Component {
             A: {
               Type: 'Action',
               S: 'URI',
-              URI: PDFString.of('http://192.168.1.8:3000/'),
+              URI: PDFString.of('http://192.168.123.208:3000/'),
             },
           }),
         );
@@ -426,7 +441,7 @@ class App extends Component {
             console.log(error)
             return
           }
-          var mintItem = this.state.fileName + "#" + this.state.description + "#" + url + "#"+ ipfsResult
+          var mintItem = this.state.fileName + "#" + this.state.description + "#" + url + "#"+ ipfsResult + "#" + this.state.initialFileSHA256
           this.state.contract.methods.mint(mintItem).send({ from: this.state.account}).once('receipt', (receipt) => {
             download(pdfBytes, "Certificate", "application/pdf");
             let timer = setTimeout(()=>{
@@ -437,12 +452,13 @@ class App extends Component {
               },1000)
               return clearTimeout(timer)
             },1000)
-            var result = {transactionHash: receipt.transactionHash, blockNumber: receipt.blockNumber,fileName: this.state.fileName,fileDescription: this.state.description, fileOwner: this.state.account, initialFile: url, certificateFile: ipfsResult,date: new Date(), tokenID: parseInt(this.state.totalSupply) + 1}
+            var result = {transactionHash: receipt.transactionHash, blockNumber: receipt.blockNumber,fileName: this.state.fileName,fileDescription: this.state.description, fileOwner: this.state.account, initialFile: url, certificateFile: ipfsResult,date: new Date(), tokenID: parseInt(this.state.tokenID) + 1, initialFileSHA256: this.state.initialFileSHA256}
             this.setState({
               transactionData: [mintItem,...this.state.transactionData],
               transaction:[result, ...this.state.transaction],
               successAlert: true,
               transactionLink: receipt.transactionHash,
+              tokenID: parseInt(this.state.tokenID) + 1
             })
             localStorage.setItem('transaction', JSON.stringify(this.state.transaction))
           })
@@ -491,7 +507,7 @@ class App extends Component {
 
         {/* Published Files */}
         <img style ={{position: "absolute",width: "54px",height: "54px",left: "300px",top: "583px"}} src = {publishFilesIcon} alt="Publish File Icon"/>
-        <div className = "number">{this.state.transaction.length}</div>
+        <div className = "number">{this.state.tokenID}</div>
         <div className = "text">Published Files</div>
 
         {/* Verified Files */}
@@ -536,7 +552,7 @@ class App extends Component {
           <div className= "chooseFileBackground"/>
           <img style = {{position: "absolute",width: "56px",height: "56px",left: "652px",top: "346px"}} src = {fileImage} alt="File Img"/>
           <div className= "fileText">{this.handleFileName(this.state.fileName)}</div>
-          <div className= "fileSize">{this.state.fileSize}</div>
+          <div className= "fileSize">{this.state.fileSize} - File hash: {this.state.initialFileSHA256.slice(0,15)} ...</div>
           <div className = "borderFile"/>
           <img class = "closeButton" src = {closeAlert} alt="Close alert button" onClick = {this.handleRefresh}/>
           
@@ -564,7 +580,7 @@ class App extends Component {
 
               {this.state.barHeight >= 3 ?
               <div>
-                <div className = "alertText" style= {{top: "317px"}}>File is encrypted with ipfs</div>
+                <div className = "alertText" style= {{top: "317px"}}>File is encrypted with ipfs and sha256</div>
                 <img style = {{position: "absolute",width: "26px;",height: "26px",left: "611px",top: "313px"}} src = {checkIcon} alt="Check Icon"/>
                 {this.state.barHeight === 3 ? 
                 <div>

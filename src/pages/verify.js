@@ -7,6 +7,7 @@ import checkIcon from "./../assets/checkIcon.png"
 import crossIcon from "./../assets/crossIcon.png"
 import logoVBC from "./../assets/logoVBC.png"
 import pdfPicture from "./../assets/pdfPicture.png"
+import checkIconColor from "./../assets/checkIconColor.png"
 
 
 class Verify extends Component {
@@ -29,7 +30,7 @@ class Verify extends Component {
   async loadWeb3() {
     if (window.ethereum){
       window.web3 = new Web3(window.ethereum)
-      await window.ethereum.enable()
+      await window.ethereum.enable();
     }
     if (window.web3){
       window.web3 = new Web3(window.web3.currentProvider)
@@ -91,6 +92,7 @@ class Verify extends Component {
         fileCerificateHash: '',
         isPDF: false,
         isNotPDF: false,
+        fileInitialSHA256: '',
     }
   }
 
@@ -129,7 +131,7 @@ class Verify extends Component {
 
   async handleVerify(){
     this.setState({isVerify: true})
-    if (this.state.urlLoad[5] === this.state.transactionData[2] && this.state.urlLoad[7] === this.state.transactionData[3]){
+    if (this.state.urlLoad[5] === this.state.transactionData[2] && this.state.urlLoad[7] === this.state.transactionData[3] && this.state.urlLoad[9] === this.state.transactionData[4]){
       this.handleCheckBar(0,8)
       if(this.state.owner === this.state.account){
         this.setState({successAlert: true})
@@ -191,11 +193,7 @@ class Verify extends Component {
       this.setState({isNotPDF: true})
     }
 
-    if (window.innerWidth < 1024){
-      if (this.state.urlLoad[4].length < 15){
-        this.setState({transactionFileName: this.state.urlLoad[4].toLowerCase()})
-        return
-      }
+    if (window.innerWidth < 1024 && this.state.urlLoad[4].length >= 15){
       this.setState({transactionFileName: this.state.urlLoad[4].slice(0,10).toLowerCase() + '... .' + this.state.urlLoad[4].split('.').pop().toLowerCase()})
       return
     }
@@ -203,8 +201,8 @@ class Verify extends Component {
   }
 
   async handleTxDescription(){
-    if (window.innerWidth < 1024){
-      this.setState({transactionDescription: this.state.urlLoad[6].slice(0,20).toLowerCase() + '...'})
+    if (window.innerWidth < 1024 && this.state.urlLoad[6].length >= 24){
+      this.setState({transactionDescription: this.state.urlLoad[6].slice(0,24).toLowerCase() + '...'})
       return
     }
     this.setState({transactionDescription: this.state.urlLoad[6].toLowerCase()})
@@ -225,10 +223,10 @@ class Verify extends Component {
     }
 
     if (window.innerWidth < 1024){
-      this.setState({fileOwner: this.state.urlLoad[8].slice(0,18) + '...' + this.state.urlLoad[8].slice(38,42), fileHash: this.state.urlLoad[5].split("/")[4].slice(0,18), fileCerificateHash: this.state.urlLoad[7].split("/")[4].slice(0,18), transactionHash: this.state.urlLoad[1].slice(0,18) + '...' + this.state.urlLoad[1].slice(60,66)})
+      this.setState({fileOwner: this.state.urlLoad[8].slice(0,18) + '...' + this.state.urlLoad[8].slice(38,42), fileHash: this.state.urlLoad[5].split("/")[4].slice(0,21) + '...', fileCerificateHash: this.state.urlLoad[7].split("/")[4].slice(0,15) + '...', transactionHash: this.state.urlLoad[1].slice(0,19) + '...' + this.state.urlLoad[1].slice(60,66), fileInitialSHA256: this.state.urlLoad[9].slice(0,22) + "..."})
       return
     }
-    this.setState({fileOwner: this.state.urlLoad[8], fileHash: this.state.urlLoad[5].split("/")[4], fileCerificateHash: this.state.urlLoad[7].split("/")[4], transactionHash: this.state.urlLoad[1]})
+    this.setState({fileOwner: this.state.urlLoad[8], fileHash: this.state.urlLoad[5].split("/")[4], fileCerificateHash: this.state.urlLoad[7].split("/")[4], transactionHash: this.state.urlLoad[1], fileInitialSHA256: this.state.urlLoad[9]})
   }
 
   render(){
@@ -261,9 +259,22 @@ class Verify extends Component {
         <div>
           {this.state.verifyEndTrue ?
           <div>
-            <div className = "txDetailText" style = {{color: "green" , fontWeight: "bold"}}>File owner: {this.state.transactionOwner} </div>
-            <div className = "txDetailText" style = {{color: "green"}}>File hash: {this.state.fileHash}</div>
-            <div className = "txDetailText" style = {{color: "green"}}>Certificate hash: {this.state.fileCerificateHash}</div>
+            <div className = "txDetailText" style = {{color: "green" , fontWeight: "bold", marginLeft: "14.5%"}}> 
+              <img className = "bigCheckIcon" src = {checkIconColor} alt="Check Icon Color"/>
+              File owner: {this.state.transactionOwner}
+            </div>
+            <div className = "txDetailText" style = {{color: "green", marginLeft: "14.5%"}}>
+              <img className = "bigCheckIcon" src = {checkIconColor} alt="Check Icon Color"/>
+                File SHA256: {this.state.fileInitialSHA256}
+            </div>
+            <div className = "txDetailText" style = {{color: "green", marginLeft: "14.5%"}}>
+              <img className = "bigCheckIcon" src = {checkIconColor} alt="Check Icon Color"/>
+              IPFS file url: {this.state.fileHash}
+            </div>
+            <div className = "txDetailText" style = {{color: "green", marginLeft: "14.5%"}}>
+              <img className = "bigCheckIcon" src = {checkIconColor} alt="Check Icon Color"/>
+                IPFS cerificate url: {this.state.fileCerificateHash}
+            </div>
           </div>
           :
           <div/>}
@@ -271,8 +282,18 @@ class Verify extends Component {
           {this.state.verifyEndFalse ?
           <div>
             <div className = "txDetailText" style = {{color: "red", fontWeight: "bold"}}>File owner: {this.state.transactionOwner}</div>
-            <div className = "txDetailText" style = {{color: "green"}}>File hash: {this.state.fileHash}</div>
-            <div className = "txDetailText" style = {{color: "green"}}>Certificate hash: {this.state.fileCerificateHash}</div>
+            <div className = "txDetailText" style = {{color: "green", marginLeft: "14.5%"}}>
+              <img className = "bigCheckIcon" src = {checkIconColor} alt="Check Icon Color"/>
+                File SHA256: {this.state.fileInitialSHA256}
+            </div>
+            <div className = "txDetailText" style = {{color: "green", marginLeft: "14.5%"}}>
+              <img className = "bigCheckIcon" src = {checkIconColor} alt="Check Icon Color"/>
+              IPFS file url: {this.state.fileHash}
+            </div>
+            <div className = "txDetailText" style = {{color: "green", marginLeft: "14.5%"}}>
+              <img className = "bigCheckIcon" src = {checkIconColor} alt="Check Icon Color"/>
+                IPFS cerificate url: {this.state.fileCerificateHash}
+            </div>
           </div>
           :
           <div/>}
@@ -280,8 +301,9 @@ class Verify extends Component {
           {this.state.hashFailAlert ?
           <div>
             <div className = "txDetailText" style = {{fontWeight: "bold"}}>File owner: {this.state.transactionOwner}</div>
-            <div className = "txDetailText" style = {{color: "red"}}>File hash: {this.state.fileHash}</div>
-            <div className = "txDetailText" style = {{color: "red"}}>Certificate hash: {this.state.fileCerificateHash}</div>
+            <div className = "txDetailText" style = {{color: "red"}}>File SHA256: {this.state.fileInitialSHA256}</div>
+            <div className = "txDetailText" style = {{color: "red"}}>IPFS file url: {this.state.fileHash}</div>
+            <div className = "txDetailText" style = {{color: "red"}}>IPFS cerificate url: {this.state.fileCerificateHash}</div>
           </div>
           :
           <div/>}
@@ -289,8 +311,9 @@ class Verify extends Component {
       : 
         <div>
           <div className = "txDetailText" style = {{fontWeight: "bold"}}>File owner: {this.state.fileOwner}</div>
-          <div className = "txDetailText">File hash: {this.state.fileHash}</div>
-          <div className = "txDetailText">Certificate hash: {this.state.fileCerificateHash}</div>
+          <div className = "txDetailText">File SHA256: {this.state.fileInitialSHA256}</div>
+          <div className = "txDetailText">IPFS file url: {this.state.fileHash}</div>
+          <div className = "txDetailText">IPFS cerificate url: {this.state.fileCerificateHash}</div>
         </div>
         }
         
