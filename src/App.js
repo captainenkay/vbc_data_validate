@@ -161,6 +161,7 @@ class App extends Component {
       alertBackground: false,
       description: '',
       initialFileSHA256: '',
+      verifyAddressFail: false,
     }
     this.handleTextChange = this.handleTextChange.bind(this);
   }
@@ -262,9 +263,15 @@ class App extends Component {
               let timer1 = setTimeout(()=>{
                this.handleCheckBar(33,70)
                let timer2 = setTimeout(() => {
-                 this.handleCheckBar(70,100)
+                 if (this.state.account !== this.state.transaction[i].fileOwner){
+                  this.setState({verifyAddressFail: true, verifyOwner: this.state.transaction[i].fileOwner})
+                 }
+                 let timer3 = setTimeout(()=>{
+                  this.handleCheckBar(70,100)
+                  return clearTimeout(timer3);
+                 },1000)
                  return clearTimeout(timer2)
-               },1000)
+               },0)
                return clearTimeout(timer1);
               },1000)
               return clearTimeout(timer)
@@ -452,7 +459,7 @@ class App extends Component {
               },1000)
               return clearTimeout(timer)
             },1000)
-            var result = {transactionHash: receipt.transactionHash, blockNumber: receipt.blockNumber,fileName: this.state.fileName,fileDescription: this.state.description, fileOwner: this.state.account, initialFile: url, certificateFile: ipfsResult,date: new Date(), tokenID: parseInt(this.state.tokenID) + 1, initialFileSHA256: this.state.initialFileSHA256, sellable: "non-sellable"}
+            var result = {transactionHash: receipt.transactionHash, blockNumber: receipt.blockNumber,fileName: this.state.fileName,fileDescription: this.state.description, fileOwner: this.state.account, initialFile: url, certificateFile: ipfsResult,date: new Date(), tokenID: parseInt(this.state.tokenID) + 1, initialFileSHA256: this.state.initialFileSHA256, sellable: "non-sellable", transfer: ""}
             this.setState({
               transactionData: [mintItem,...this.state.transactionData],
               transaction:[result, ...this.state.transaction],
@@ -571,7 +578,7 @@ class App extends Component {
               <div>
                 <div className = "alertBackgroundFade"/>
                 <div className = "alertBackground"/>
-                <img style = {{position: "absolute",width: "24px",height: "24px",left: "976px",top: "172px"}} src = {closeAlert} alt="Close alert button" onClick = {this.handleRefresh}/>
+                <img class = "closeButton" style = {{position: "absolute",width: "24px",height: "24px",left: "976px",top: "172px"}} src = {closeAlert} alt="Close alert button" onClick = {this.handleRefresh}/>
                 <img style = {{position: "absolute",width: "56px",height: "56px",left: "651px",top: "196px"}} src = {fileImage} alt="File Img"/>
                 <div className= "fileText" style ={{left: "717px", top: "201px", color: "#1E1E1E"}}>{this.handleFileName(this.state.fileName)}</div>
                 <div className= "fileSize" style ={{left: "717px", top: "228px", color: "rgba(30, 30, 30, 0.8)"}}>{this.state.fileSize}</div>
@@ -637,7 +644,7 @@ class App extends Component {
                   <img style = {{position: "absolute",width: "26px;",height: "26px",left: "611px",top: "471px"}} src = {checkIcon} alt="Check Icon"/>
                   {this.state.barHeight === 58 ? 
                   <div>
-                    <div className = "alertText" style= {{top: "525px"}}>Uploading certificate to blockchain network</div>
+                    <div className = "alertText" style= {{top: "525px"}}>Uploading certificate to binance smart chance</div>
                     <div class="loader" style = {{top: "522px"}}/>
                   </div> 
                   : 
@@ -648,7 +655,7 @@ class App extends Component {
 
                 {this.state.barHeight >= 75 ? 
                 <div>
-                  <div className = "alertText" style= {{top: "525px"}}>Certificate uploaded to blockchain network</div>
+                  <div className = "alertText" style= {{top: "525px"}}>Certificate uploaded on binace smart chain</div>
                   <img style = {{position: "absolute",width: "26px;",height: "26px",left: "611px",top: "522px"}} src = {checkIcon} alt="Check Icon"/>
                 </div>
                 : 
@@ -696,7 +703,7 @@ class App extends Component {
               <div>
                 <div className = "alertBackgroundFade"/>
                 <div className = "alertBackground"/>
-                <img style = {{position: "absolute",width: "24px",height: "24px",left: "976px",top: "172px"}} src = {closeAlert} alt="Close alert button" onClick = {this.handleRefresh}/>
+                <img className = "closeButton" style = {{position: "absolute",width: "24px",height: "24px",left: "976px",top: "172px"}} src = {closeAlert} alt="Close alert button" onClick = {this.handleRefresh}/>
                 <img style = {{position: "absolute",width: "56px",height: "56px",left: "651px",top: "196px"}} src = {fileImage} alt="File Img"/>
                 <div className= "fileText" style ={{left: "717px", top: "201px", color: "#1E1E1E"}}>{this.handleFileName(this.state.fileName)}</div>
                 <div className= "fileSize" style ={{left: "717px", top: "228px", color: "rgba(30, 30, 30, 0.8)"}}>{this.state.fileSize}</div>
@@ -726,13 +733,27 @@ class App extends Component {
                 : 
                 <div/>}
 
-                {this.state.barHeight >= 66 ? 
+                {this.state.verifyAddressFail ? 
                 <div>
-                  <div className = "alertText" style= {{top: "505px"}}>Checking receipt</div>
-                  <img style = {{position: "absolute",width: "26px;",height: "26px",left: "611px",top: "502px"}} src = {checkIcon} alt="Check Icon"/>
-                </div>
+                  {this.state.barHeight >= 70 ? 
+                  <div>
+                    <div className = "alertText" style= {{top: "505px"}}>The owner of this collectibles is {this.state.verifyOwner.slice(0,15)}...</div>
+                    <img style = {{position: "absolute",width: "26px;",height: "26px",left: "611px",top: "502px"}} src = {crossIcon} alt="Cross Icon"/>
+                  </div>
+                  : 
+                  <div/>}
+                </div> 
                 : 
-                <div/>}
+                <div>
+                  {this.state.barHeight >= 70 ? 
+                  <div>
+                    <div className = "alertText" style= {{top: "505px"}}>You are the owner of this collectible</div>
+                    <img style = {{position: "absolute",width: "26px;",height: "26px",left: "611px",top: "502px"}} src = {checkIcon} alt="Check Icon"/>
+                  </div>
+                  : 
+                  <div/>}
+                </div>}
+                
 
                 {this.state.barHeight >= 99 ? 
                 <div>

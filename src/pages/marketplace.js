@@ -13,8 +13,8 @@ import pdfPicture from "./../assets/pdfPicture.png"
 import closeAlert from "./../assets/closeAlert.png"
 import {Link} from "react-router-dom"
 import {Row, Col, Card, UncontrolledCollapse} from "reactstrap"
-import QRCode from "react-qr-code"
-import * as htmlToImage from "html-to-image"
+import DataValidate from './../abis/DataValidate.json'
+
 
 
 class Marketplace extends Component {
@@ -82,6 +82,14 @@ class Marketplace extends Component {
     const accounts = await web3.eth.getAccounts()
     this.setState({account: accounts[0],connected: true})
     localStorage.setItem('address',this.state.account)
+    const networkId = await web3.eth.net.getId()
+    const networkData = DataValidate.networks[networkId]
+    if(networkData) {
+      const abi = DataValidate.abi
+      const address = networkData.address
+      const contract = new web3.eth.Contract(abi, address)
+      this.setState({ contract })
+    }
   }
 
   constructor(props){
@@ -93,16 +101,23 @@ class Marketplace extends Component {
       collapse: false,
       haveCollectibles: false,
       connected: false,
-      isShare: false,
-      linkQR: '',
-      link: '',
+      isBuy: false,
+      buyFileName: '',
+      buyFileDescription: '',
+      buyInitialFile: '',
+      buyStatus: '',
+      buyTokenID: '',
+      buyOpen: '',
+      owner: '',
+      receiver: '',
+      approveWatiting: false,
     }
     this.toggle = this.toggle.bind(this);
   }
 
   async hanldeCollectibles(){
     for (var i = 0 ; i < this.state.transaction.length; i++ ){
-      if (this.state.transaction[i].fileOwner === this.state.account){
+      if (this.state.transaction[i].sellable === "sellable"){
         this.setState({haveCollectibles: true})
         return
       }
@@ -113,34 +128,62 @@ class Marketplace extends Component {
     this.setState({ collapse: !this.state.collapse });
   }
 
-  handleQR(input){
-    this.setState({isShare: true, linkQR: input})
+  handleRefresh = () => {
+    this.setState({isBuy: false})
   }
 
-  handleRefresh = (event) => {
+  handleRemoveMartketplace = (event) => {
     event.preventDefault()
-    this.setState({isShare: false, linkQR: ''})
-  }
-
-  handleURL(){
     for (var i = 0 ; i < this.state.transaction.length; i++ ){
-      if (this.state.transaction[i].initialFile === this.state.linkQR){
-        console.log('http://192.168.123.208:3000/verify#'+ this.state.transaction[i].transactionHash + "#" + this.state.transaction[i].blockNumber + "#" + this.state.transaction[i].tokenID + "#" + this.state.transaction[i].fileName + "#" + this.state.transaction[i].initialFile + "#" + this.state.transaction[i].fileDescription + "#" + this.state.transaction[i].certificateFile + "#" + this.state.account + "#" + this.state.transaction[i].initialFileSHA256 )
-        return 'http://192.168.123.208:3000/verify#'+ this.state.transaction[i].transactionHash + "#" + this.state.transaction[i].blockNumber + "#" + this.state.transaction[i].tokenID + "#" + this.state.transaction[i].fileName + "#" + this.state.transaction[i].initialFile + "#" + this.state.transaction[i].fileDescription + "#" + this.state.transaction[i].certificateFile + "#" + this.state.account + "#" + this.state.transaction[i].initialFileSHA256
+      if (this.state.transaction[i].initialFile === this.state.buyInitialFile){
+        // eslint-disable-next-line
+        this.state.transaction[i].sellable = "non-sellable"
+        localStorage.setItem('transaction', JSON.stringify(this.state.transaction))
+        this.handleRefresh()
       }
     }
   }
 
-  handleDownloadQRCode = (event) =>{
-    event.preventDefault()
+  async handleBuyable(fileName, fileDescription, initialFile, sellable, tokenID, open){
+    this.handleRefresh()
+    this.setState({owner: await this.state.contract.methods.ownerOf(tokenID).call()})
+    this.setState({isBuy: true, buyFileName: fileName, buyFileDescription: fileDescription, buyInitialFile: initialFile, buyStatus: sellable, buyTokenID: tokenID , buyOpen: open})
+  }
 
-    htmlToImage.toJpeg(document.getElementById('qrcode'))
-    .then(function (dataUrl) {
-      var link = document.createElement('a');
-      link.download = 'QR_Code.jpeg';
-      link.href = dataUrl;
-      link.click();
-    });
+  handleBuyTx(){
+    for (var i = 0 ; i < this.state.transaction.length; i++ ){
+      if (this.state.transaction[i].initialFile === this.state.buyInitialFile){
+        // eslint-disable-next-line
+        this.state.transaction[i].transfer = this.state.account
+        localStorage.setItem('transaction', JSON.stringify(this.state.transaction))
+        this.handleRefresh()
+      }
+    }
+  }
+
+  async handleApproveTx() {
+    this.setState({approveWatiting: true})
+    for (var i = 0 ; i < this.state.transaction.length; i++ ){
+      if (this.state.transaction[i].initialFile === this.state.buyInitialFile){
+        this.setState({receiver: await this.state.transaction[i].transfer})
+      }
+    }
+
+    this.state.contract.methods.transferFrom(this.state.owner,this.state.receiver, this.state.buyTokenID).send({ from: this.state.owner}).once('receipt', (receipt) => {
+      for (var i = 0 ; i < this.state.transaction.length; i++ ){
+        if (this.state.transaction[i].tokenID === this.state.buyTokenID){
+          // eslint-disable-next-line
+          this.state.transaction[i].fileOwner = this.state.receiver
+          // eslint-disable-next-line
+          this.state.transaction[i].sellable = "non-sellable"
+          // eslint-disable-next-line
+          this.state.transaction[i].transfer = ""
+        }
+      }
+      localStorage.setItem('transaction', JSON.stringify(this.state.transaction))
+      this.setState({approveWatiting: false})
+      this.handleRefresh()
+    })
   }
 
   render(){
@@ -190,7 +233,7 @@ class Marketplace extends Component {
         <div className = "content" style={{background: "black"}}>
           <Row style= {{margin: "0 0 0 0"}}>
             {this.state.transaction.map((transaction, key) => {
-              if (transaction.fileOwner === this.state.account){
+              if (transaction.sellable === "sellable"){
                 if (transaction.fileName.split('.').pop().toLowerCase() === "pdf"){
                   return(
                     <Col key = {key} className = 'col-sm-3'>
@@ -201,7 +244,24 @@ class Marketplace extends Component {
                         <img style = {{position: "absolute",width: "274px",height: "1px",left: "13px",top: "265px"}}src = {collectiblesLine} alt="Collectibles Line"/>
                         <div className = "detailButtonText" style ={{left: "23px", top:"279px"}} id={"toggler"+ key}>Detail</div>
                         <img style = {{position: "absolute",width: "9px",height: "5px",left: "68px",top: "285px"}}src = {detailIcon} alt="Detail icon"/>
-                        <div className = "detailButtonText" style ={{left: "223px", top:"279px"}} onClick = {(() => this.handleQR(transaction.initialFile))}>Share</div>
+                        {transaction.fileOwner === this.state.account ?
+                        <div>
+                          {transaction.transfer === "" ? 
+                          <div/> 
+                          : 
+                          <div>
+                            <div className = "detailButtonText" style ={{left: "123px", top:"279px"}} onClick = {(() => this.handleBuyable(transaction.fileName, transaction.fileDescription, transaction.initialFile, transaction.sellable, transaction.tokenID, "Approve"))}>Approve</div>
+                            <div className = "notification" style = {{position: "absolute", top: "275px", left: "175px", width: "10px", height: "10px", backgroundColor: "red", borderRadius: "15px"}}/>
+                          </div>}
+                          <div className = "detailButtonText" style ={{left: "223px", top:"279px"}} onClick = {(() => this.handleBuyable(transaction.fileName, transaction.fileDescription, transaction.initialFile, transaction.sellable, transaction.tokenID, "Remove"))}>Remove</div>
+                        </div>
+                        :
+                        <div>
+                          {transaction.transfer === "" ? 
+                          <div className = "detailButtonText" style ={{left: "223px", top:"279px"}} onClick = {(() => this.handleBuyable(transaction.fileName, transaction.fileDescription, transaction.initialFile, transaction.sellable, transaction.tokenID, "Buy"))}>Buy</div>
+                          : 
+                          <div className = "detailButtonText" style ={{left: "223px", top:"279px"}}>Pending</div>} 
+                        </div>}
 
                         <UncontrolledCollapse toggler={"#toggler" + key}>
                           <div className = "detailBackground"/>
@@ -223,7 +283,24 @@ class Marketplace extends Component {
                         <img style = {{position: "absolute",width: "274px",height: "1px",left: "13px",top: "265px"}}src = {collectiblesLine} alt="Collectibles Line"/>
                         <div className = "detailButtonText" style ={{left: "23px", top:"279px"}} id={"toggler"+ key}>Detail</div>
                         <img style = {{position: "absolute",width: "9px",height: "5px",left: "68px",top: "285px"}}src = {detailIcon} alt="Detail icon"/>
-                        <div className = "detailButtonText" style ={{left: "223px", top:"279px"}} onClick = {(() => this.handleQR(transaction.initialFile))}>Share</div>
+                        {transaction.fileOwner === this.state.account ?
+                        <div>
+                          {transaction.transfer === "" ? 
+                          <div/> 
+                          : 
+                          <div>
+                            <div className = "detailButtonText" style ={{left: "123px", top:"279px"}} onClick = {(() => this.handleBuyable(transaction.fileName, transaction.fileDescription, transaction.initialFile, transaction.sellable, transaction.tokenID, "Approve"))}>Approve</div>
+                            <div className = "notification" style = {{position: "absolute", top: "275px", left: "175px", width: "10px", height: "10px", backgroundColor: "red", borderRadius: "15px"}}/>
+                          </div>}
+                          <div className = "detailButtonText" style ={{left: "223px", top:"279px"}} onClick = {(() => this.handleBuyable(transaction.fileName, transaction.fileDescription, transaction.initialFile, transaction.sellable, transaction.tokenID, "Remove"))}>Remove</div>
+                        </div>
+                        :
+                        <div>
+                          {transaction.transfer === "" ? 
+                          <div className = "detailButtonText" style ={{left: "223px", top:"279px"}} onClick = {(() => this.handleBuyable(transaction.fileName, transaction.fileDescription, transaction.initialFile, transaction.sellable, transaction.tokenID, "Buy"))}>Buy</div>
+                          : 
+                          <div className = "detailButtonText" style ={{left: "223px", top:"279px"}}>Pending</div>} 
+                        </div>}
                                 
                         <UncontrolledCollapse toggler={"#toggler"+ key}>
                           <div className = "detailBackground"/>
@@ -246,26 +323,48 @@ class Marketplace extends Component {
         : 
         <div>
           <div style= {{width: "1440px", height: "380px"}}> 
-            <div style= {{textAlign: "center", color: "#ffffff"}}>You dont have any collectibles </div>
+            <div style= {{textAlign: "center", color: "#ffffff"}}>Dont have any collectible for sale </div>
           </div>
           <div className="collectiblesFooter"/>
         </div>}
 
-        {this.state.isShare ? 
+        {this.state.isBuy ? 
         <div>
           <div className = "shareBackground">
             <img class = "closeButton" style = {{left: "350px",top: "20px"}} src = {closeAlert} alt="Close alert button" onClick = {this.handleRefresh}/>
-            <div style = {{position: "absolute",left: "85px",top: "50px",width: "230px",height: "230px",backgroundColor: "#ffffff",borderRadius: "15px",borderStyle: "solid",borderColor: "black"}}>
-             <div id = "qrcode" style = {{padding: "12px 12px", backgroundColor: 'white',borderRadius: "15px"}}>
-                <QRCode style ={{justifyContent: "center", alignItems: "center"}} value = {this.handleURL()} size = {200}/>
+            <div style = {{position: "absolute",left: "65px",top: "50px",width: "270px",height: "190px",borderRadius: "15px"}}>
+              <div class="editedImg-container" style = {{borderRadius: "15px"}}>
+                <img class="editedImg" src={this.state.buyInitialFile} alt = "source"/>
               </div>
             </div>
-            <div className = "linkQRBackground">
-              <div className = "qrText">{this.handleURL().slice(0,71) + "..."}</div>
+            <div className = "linkQRBackground" style = {{top: "260px", width: "270px", left: "65px", height: "120px"}}>
+              <div className= "fileName" style ={{color: "black", top: "0px"}}>Owner: {this.state.owner.slice(0,18)}...</div>
+              <div className= "fileName" style ={{color: "black", top: "35px"}}>File name: {this.state.buyFileName}</div>
+              <div className = "fileName" style ={{color: "black", top: "70px"}}>Description: {this.state.buyFileDescription}</div>
             </div>
-            <div className = "qrSave">
-              <div className = "qrSaveText" onClick = {this.handleDownloadQRCode}>SAVE QR CODE</div>
+            {this.state.buyOpen === "Buy" ? 
+            <div className = "qrSave" onClick = {(() => this.handleBuyTx())}>
+              <div className = "qrSaveText" style = {{left: "58px"}}>BUY</div>
             </div>
+            : 
+            <div>
+              {this.state.buyOpen === "Remove" ? 
+              <div className = "qrSave" onClick = {this.handleRemoveMartketplace}>
+                <div className = "qrSaveText" style = {{left: "40px"}}>REMOVE</div>
+              </div>
+              :
+              <div>
+                {this.state.approveWatiting ? 
+                <div className = "qrSave">
+                  <div class="loader" style = {{left: "65px", top: "15px"}}/>
+                </div>
+                : 
+                <div className = "qrSave" onClick = {(() => this.handleApproveTx())}>
+                  <div className = "qrSaveText" style = {{left: "35px"}}>APPROVE</div>
+                </div>}
+              </div>}
+            </div>}
+            
           </div>
         </div> 
         : 
