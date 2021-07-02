@@ -1,9 +1,9 @@
 .aboutBackground{
     position: absolute;
-    width: 850px;
-    height: 533px;
-    left: 295px;
-    top: 141px;
+    width: 59.0277777778%;
+    height: 59.2222222222%;
+    left: 20.4861111111%;
+    top: 15.6666666667%;
 
     background: #2E2F38;
     mix-blend-mode: normal;
@@ -11,16 +11,13 @@
 
 .aboutTitle{
     position: absolute;
-    height: 25px;
-    left: 620.53px;
-    top: 176px;
+    left: 39%;
+    top: 19.5555555556%;
 
     font-family: Open Sans;
     font-style: normal;
     font-weight: bold;
-    font-size: 18px;
-    line-height: 25px;
-    /* identical to box height */
+    font-size: 2vw;
 
     display: flex;
     align-items: center;
@@ -31,30 +28,18 @@
 
 .aboutDescription{
     position: absolute;
-    width: 596px;
-    height: 266px;
-    left: 423px;
-    top: 265px;
+    width: 41.3888888889%;
+    height: 29.5555555556%;
+    left: 29.375%;
+    top: 29.4444444444%;
 
     font-family: Open Sans;
     font-style: normal;
     font-weight: normal;
-    font-size: 14px;
-    line-height: 19px;
+    font-size: 0.9vw;
     display: flex;
     align-items: center;
     text-align: center;
 
     color: #FFFFFF;
-}
-
-.aboutFooter{
-    position: absolute;
-    width: 1440px;
-    height: 177px;
-    left: 0px;
-    top: 721px;
-
-    background: rgba(0, 0, 0, 0.8);
-    box-shadow: inset 0px 1px 0px rgba(255, 255, 255, 0.15);
 }

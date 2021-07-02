@@ -1,7 +1,7 @@
 import { Component } from 'react';
 import Web3 from 'web3';
 import "./../App.css"
-import "./marketplace.css"
+import "./collectibles"
 import homeLogo from "./../assets/homeLogo.png"
 import logoVBC from "./../assets/logoVBC.png"
 import collectiblesLine from "./../assets/collectiblesLine.png"
@@ -12,7 +12,7 @@ import aboutLogo from "./../assets/aboutLogo.png"
 import pdfPicture from "./../assets/pdfPicture.png"
 import closeAlert from "./../assets/closeAlert.png"
 import {Link} from "react-router-dom"
-import {Row, Col, Card, UncontrolledCollapse} from "reactstrap"
+import {Row, Col, UncontrolledCollapse} from "reactstrap"
 import DataValidate from './../abis/DataValidate.json'
 
 
@@ -20,20 +20,20 @@ import DataValidate from './../abis/DataValidate.json'
 class Marketplace extends Component {
   async componentWillMount(){
     await this.loadStorage()
+    await this.hanldeCollectibles()
     if (this.state.account !== ''){
       this.setState({connected: true})
       await this.loadWeb3()
       await this.loadBlockchainData()
-      await this.hanldeCollectibles()
     }
   }
 
   connectMetamask = async(event) => {
     event.preventDefault()
     if (window.ethereum){
+      await this.hanldeCollectibles()
       await this.loadWeb3()
       await this.loadBlockchainData()
-      await this.hanldeCollectibles()
     }
     else{
       alert("this device dont have metamask extension")
@@ -188,34 +188,28 @@ class Marketplace extends Component {
 
   render(){
     return (
-      <div style = {{width: "1440px", background: "black"}}>
-        <img style = {{width: "159px",height: "39px",marginLeft: "75px", marginTop: "18px"}} src = {logoVBC} alt="logo VBC"/>
-
-        {/* Home Button */}
+      <div className = "fullPage">
+        <img className = "logoVBC" src = {logoVBC} alt="logo VBC"/>
         <Link to= "/home">
-           <img style = {{position: "absolute",width: "20px", height: "19px", left:"375px", top: "27px"}} src = {homeLogo} alt="Home Logo"/>
-           <div className = "inactivePageText" style ={{left: "404px"}}>Home</div>
+          <img className = "navigationIcon" style ={{left: "26.0416666667%"}} src = {homeLogo} alt="Home Logo"/>
+          <div className = "inactiveNavigationText" style ={{left: "28%"}}>Home</div>
         </Link>
 
-        {/* Collectibles Button */}
         <Link to= "/collectibles">
-          <img style = {{position: "absolute",width: "26px", height: "26px", left:"532px", top: "24px"}} src = {collectiblesLogo} alt="Collectibles Logo"/>
-          <div className = "inactivePageText" style ={{left: "564px"}}>Collectibles</div>
+          <img className = "navigationIcon" style = {{width: "1.80555555556%", top: "2.8%", left: "36.9444444444%"}} src = {collectiblesLogo} alt="Collectibles Logo"/>
+          <div className = "inactiveNavigationText" style ={{left: "39.1666666667%"}}>Collectibles</div>
         </Link>
 
-        {/* Collectibles Button */}
         <Link to= "/marketplace">
-          <img style = {{position: "absolute",width: "26px", height: "26px", left:"748px", top: "24px"}} src = {collectiblesLogoActive} alt="Collectibles Logo Active"/>
-          <div className = "activePageText" style ={{left: "780px"}}>Marketplace</div>
+          <img className = "navigationIcon" style = {{width: "1.80555555556%", top: "2.8%", left: "51.9444444444%"}} src = {collectiblesLogoActive} alt="Collectibles Logo Active"/>
+          <div className = "activeNavigationText" style ={{left: "54.1666666667%"}}>Marketplace</div>
         </Link>
 
-        {/* About Button */}
         <Link to= "/about">
-          <img style = {{position: "absolute",width: "26px", height: "26px", left:"980px", top: "24px"}} src = {aboutLogo} alt="About Logo"/>
-          <div className = "inactivePageText" style={{left: "1012px"}}>About</div>
+          <img className = "navigationIcon" style = {{width: "1.80555555556%", top: "2.8%", left: "68.0555555556%"}} src = {aboutLogo} alt="About Logo"/>
+          <div className = "inactiveNavigationText" style={{left: "70.2777777778%"}}>About</div>
         </Link>
 
-        {/* Metamask Button */}
         <div className = "metamaskBackground"/>
         {this.state.connected? 
         <div>
@@ -230,37 +224,37 @@ class Marketplace extends Component {
           </div>
         </div>}
 
-        <div className = "content" style={{background: "black"}}>
+        <div className = "content">
           <Row style= {{margin: "0 0 0 0"}}>
             {this.state.transaction.map((transaction, key) => {
               if (transaction.sellable === "sellable"){
                 if (transaction.fileName.split('.').pop().toLowerCase() === "pdf"){
                   return(
-                    <Col key = {key} className = 'col-sm-3'>
-                      <div className = "card" style ={{marginBottom: "112px", paddingLeft: "0px"}}>
-                        <div className = "pdfBackground"/>
-                        <img style = {{position: "absolute",width: "84px",height: "84px",left: "108px",top: "47px"}}src = {pdfPicture} alt="Pdf pic"/>
+                    <Col key = {key} className = 'col-sm-3' style ={{paddingLeft: "0%"}}>
+                      <div className = "card" style ={{marginBottom: "36.363636363%"}}>
+                      <div className = "pdfBackground"/>
+                        <img style = {{position: "absolute",width: "28%",height: "auto",left: "36%",top: "18%"}}src = {pdfPicture} alt="Pdf pic"/>
                         <div className= "fileName">{transaction.fileName}</div>
-                        <img style = {{position: "absolute",width: "274px",height: "1px",left: "13px",top: "265px"}}src = {collectiblesLine} alt="Collectibles Line"/>
-                        <div className = "detailButtonText" style ={{left: "23px", top:"279px"}} id={"toggler"+ key}>Detail</div>
-                        <img style = {{position: "absolute",width: "9px",height: "5px",left: "68px",top: "285px"}}src = {detailIcon} alt="Detail icon"/>
+                        <img style = {{position: "absolute",width: "90%",height: "0.324675324%",left: "5%",top: "85%"}}src = {collectiblesLine} alt="Collectibles Line"/>
+                        <div className = "detailButtonText" style ={{left: "7.666666666%", top:"90%"}} id={"toggler"+ key}>Detail</div>
+                        <img style = {{position: "absolute",width: "3%",height: "auto",left: "22.666666666%",top: "91.5%"}}src = {detailIcon} alt="Detail icon"/>
                         {transaction.fileOwner === this.state.account ?
                         <div>
                           {transaction.transfer === "" ? 
                           <div/> 
                           : 
                           <div>
-                            <div className = "detailButtonText" style ={{left: "123px", top:"279px"}} onClick = {(() => this.handleBuyable(transaction.fileName, transaction.fileDescription, transaction.initialFile, transaction.sellable, transaction.tokenID, "Approve"))}>Approve</div>
-                            <div className = "notification" style = {{position: "absolute", top: "275px", left: "175px", width: "10px", height: "10px", backgroundColor: "red", borderRadius: "15px"}}/>
+                            <div className = "detailButtonText" style ={{left: "41%", top:"90%"}} onClick = {(() => this.handleBuyable(transaction.fileName, transaction.fileDescription, transaction.initialFile, transaction.sellable, transaction.tokenID, "Approve"))}>Approve</div>
+                            <div className = "notification" style = {{position: "absolute", top: "89%", left: "58.333333333%", width: "3.333333333%", height: "1.1vh", backgroundColor: "red", borderRadius: "15px"}}/>
                           </div>}
-                          <div className = "detailButtonText" style ={{left: "223px", top:"279px"}} onClick = {(() => this.handleBuyable(transaction.fileName, transaction.fileDescription, transaction.initialFile, transaction.sellable, transaction.tokenID, "Remove"))}>Remove</div>
+                          <div className = "detailButtonText" style ={{left: "74.333333333%", top:"90%"}} onClick = {(() => this.handleBuyable(transaction.fileName, transaction.fileDescription, transaction.initialFile, transaction.sellable, transaction.tokenID, "Remove"))}>Remove</div>
                         </div>
                         :
                         <div>
                           {transaction.transfer === "" ? 
-                          <div className = "detailButtonText" style ={{left: "223px", top:"279px"}} onClick = {(() => this.handleBuyable(transaction.fileName, transaction.fileDescription, transaction.initialFile, transaction.sellable, transaction.tokenID, "Buy"))}>Buy</div>
+                          <div className = "detailButtonText" style ={{left: "74.333333333%", top:"90%"}} onClick = {(() => this.handleBuyable(transaction.fileName, transaction.fileDescription, transaction.initialFile, transaction.sellable, transaction.tokenID, "Buy"))}>Buy</div>
                           : 
-                          <div className = "detailButtonText" style ={{left: "223px", top:"279px"}}>Pending</div>} 
+                          <div className = "detailButtonText" style ={{left: "74.333333333%", top:"90%"}}>Pending</div>} 
                         </div>}
 
                         <UncontrolledCollapse toggler={"#toggler" + key}>
@@ -274,40 +268,40 @@ class Marketplace extends Component {
                 }
                 if (transaction.fileName.split('.').pop().toLowerCase() === "png" || transaction.fileName.split('.').pop().toLowerCase() === "jpg" || transaction.fileName.split('.').pop().toLowerCase() === "jpeg"){
                   return(
-                    <Col key = {key} className = 'col-sm-3'>
-                      <Card style ={{marginBottom: "112px", paddingLeft: "0px"}}>
-                        <div class="editedImg-container">
+                    <Col key = {key} className = 'col-sm-3' style ={{paddingLeft: "0%"}}>
+                      <div className = "card" style ={{marginBottom: "36.363636363%"}}>
+                      <div class="editedImg-container">
                           <img class="editedImg" src={transaction.initialFile} alt = "source"/>
                         </div>
                         <div className= "fileName">{transaction.fileName}</div>
-                        <img style = {{position: "absolute",width: "274px",height: "1px",left: "13px",top: "265px"}}src = {collectiblesLine} alt="Collectibles Line"/>
-                        <div className = "detailButtonText" style ={{left: "23px", top:"279px"}} id={"toggler"+ key}>Detail</div>
-                        <img style = {{position: "absolute",width: "9px",height: "5px",left: "68px",top: "285px"}}src = {detailIcon} alt="Detail icon"/>
+                        <img style = {{position: "absolute",width: "90%",height: "0.324675324%",left: "5%",top: "85%"}}src = {collectiblesLine} alt="Collectibles Line"/>
+                        <div className = "detailButtonText" style ={{left: "7.666666666%", top:"90%"}} id={"toggler"+ key}>Detail</div>
+                        <img style = {{position: "absolute",width: "3%",height: "auto",left: "22.666666666%",top: "91.5%"}}src = {detailIcon} alt="Detail icon"/>
                         {transaction.fileOwner === this.state.account ?
                         <div>
                           {transaction.transfer === "" ? 
                           <div/> 
                           : 
                           <div>
-                            <div className = "detailButtonText" style ={{left: "123px", top:"279px"}} onClick = {(() => this.handleBuyable(transaction.fileName, transaction.fileDescription, transaction.initialFile, transaction.sellable, transaction.tokenID, "Approve"))}>Approve</div>
-                            <div className = "notification" style = {{position: "absolute", top: "275px", left: "175px", width: "10px", height: "10px", backgroundColor: "red", borderRadius: "15px"}}/>
+                            <div className = "detailButtonText" style ={{left: "41%", top:"90%"}} onClick = {(() => this.handleBuyable(transaction.fileName, transaction.fileDescription, transaction.initialFile, transaction.sellable, transaction.tokenID, "Approve"))}>Approve</div>
+                            <div className = "notification" style = {{position: "absolute", top: "89%", left: "58.333333333%", width: "3.333333333%", height: "1.1vh", backgroundColor: "red", borderRadius: "15px"}}/>
                           </div>}
-                          <div className = "detailButtonText" style ={{left: "223px", top:"279px"}} onClick = {(() => this.handleBuyable(transaction.fileName, transaction.fileDescription, transaction.initialFile, transaction.sellable, transaction.tokenID, "Remove"))}>Remove</div>
+                          <div className = "detailButtonText" style ={{left: "74.333333333%", top:"90%"}} onClick = {(() => this.handleBuyable(transaction.fileName, transaction.fileDescription, transaction.initialFile, transaction.sellable, transaction.tokenID, "Remove"))}>Remove</div>
                         </div>
                         :
                         <div>
                           {transaction.transfer === "" ? 
-                          <div className = "detailButtonText" style ={{left: "223px", top:"279px"}} onClick = {(() => this.handleBuyable(transaction.fileName, transaction.fileDescription, transaction.initialFile, transaction.sellable, transaction.tokenID, "Buy"))}>Buy</div>
+                          <div className = "detailButtonText" style ={{left: "74.333333333%", top:"90%"}} onClick = {(() => this.handleBuyable(transaction.fileName, transaction.fileDescription, transaction.initialFile, transaction.sellable, transaction.tokenID, "Buy"))}>Buy</div>
                           : 
-                          <div className = "detailButtonText" style ={{left: "223px", top:"279px"}}>Pending</div>} 
+                          <div className = "detailButtonText" style ={{left: "74.333333333%", top:"90%"}}>Pending</div>} 
                         </div>}
-                                
-                        <UncontrolledCollapse toggler={"#toggler"+ key}>
+
+                        <UncontrolledCollapse toggler={"#toggler" + key}>
                           <div className = "detailBackground"/>
                           <div className = "date">Minted in {transaction.date.slice(8,10)} / {transaction.date.slice(5,7)} / {transaction.date.slice(0,4)}</div>
                           <div className = "detailText">{transaction.fileDescription}</div>
                         </UncontrolledCollapse>
-                      </Card>
+                      </div>
                     </Col>
                   )
                 }
@@ -317,50 +311,54 @@ class Marketplace extends Component {
           </Row>
         </div>
         {this.state.haveCollectibles ? 
-        <div>
-          <div className="collectiblesFooter"/>
-        </div> 
+        <div/>
         : 
         <div>
-          <div style= {{width: "1440px", height: "380px"}}> 
-            <div style= {{textAlign: "center", color: "#ffffff"}}>Dont have any collectible for sale </div>
+          <div style= {{position: "absolute", top: "25%",width: "100%"}}> 
+            <div style= {{fontFamily: "Open Sans",fontStyle: "normal",fontWeight: "bold",fontSize: "1.3vw",textAlign: "center", color: "#ffffff"}}>You dont have any collectibles </div>
           </div>
-          <div className="collectiblesFooter"/>
+          <div className="footer"/>
         </div>}
 
         {this.state.isBuy ? 
         <div>
           <div className = "shareBackground">
-            <img class = "closeButton" style = {{left: "350px",top: "20px"}} src = {closeAlert} alt="Close alert button" onClick = {this.handleRefresh}/>
-            <div style = {{position: "absolute",left: "65px",top: "50px",width: "270px",height: "190px",borderRadius: "15px"}}>
-              <div class="editedImg-container" style = {{borderRadius: "15px"}}>
+          <img className = "closeButton" style = {{width: "5%", height: "auto",left: "90%",top: "3%"}} src = {closeAlert} alt="Close alert button" onClick = {this.handleRefresh}/>
+            <div style = {{position: "absolute",left: "16.25%",top: "10%",width: "67.5%",height: "38%",borderRadius: "15px"}}>
+              {this.state.buyFileName.split('.').pop().toLowerCase() === "pdf" ? 
+              <div>
+                <div className = "pdfBackground" style = {{height: "100%", borderRadius: "15px"}}/>
+                <img style = {{position: "absolute",width: "28%",height: "auto",left: "36%",top: "18%"}}src = {pdfPicture} alt="Pdf pic"/>
+              </div> 
+              : 
+              <div class="editedImg-container" style = {{height: "100%",borderRadius: "15px"}}>
                 <img class="editedImg" src={this.state.buyInitialFile} alt = "source"/>
-              </div>
+              </div>}
             </div>
-            <div className = "linkQRBackground" style = {{top: "260px", width: "270px", left: "65px", height: "120px"}}>
-              <div className= "fileName" style ={{color: "black", top: "0px"}}>Owner: {this.state.owner.slice(0,18)}...</div>
-              <div className= "fileName" style ={{color: "black", top: "35px"}}>File name: {this.state.buyFileName}</div>
-              <div className = "fileName" style ={{color: "black", top: "70px"}}>Description: {this.state.buyFileDescription}</div>
+            <div className = "linkQRBackground" style = {{top: "52%", width: "67.5%", left: "16.25%", height: "24%"}}>
+              <div className= "fileName" style ={{color: "black", top: "5%"}}>Owner: {this.state.owner.slice(0,18)}...</div>
+              <div className= "fileName" style ={{color: "black", top: "35%"}}>File name: {this.state.buyFileName}</div>
+              <div className = "fileName" style ={{color: "black", top: "60%"}}>Description: {this.state.buyFileDescription}</div>
             </div>
             {this.state.buyOpen === "Buy" ? 
             <div className = "qrSave" onClick = {(() => this.handleBuyTx())}>
-              <div className = "qrSaveText" style = {{left: "58px"}}>BUY</div>
+              <div className = "qrSaveText" style = {{left: "38.666666666%"}}>BUY</div>
             </div>
             : 
             <div>
               {this.state.buyOpen === "Remove" ? 
               <div className = "qrSave" onClick = {this.handleRemoveMartketplace}>
-                <div className = "qrSaveText" style = {{left: "40px"}}>REMOVE</div>
+                <div className = "qrSaveText" style = {{left: "26.666666666%"}}>REMOVE</div>
               </div>
               :
               <div>
                 {this.state.approveWatiting ? 
                 <div className = "qrSave">
-                  <div class="loader" style = {{left: "65px", top: "15px"}}/>
+                  <div class="loader" style = {{left: "43.333333333%", top: "30%",width: "20px", height: "20px"}}/>
                 </div>
                 : 
                 <div className = "qrSave" onClick = {(() => this.handleApproveTx())}>
-                  <div className = "qrSaveText" style = {{left: "35px"}}>APPROVE</div>
+                  <div className = "qrSaveText" style = {{left: "23.333333333%"}}>APPROVE</div>
                 </div>}
               </div>}
             </div>}

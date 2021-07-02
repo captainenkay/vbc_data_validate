@@ -1,7 +1,7 @@
 import { Component } from 'react';
 import Web3 from 'web3';
-import "./../App.css"
 import "./about.css"
+import "./../App.css"
 import homeLogo from "./../assets/homeLogo.png"
 import logoVBC from "./../assets/logoVBC.png"
 import collectiblesLogo from "./../assets/collectiblesLogo.png"
@@ -80,34 +80,29 @@ class About extends Component {
 
   render(){
     return (
-      <div className = "fullPage" style ={{background: "#000000"}}>
-        <img style = {{position: "absolute", width: "159px",height: "39px",left: "75px",top: "18px"}} src = {logoVBC} alt="logo VBC"/>
+      <div className = "fullPage">
+        <img className = "logoVBC" src = {logoVBC} alt="logo VBC"/>
         
-        {/* Home Button */}
         <Link to= "/home">
-           <img style = {{position: "absolute",width: "20px", height: "19px", left:"375px", top: "27px"}} src = {homeLogo} alt="Home Logo"/>
-           <div className = "inactivePageText" style ={{left: "404px"}}>Home</div>
+          <img className = "navigationIcon" style ={{left: "26.0416666667%"}} src = {homeLogo} alt="Home Logo"/>
+          <div className = "inactiveNavigationText" style ={{left: "28%"}}>Home</div>
         </Link>
 
-        {/* Collectibles Button */}
         <Link to= "/collectibles">
-          <img style = {{position: "absolute",width: "26px", height: "26px", left:"532px", top: "24px"}} src = {collectiblesLogo} alt="Collectibles Logo"/>
-          <div className = "inactivePageText" style ={{left: "564px"}}>Collectibles</div>
+          <img className = "navigationIcon" style = {{width: "1.80555555556%", top: "2.8%", left: "36.9444444444%"}} src = {collectiblesLogo} alt="Collectibles Logo"/>
+          <div className = "inactiveNavigationText" style ={{left: "39.1666666667%"}}>Collectibles</div>
         </Link>
 
-        {/* Collectibles Button */}
         <Link to= "/marketplace">
-          <img style = {{position: "absolute",width: "26px", height: "26px", left:"748px", top: "24px"}} src = {collectiblesLogo} alt="Collectibles Logo"/>
-          <div className = "inactivePageText" style ={{left: "780px"}}>Marketplace</div>
+          <img className = "navigationIcon" style = {{width: "1.80555555556%", top: "2.8%", left: "51.9444444444%"}} src = {collectiblesLogo} alt="Collectibles Logo"/>
+          <div className = "inactiveNavigationText" style ={{left: "54.1666666667%"}}>Marketplace</div>
         </Link>
 
-        {/* About Button */}
         <Link to= "/about">
-          <img style = {{position: "absolute",width: "26px", height: "26px", left:"980px", top: "24px"}} src = {aboutLogoActive} alt="About Logo Active"/>
-          <div className = "activePageText" style={{left: "1012px"}}>About</div>
+          <img className = "navigationIcon" style = {{width: "1.80555555556%", top: "2.8%", left: "68.0555555556%"}} src = {aboutLogoActive} alt="About Logo Active"/>
+          <div className = "activeNavigationText" style={{left: "70.2777777778%"}}>About</div>
         </Link>
 
-        {/* Metamask Button */}
         <div className = "metamaskBackground"/>
         {this.state.connected? 
         <div>
@@ -128,7 +123,7 @@ class About extends Component {
         <div className = "aboutDescription">Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially unchanged. It was popularised in the 1960s with the release of Letraset sheets containing Lorem Ipsum passages, and more recently with desktop publishing software like Aldus PageMaker including versions of Lorem Ipsum.
 Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially unchanged. It was popularised in the 1960s with the release of Letraset sheets containing Lorem Ipsum passages, and more recently with desktop publishing software like Aldus PageMaker including versions of Lorem Ipsum.</div>
 
-        <div className="aboutFooter"/>
+        <div className="footer"/>
       </div>
     );
   }

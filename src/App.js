@@ -32,6 +32,7 @@ const ipfs = ipfsClient({ host: 'ipfs.infura.io', port: '5001', protocol: 'https
 class App extends Component {
   async componentWillMount(){
     await this.loadStorage()
+    console.log(window.innerHeight)
     if (this.state.account !== ''){
       this.setState({connected: true})
       await this.loadWeb3()
@@ -476,32 +477,28 @@ class App extends Component {
 
   render(){
     return (
-      <div className = "fullPage">
-        {/* Home Button */}
+      <div className= "fullPage">
+        <img className = "logoVBC" src = {logoVBC} alt="logo VBC"/>
         <Link to= "/home">
-           <img style = {{position: "absolute",width: "20px", height: "19px", left:"375px", top: "27px"}} src = {homeLogoActive} alt="Home Logo Active"/>
-           <div className = "activePageText" style ={{left: "404px"}}>Home</div>
+          <img className = "navigationIcon" style ={{left: "26.0416666667%"}} src = {homeLogoActive} alt="Home Logo Active"/>
+          <div className = "activeNavigationText" style ={{left: "28%"}}>Home</div>
         </Link>
 
-        {/* Collectibles Button */}
         <Link to= "/collectibles">
-          <img style = {{position: "absolute",width: "26px", height: "26px", left:"532px", top: "24px"}} src = {collectiblesLogo} alt="Collectibles Logo"/>
-          <div className = "inactivePageText" style ={{left: "564px"}}>Collectibles</div>
+          <img className = "navigationIcon" style = {{width: "1.80555555556%", top: "2.8%", left: "36.9444444444%"}} src = {collectiblesLogo} alt="Collectibles Logo"/>
+          <div className = "inactiveNavigationText" style ={{left: "39.1666666667%"}}>Collectibles</div>
         </Link>
 
-        {/* Collectibles Button */}
         <Link to= "/marketplace">
-          <img style = {{position: "absolute",width: "26px", height: "26px", left:"748px", top: "24px"}} src = {collectiblesLogo} alt="Collectibles Logo"/>
-          <div className = "inactivePageText" style ={{left: "780px"}}>Marketplace</div>
+          <img className = "navigationIcon" style = {{width: "1.80555555556%", top: "2.8%", left: "51.9444444444%"}} src = {collectiblesLogo} alt="Collectibles Logo"/>
+          <div className = "inactiveNavigationText" style ={{left: "54.1666666667%"}}>Marketplace</div>
         </Link>
 
-        {/* About Button */}
         <Link to= "/about">
-          <img style = {{position: "absolute",width: "26px", height: "26px", left:"980px", top: "24px"}} src = {aboutLogo} alt="About Logo"/>
-          <div className = "inactivePageText" style={{left: "1012px"}}>About</div>
+          <img className = "navigationIcon" style = {{width: "1.80555555556%", top: "2.8%", left: "68.0555555556%"}} src = {aboutLogo} alt="About Logo"/>
+          <div className = "inactiveNavigationText" style={{left: "70.2777777778%"}}>About</div>
         </Link>
 
-        {/* Metamask Button */}
         <div className = "metamaskBackground"/>
         {this.state.connected? 
         <div>
@@ -519,70 +516,70 @@ class App extends Component {
         <div className= "applicationName">DATA VALIDATION</div>
 
         {/* Published Files */}
-        <img style ={{position: "absolute",width: "54px",height: "54px",left: "300px",top: "583px"}} src = {publishFilesIcon} alt="Publish File Icon"/>
-        <div className = "number">{this.state.tokenID}</div>
-        <div className = "text">Published Files</div>
+        <img className = "applicationInformation" style ={{left: "20.8333333333%"}} src = {publishFilesIcon} alt="Publish File Icon"/>
+        <div className = "applicationInformationNumber" style ={{left: "25.6944444444%"}}>{this.state.tokenID}</div>
+        <div className = "applicationInformationText" style = {{left: "25.6944444444%"}}>Published Files</div>
 
         {/* Verified Files */}
-        <img style ={{position: "absolute",width: "54px",height: "54px",left: "617px",top: "583px"}} src = {verifyUserIcon} alt="Verified User Icon"/>
-        <div className = "number" style ={{left: "687px"}}>{this.state.verifiedFiles}</div>
-        <div className = "text" style ={{left: "688px"}}>Verified Files</div>
+        <img className = "applicationInformation" style ={{left: "42.8472222222%"}} src = {verifyUserIcon} alt="Verified User Icon"/>
+        <div className = "applicationInformationNumber" style ={{left: "47.7083333333%"}}>{this.state.verifiedFiles}</div>
+        <div className = "applicationInformationText" style ={{left: "47.7777777778%"}}>Verified Files</div>
 
         {/* Connected Address Files */}
-        <img style ={{position: "absolute",width: "54px",height: "54px",left: "934px",top: "583px"}} src = {connectedAddressIcon} alt="Connected Address Icon"/>
-        <div className = "number" style ={{left: "1004px"}}>{this.state.connectedAddress.length}</div>
-        <div className = "text" style ={{left: "1004px"}}>Connected Address</div>
+        <img className = "applicationInformation" style ={{left: "64.8611111111%"}} src = {connectedAddressIcon} alt="Connected Address Icon"/>
+        <div className = "applicationInformationNumber" style ={{left: "69.7222222222%"}}>{this.state.connectedAddress.length}</div>
+        <div className = "applicationInformationText" style ={{left: "69.7222222222%"}}>Connected Address</div>
+
         <div className="footer"/>
 
-        <img style = {{position: "absolute", width: "159px",height: "39px",left: "75px",top: "18px"}} src = {logoVBC} alt="logo VBC"/>
 
         {this.state.isPublished ?
         // Publish Mode
         <div>
           {/* Publish Button */}
-          <div className= "buttonActiveBackground" style ={{left: "300px"}}/>
-          <div className= "buttonActiveText" style={{left:"351px", width: "67px"}}>Publish</div>
+          <div className= "buttonActiveBackground" style ={{left: "20.8333333333%"}}/>
+          <div className= "buttonActiveText" style={{left:"24.375%", width: "4.65277777778%"}}>Publish</div>
 
           {/* Verify Button */}
-          <div className= "buttonInactiveBackground" style ={{left: "468px"}} onClick={this.handleVerifyMode}/>
-          <div className= "buttonInactiveText" style={{left:"525px", width: "54px"}} onClick={this.handleVerifyMode} >Verify</div>
+          <div className= "buttonInactiveBackground" style ={{left: "32.5%"}} onClick={this.handleVerifyMode}/>
+          <div className= "buttonInactiveText" style={{left:"36.4583333333%", width: "3.75%"}} onClick={this.handleVerifyMode} >Verify</div>
         </div>
         :
         // Verify Mode
         <div>
           {/* Publish Button */}
-          <div className= "buttonInactiveBackground" style ={{left: "300px"}} onClick={this.handlePublishMode}/>
-          <div className= "buttonInactiveText" style={{left:"351px", width: "67px"}} onClick={this.handlePublishMode} >Publish</div>
+          <div className= "buttonInactiveBackground" style ={{left: "20.8333333333%"}} onClick={this.handlePublishMode}/>
+          <div className= "buttonInactiveText" style={{left:"24.375%", width: "4.65277777778%"}} onClick={this.handlePublishMode} >Publish</div>
 
           {/* Verify Button */}
-          <div className= "buttonActiveBackground" style ={{left: "468px"}}/>
-          <div className= "buttonActiveText" style={{left:"525px", width: "54px"}} >Verify</div>
+          <div className= "buttonActiveBackground" style ={{left: "32.5%"}}/>
+          <div className= "buttonActiveText" style={{left:"36.4583333333%", width: "3.75%"}} >Verify</div>
         </div>
         }
 
         {this.state.isUploaded ? 
         <div>
           <div className= "chooseFileBackground"/>
-          <img style = {{position: "absolute",width: "56px",height: "56px",left: "652px",top: "346px"}} src = {fileImage} alt="File Img"/>
+          <img style = {{position: "absolute",width: "3.88888888889%",height: "auto",left: "45.2777777778%",top: "42.143727162%"}} src = {fileImage} alt="File Img"/>
           <div className= "fileText">{this.handleFileName(this.state.fileName)}</div>
           <div className= "fileSize">{this.state.fileSize} - File hash: {this.state.initialFileSHA256.slice(0,15)} ...</div>
           <div className = "borderFile"/>
-          <img class = "closeButton" src = {closeAlert} alt="Close alert button" onClick = {this.handleRefresh}/>
+          <img className = "closeButton" src = {closeAlert} alt="Close alert button" onClick = {this.handleRefresh}/>
           
           {this.state.isPublished ?
             <div>
-              <div className= "browseFilesBackground" style = {{top: "461px", left: "656px"}}/>
+              <div className= "browseFilesBackground" style = {{width: "9.02777777778%", height: "4.62850182704%",top: "56.1510353228%", left: "45.5555555556%"}}/>
               <div className= "publishText" onClick={this.publishFile}>Publish</div>
               <input class = "descriptionText" placeholder="Input description here" type = "text" value = {this.state.description} onChange = {this.handleTextChange}/>
               {this.state.alertBackground ?
               <div>
                 <div className = "alertBackgroundFade"/>
                 <div className = "alertBackground"/>
-                <img class = "closeButton" style = {{position: "absolute",width: "24px",height: "24px",left: "976px",top: "172px"}} src = {closeAlert} alt="Close alert button" onClick = {this.handleRefresh}/>
-                <img style = {{position: "absolute",width: "56px",height: "56px",left: "651px",top: "196px"}} src = {fileImage} alt="File Img"/>
-                <div className= "fileText" style ={{left: "717px", top: "201px", color: "#1E1E1E"}}>{this.handleFileName(this.state.fileName)}</div>
-                <div className= "fileSize" style ={{left: "717px", top: "228px", color: "rgba(30, 30, 30, 0.8)"}}>{this.state.fileSize}</div>
-                <img style = {{position: "absolute",width: "560px;",height: "1px",left: "440px",top: "292px"}} src = {line} alt="line"/>
+                <img className = "closeButton" style = {{position: "absolute",left: "67.7777777778%",top: "20.9500609013%"}} src = {closeAlert} alt="Close alert button" onClick = {this.handleRefresh}/>
+                <img style = {{position: "absolute",width: "3.88888888889%",height: "auto",left: "45.2083333333%",top: "23.8733252132%"}} src = {fileImage} alt="File Img"/>
+                <div className= "fileText" style ={{left: "49.7916666667%", top: "24.4823386114%", color: "#1E1E1E"}}>{this.handleFileName(this.state.fileName)}</div>
+                <div className= "fileSize" style ={{left: "49.7916666667%", top: "27.7710109622%", color: "rgba(30, 30, 30, 0.8)"}}>{this.state.fileSize}</div>
+                <img style = {{position: "absolute",width: "38.8888888889%;",height: "0.12180267965%",left: "30.5555555556%",top: "35.5663824604%"}} src = {line} alt="line"/>
                 <div className="Progress">
                   <div className="ProgressBar"/>
                 </div>
@@ -593,12 +590,12 @@ class App extends Component {
 
               {this.state.barHeight >= 3 ?
               <div>
-                <div className = "alertText" style= {{top: "317px"}}>File is encrypted with ipfs and sha256</div>
-                <img style = {{position: "absolute",width: "26px;",height: "26px",left: "611px",top: "313px"}} src = {checkIcon} alt="Check Icon"/>
+                <div className = "alertText" style= {{top: "38.6114494519%"}}>File is encrypted with ipfs and sha256</div>
+                <img className = "checkIcon" style = {{top: "38.1242387333%"}} src = {checkIcon} alt="Check Icon"/>
                 {this.state.barHeight === 3 ? 
                 <div>
-                  <div className = "alertText" style= {{top: "372px"}}>Comparing hash</div>
-                  <div class="loader" style = {{top: "369px"}}/>
+                  <div className = "alertText" style= {{top: "45.3105968331%"}}>Comparing hash</div>
+                  <div class="loader" style = {{top: "44.9451887942%"}}/>
                 </div> 
                 : 
                 <div/>}
@@ -610,12 +607,12 @@ class App extends Component {
               <div>
                 {this.state.barHeight >= 24 ? 
                 <div>
-                  <div className = "alertText" style= {{top: "372px"}}>Hash compared</div>
-                  <img style = {{position: "absolute",width: "26px;",height: "26px",left: "611px",top: "369px"}} src = {checkIcon} alt="Check Icon"/>
+                  <div className = "alertText" style= {{top: "45.3105968331%"}}>Hash compared</div>
+                  <img className = "checkIcon" style = {{top: "44.9451887942%"}} src = {checkIcon} alt="Check Icon"/>
                   {this.state.barHeight === 24 ? 
                   <div>
-                    <div className = "alertText" style= {{top: "423px"}}>Creating certificate</div>
-                    <div class="loader" style = {{top: "420px"}}/>
+                    <div className = "alertText" style= {{top: "51.5225334957%"}}>Creating certificate</div>
+                    <div class="loader" style = {{top: "51.1571254568%"}}/>
                   </div> 
                   : 
                   <div/>}
@@ -625,12 +622,12 @@ class App extends Component {
 
                 {this.state.barHeight >= 40 ? 
                 <div>
-                  <div className = "alertText" style= {{top: "423px"}}>Certificate created</div>
-                  <img style = {{position: "absolute",width: "26px;",height: "26px",left: "611px",top: "420px"}} src = {checkIcon} alt="Check Icon"/>
+                  <div className = "alertText" style= {{top: "51.5225334957%"}}>Certificate created</div>
+                  <img className = "checkIcon" style = {{top: "51.1571254568%"}} src = {checkIcon} alt="Check Icon"/>
                   {this.state.barHeight === 40 ? 
                   <div>
-                    <div className = "alertText" style= {{top: "474px"}}>Uploading certificate to ipfs</div>
-                    <div class="loader" style = {{top: "471px"}}/>
+                    <div className = "alertText" style= {{top: "57.7344701583%"}}>Uploading certificate to ipfs</div>
+                    <div class="loader" style = {{top: "57.3690621194%"}}/>
                   </div> 
                   : 
                   <div/>}
@@ -640,12 +637,12 @@ class App extends Component {
 
                 {this.state.barHeight >= 58 ? 
                 <div>
-                  <div className = "alertText" style= {{top: "474px"}}>Certificate uploaded to ipfs</div>
-                  <img style = {{position: "absolute",width: "26px;",height: "26px",left: "611px",top: "471px"}} src = {checkIcon} alt="Check Icon"/>
+                  <div className = "alertText" style= {{top: "57.7344701583%"}}>Certificate uploaded to ipfs</div>
+                  <img className = "checkIcon" style = {{top: "57.3690621194%"}} src = {checkIcon} alt="Check Icon"/>
                   {this.state.barHeight === 58 ? 
                   <div>
-                    <div className = "alertText" style= {{top: "525px"}}>Uploading certificate to binance smart chance</div>
-                    <div class="loader" style = {{top: "522px"}}/>
+                    <div className = "alertText" style= {{top: "63.946406821%"}}>Uploading certificate to Binance smart chance</div>
+                    <div class="loader" style = {{top: "63.580998782%"}}/>
                   </div> 
                   : 
                   <div/>}
@@ -655,8 +652,8 @@ class App extends Component {
 
                 {this.state.barHeight >= 75 ? 
                 <div>
-                  <div className = "alertText" style= {{top: "525px"}}>Certificate uploaded on binace smart chain</div>
-                  <img style = {{position: "absolute",width: "26px;",height: "26px",left: "611px",top: "522px"}} src = {checkIcon} alt="Check Icon"/>
+                  <div className = "alertText" style= {{top: "63.946406821%"}}>Certificate uploaded on Binance smart chain</div>
+                  <img className = "checkIcon" style = {{top: "63.580998782%"}} src = {checkIcon} alt="Check Icon"/>
                 </div>
                 : 
                 <div/>}
@@ -664,9 +661,9 @@ class App extends Component {
                 {this.state.barHeight >= 100 ? 
                 <div>
                   <div className = "alertSuccessBigTitle">PUBLISHED</div>
-                  <div className = "alertSuccessTitle" style ={{top: "597px"}}> This file has been published on our network </div>
-                  <a style = {{position: "absolute", width: "252px", height: "32px", left: "648px", top: "613px", fontFamily:"Open Sans", fontStyle: "normal", fontWeight: "normal", fontSize: "12px", lineHeight: "16px", display: "flex", alignItems: "center", color: "#6F6F6F"}}target="_blank" rel="noopener noreferrer" href={'https://testnet.bscscan.com/tx/' + this.state.transactionLink}>View transaction</a>
-                  <img style = {{position: "absolute",width: "36px;",height: "36px",left: "606px",top: "585px", filter: "drop-shadow(0px 4px 4px rgba(84, 114, 174, 0.2))"}} src = {bigCheckIcon} alt="Big Check Icon"/>
+                  <div className = "alertSuccessTitle" style ={{top: "72.7161997564%"}}> This file has been published on Binance smart chain </div>
+                  <a style = {{position: "absolute", left: "45%", top: "74.6650426309%", fontFamily:"Open Sans", fontStyle: "normal", fontWeight: "normal", fontSize: "0.8vw", color: "#6F6F6F"}}target="_blank" rel="noopener noreferrer" href={'https://testnet.bscscan.com/tx/' + this.state.transactionLink}>View transaction</a>
+                  <img style = {{position: "absolute",width: "2.5%;",height: "auto",left: "42.0833333333%",top: "71.2545676005%", filter: "drop-shadow(0px 4px 4px rgba(84, 114, 174, 0.2))"}} src = {bigCheckIcon} alt="Big Check Icon"/>
                 </div>
                 : 
                 <div/>} 
@@ -678,16 +675,16 @@ class App extends Component {
                 <div>
                   {this.state.barHeight >= 24 ? 
                   <div>
-                    <div className = "alertText" style= {{top: "372px"}}>Compared the hash</div>
-                    <img style = {{position: "absolute",width: "26px;",height: "26px",left: "611px",top: "369px"}} src = {crossIcon} alt="Cross Icon"/>
+                    <div className = "alertText" style= {{top: "45.3105968331%"}}>Compared the hash</div>
+                    <img className = "checkIcon" style = {{top: "44.9451887942%"}} src = {crossIcon} alt="Cross Icon"/>
                   </div> 
                   : 
                   <div/>}
 
                   {this.state.barHeight >= 100 ? 
                   <div>
-                    <div className = "alertFailTitle" style ={{top: "594px", left: "648px"}}>This file has been published on our network before</div>
-                    <img style = {{position: "absolute",width: "36px;",height: "36px",left: "606px",top: "585px"}} src = {bigCrossIcon} alt="Big Cross Icon"/>
+                    <div className = "alertFailTitle" style ={{top: "72.3507917174%", left: "45%"}}>This file has been published on our network before</div>
+                    <img style = {{position: "absolute",width: "2.5%",height: "auto",left: "42.0833333333%",top: "71.2545676005%"}} src = {bigCrossIcon} alt="Big Cross Icon"/>
                   </div> 
                   : 
                   <div/>}
@@ -697,17 +694,17 @@ class App extends Component {
             </div>
             : 
             <div>
-              <div className= "browseFilesBackground" style = {{top: "461px", left: "656px"}}/>
+              <div className= "browseFilesBackground" style = {{width: "9.02777777778%", height: "4.62850182704%",top: "56.1510353228%", left: "45.5555555556%"}}/>
               <div className= "publishText" onClick={this.verifyFile}>Verify</div>
               {this.state.alertBackground ?
               <div>
                 <div className = "alertBackgroundFade"/>
                 <div className = "alertBackground"/>
-                <img className = "closeButton" style = {{position: "absolute",width: "24px",height: "24px",left: "976px",top: "172px"}} src = {closeAlert} alt="Close alert button" onClick = {this.handleRefresh}/>
-                <img style = {{position: "absolute",width: "56px",height: "56px",left: "651px",top: "196px"}} src = {fileImage} alt="File Img"/>
-                <div className= "fileText" style ={{left: "717px", top: "201px", color: "#1E1E1E"}}>{this.handleFileName(this.state.fileName)}</div>
-                <div className= "fileSize" style ={{left: "717px", top: "228px", color: "rgba(30, 30, 30, 0.8)"}}>{this.state.fileSize}</div>
-                <img style = {{position: "absolute",width: "560px;",height: "1px",left: "440px",top: "292px"}} src = {line} alt="line"/>
+                <img className = "closeButton" style = {{position: "absolute",left: "67.7777777778%",top: "20.9500609013%"}} src = {closeAlert} alt="Close alert button" onClick = {this.handleRefresh}/>
+                <img style = {{position: "absolute",width: "3.88888888889%",height: "auto",left: "45.2083333333%",top: "23.8733252132%"}} src = {fileImage} alt="File Img"/>
+                <div className= "fileText" style ={{left: "49.7916666667%", top: "24.4823386114%", color: "#1E1E1E"}}>{this.handleFileName(this.state.fileName)}</div>
+                <div className= "fileSize" style ={{left: "49.7916666667%", top: "27.7710109622%", color: "rgba(30, 30, 30, 0.8)"}}>{this.state.fileSize}</div>
+                <img style = {{position: "absolute",width: "38.8888888889%;",height: "0.12180267965%",left: "30.5555555556%",top: "35.5663824604%"}} src = {line} alt="line"/>
                 <div className="Progress">
                   <div className="ProgressBar"/>
                 </div>
@@ -717,8 +714,8 @@ class App extends Component {
               }
               {this.state.barHeight >= 3 ?
               <div>
-                <div className = "alertText" style= {{top: "317px"}}>File is encrypted with ipfs</div>
-                <img style = {{position: "absolute",width: "26px;",height: "26px",left: "611px",top: "313px"}} src = {checkIcon} alt="Check Icon"/>
+                <div className = "alertText" style= {{top: "38.6114494519%"}}>File is encrypted with ipfs</div>
+                <img className = "checkIcon" style = {{top: "38.1242387333%"}} src = {checkIcon} alt="Check Icon"/>
               </div> 
               : 
               <div/>}
@@ -727,8 +724,8 @@ class App extends Component {
               <div>
                 {this.state.barHeight >= 33 ? 
                 <div>
-                  <div className = "alertText" style= {{top: "400px"}}>Compared the hash</div>
-                  <img style = {{position: "absolute",width: "26px;",height: "26px",left: "611px",top: "397px"}} src = {checkIcon} alt="Check Icon"/>
+                  <div className = "alertText" style= {{top: "48.7210718636%"}}>Compared the hash</div>
+                  <img className = "checkIcon" style = {{top: "48.3556638246%"}} src = {checkIcon} alt="Check Icon"/>
                 </div> 
                 : 
                 <div/>}
@@ -737,8 +734,8 @@ class App extends Component {
                 <div>
                   {this.state.barHeight >= 70 ? 
                   <div>
-                    <div className = "alertText" style= {{top: "505px"}}>The owner of this collectibles is {this.state.verifyOwner.slice(0,15)}...</div>
-                    <img style = {{position: "absolute",width: "26px;",height: "26px",left: "611px",top: "502px"}} src = {crossIcon} alt="Cross Icon"/>
+                    <div className = "alertText" style= {{top: "61.5103532278%"}}>The owner of this collectibles is {this.state.verifyOwner.slice(0,15)}...</div>
+                    <img className = "checkIcon" style = {{top: "61.1449451888%"}} src = {crossIcon} alt="Cross Icon"/>
                   </div>
                   : 
                   <div/>}
@@ -747,8 +744,8 @@ class App extends Component {
                 <div>
                   {this.state.barHeight >= 70 ? 
                   <div>
-                    <div className = "alertText" style= {{top: "505px"}}>You are the owner of this collectible</div>
-                    <img style = {{position: "absolute",width: "26px;",height: "26px",left: "611px",top: "502px"}} src = {checkIcon} alt="Check Icon"/>
+                    <div className = "alertText" style= {{top: "61.5103532278%"}}>You are the owner of this collectible</div>
+                    <img className = "checkIcon" style = {{top: "61.1449451888%"}} src = {checkIcon} alt="Check Icon"/>
                   </div>
                   : 
                   <div/>}
@@ -758,9 +755,9 @@ class App extends Component {
                 {this.state.barHeight >= 99 ? 
                 <div>
                   <div className = "alertSuccessBigTitle">VERIFIED</div>
-                  <div className = "alertSuccessTitle" style ={{top: "597px"}}> This is a valid certificate </div>
-                  <a style = {{position: "absolute", width: "252px", height: "32px", left: "648px", top: "613px", fontFamily:"Open Sans", fontStyle: "normal", fontWeight: "normal", fontSize: "12px", lineHeight: "16px", display: "flex", alignItems: "center", color: "#6F6F6F"}}target="_blank" rel="noopener noreferrer" href={'https://testnet.bscscan.com/tx/' + this.state.transactionLink}>View transaction</a>
-                  <img style = {{position: "absolute",width: "36px;",height: "36px",left: "606px",top: "585px", filter: "drop-shadow(0px 4px 4px rgba(84, 114, 174, 0.2))"}} src = {bigCheckIcon} alt="Big Check Icon"/>
+                  <div className = "alertSuccessTitle" style ={{top: "72.7161997564%"}}> This is a valid certificate </div>
+                  <a style = {{position: "absolute", left: "45%", top: "74.6650426309%", fontFamily:"Open Sans", fontStyle: "normal", fontWeight: "normal", fontSize: "0.8vw", color: "#6F6F6F"}}target="_blank" rel="noopener noreferrer" href={'https://testnet.bscscan.com/tx/' + this.state.transactionLink}>View transaction</a>
+                  <img style = {{position: "absolute",width: "2.5%",height: "auto",left: "42.0833333333%",top: "71.2545676005%", filter: "drop-shadow(0px 4px 4px rgba(84, 114, 174, 0.2))"}} src = {bigCheckIcon} alt="Big Check Icon"/>
                 </div>
                 : 
                 <div/>}
@@ -772,16 +769,16 @@ class App extends Component {
                 <div>
                   {this.state.barHeight >= 33 ? 
                   <div>
-                    <div className = "alertText" style= {{top: "400px"}}>Compared the hash</div>
-                    <img style = {{position: "absolute",width: "26px;",height: "26px",left: "611px",top: "397px"}} src = {crossIcon} alt="Cross Icon"/>
+                    <div className = "alertText" style= {{top: "48.7210718636%"}}>Compared the hash</div>
+                    <img className = "checkIcon" style = {{top: "48.3556638246%"}} src = {crossIcon} alt="Cross Icon"/>
                   </div> 
                   : 
                   <div/>}
 
                   {this.state.barHeight >= 99 ? 
                   <div>
-                    <div className = "alertFailTitle" style ={{top: "594px", left: "648px"}}>This file has not been published on our network</div>
-                    <img style = {{position: "absolute",width: "36px;",height: "36px",left: "606px",top: "585px"}} src = {bigCrossIcon} alt="Big Cross Icon"/>
+                    <div className = "alertFailTitle" style ={{top: "72.3507917174%", left: "45%"}}>This file has not been published on our network</div>
+                    <img style = {{position: "absolute",width: "2.5%;",height: "auto",left: "42.0833333333%",top: "71.2545676005%"}} src = {bigCrossIcon} alt="Big Cross Icon"/>
                   </div> 
                   : 
                   <div/>}
@@ -793,8 +790,8 @@ class App extends Component {
         </div> 
         :
         <div>
-          <Dropzone style ={{position: "absolute",width: "841px",height: "252px",left: "300px",top: "287px", background: "rgba(0, 117, 255, 0.6)",mixBlendMode: "screen"}} onDrop = {this.handleOnDrop}>
-            <img style = {{position: "absolute",width: "58px",height: "58px",left: "392px", top: "40px"}} src={browseFileIcon} alt="Browse File Icon"/>
+          <Dropzone style ={{position: "absolute",width: "58.4027777778%",height: "30.6942752741%",left: "20.8333333333%",top: "34.9573690621%", background: "rgba(0, 117, 255, 0.6)",mixBlendMode: "screen"}} onDrop = {this.handleOnDrop}>
+            <img style = {{position: "absolute",width: "6.02777777778%",height: "auto",left: "46.61117717%", top: "15.873015873%"}} src={browseFileIcon} alt="Browse File Icon"/>
             <div className= "dragFilesText">Drag & Drop files here to upload or</div>
             <div className= "browseFilesBackground"/>
             <div className = "browseFile">Choose file</div>

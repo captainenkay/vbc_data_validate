@@ -1,68 +1,85 @@
 @import url('https://fonts.googleapis.com/css2?family=Open+Sans:ital,wght@0,300;0,400;0,600;0,700;0,800;1,300;1,400;1,600;1,700;1,800&family=Orbitron:wght@400;500;600;700;800;900&display=swap');
 @import url('https://fonts.googleapis.com/css2?family=Open+Sans:ital,wght@0,300;0,400;0,600;0,700;0,800;1,300;1,400;1,600;1,700;1,800&display=swap');
+
 .fullPage{
-    width: 1440px;
-    height: 898px;
+    height: 100vh;
+    width: 100%;
     position: relative;
-    background-image: url("./assets/backgroundImage.png");
+    background: url("./assets/backgroundImage.png");
+    background-size: cover;
 }
-.activePageText{
+
+.logoVBC{
     position: absolute;
-    width: 58px;
-    height: 26px;
-    top: 24px;
+    width: 11%;
+    height: auto;
+    left: 5.4%;
+    top: 2.19244823386%;
+}
+
+.navigationIcon{
+    position: absolute;
+    width: 1.38888888889%;
+    height: auto;
+    top: 3%;
+}
+
+.activeNavigationText{
+    position: absolute;
+    top: 2.7%;
 
     font-family: Open Sans;
     font-style: normal;
     font-weight: 600;
-    font-size: 20px;
-    line-height: 27px;
+    font-size: 1.3vw;
     display: flex;
     align-items: center;
 
     color: #3BCCFA;
 }
-.inactivePageText{
+
+.activeNavigationText:hover{
+    cursor: pointer;;
+}
+
+.inactiveNavigationText{
     position: absolute;
-    width: 106px;
-    height: 26px;
-    top: 24px;
+    top: 2.7%;
 
     font-family: Open Sans;
     font-style: normal;
     font-weight: normal;
-    font-size: 20px;
-    line-height: 27px;
+    font-size: 1.3vw;
     display: flex;
     align-items: center;
 
     color: rgba(255, 255, 255, 0.9);
 }
-.inactivePageText:hover{
-    color: #3BCCFA
+
+.inactiveNavigationText{
+    cursor: pointer;
 }
 
 .metamaskBackground{
     position: absolute;
-    width: 190px;
-    height: 38px;
-    left: 1175px;
-    top: 18px;
+    width: 13.1944444444%;
+    height: 4.25%;
+    left: 81.5972222222%;
+    top: 2%;
 
     background: linear-gradient(99.51deg, #23B1EE 20.6%, #005BC7 133.71%);
     border-radius: 100px;
 }
+
 .metamaskText {
     position: absolute;
-    height: 22px;
-    left: 1199px;
-    top: 26px;
+    left: 83.2638888889%;
+    top: 2.7%;
 
     font-family: Open Sans;
     font-style: normal;
     font-weight: normal;
-    font-size: 16px;
-    line-height: 22px;
+    font-size: 1.15vw;
     text-align: center;
 
     color: #FFFFFF;
@@ -88,15 +105,13 @@
 
 .metamaskConnectedText {
     position: absolute;
-    height: 22px;
-    left: 1199px;
-    top: 26px;
+    left: 83.2638888889%;
+    top: 2.7%;
 
     font-family: Open Sans;
     font-style: normal;
     font-weight: normal;
-    font-size: 16px;
-    line-height: 22px;
+    font-size: 1.15vw;
     text-align: center;
 
     color: #FFFFFF;
@@ -108,7 +123,7 @@
     color: #fff;
     text-align: center;
     padding: 5px 5px 5px 5px;
-    border-radius: 6px;
+    border-radius: 15px;
     
     /* Position the tooltip text - see examples below! */
     position: absolute;
@@ -120,29 +135,57 @@
     visibility: visible;
 } 
 
-
-.applicationName {
+.applicationName{
     position: absolute;
-    width: 428px;
-    height: 45px;
-    left: 508px;
-    top: 123px;
+    left: 39.5%;
+    top: 13.6666666667%;
 
     font-family: Orbitron;
     font-style: normal;
     font-weight: 500;
-    font-size: 36px;
-    line-height: 45px;
+    font-size: 2vw;
     letter-spacing: 0.08em;
 
     color: #E8F0F5;
 }
 
+.applicationInformation{
+    position: absolute;
+    width: 3.75%;
+    height: auto;
+    top : 70.7777777778%;
+}
+
+.applicationInformationNumber{
+    position: absolute;
+    top: 70%;
+
+    font-family: Open Sans;
+    font-style: normal;
+    font-weight: bold;
+    font-size: 1.8vw;
+
+    color: #FFFFFF;
+}
+
+.applicationInformationText{
+    position: absolute;
+    top: 75%;
+
+    font-family: Open Sans;
+    font-style: normal;
+    font-weight: normal;
+    font-size: 1.1vw;
+    text-align: left;
+
+    color: #FFFFFF;
+}
+
 .buttonActiveBackground{
     position: absolute;
-    width: 168px;
-    height: 48px;
-    top: 239px;
+    width: 11.6666666667%;
+    height: 5.84652862363%;
+    top: 29.1108404385%;
 
     background: rgba(0, 117, 255, 0.6);
     mix-blend-mode: screen;
@@ -154,15 +197,12 @@
 
 .buttonActiveText{
     position: absolute;
-    height: 25px;
-    top: 251px;
+    top: 30.5724725944%;
 
     font-family: Open Sans;
     font-style: normal;
     font-weight: bold;
-    font-size: 18px;
-    line-height: 25px;
-    /* identical to box height */
+    font-size: 1.3vw;
 
     text-align: center;
 
@@ -175,9 +215,9 @@
 
 .buttonInactiveBackground{
     position: absolute;
-    width: 168px;
-    height: 48px;
-    top: 239px;
+    width: 11.6666666667%;
+    height: 5.84652862363%;
+    top: 29.1108404385%;
 
     background: rgba(67, 122, 146, 0.2);
     mix-blend-mode: screen;
@@ -189,15 +229,12 @@
 
 .buttonInactiveText{
     position: absolute;
-    height: 25px;
-    top: 251px;
+    top: 30.5724725944%;
 
     font-family: Open Sans;
     font-style: normal;
     font-weight: bold;
-    font-size: 18px;
-    line-height: 25px;
-    /* identical to box height */
+    font-size: 1.3vw;
 
     text-align: center;
 
@@ -210,10 +247,10 @@
 
 .chooseFileBackground{
     position: absolute;
-    width: 841px;
-    height: 252px;
-    left: 300px;
-    top: 287px;
+    width: 58.4027777778%;
+    height: 30.6942752741%;
+    left: 20.8333333333%;
+    top: 34.9573690621%;
 
     background: rgba(0, 117, 255, 0.6);
     mix-blend-mode: screen;
@@ -221,16 +258,13 @@
 
 .dragFilesText{
     position: absolute;
-    height: 25px;
-    left: 273px;
-    top: 114px;
+    left: 32.461355529%;
+    top: 45.238095238%;
 
     font-family: Open Sans;
     font-style: normal;
     font-weight: normal;
-    font-size: 18px;
-    line-height: 25px;
-    /* identical to box height */
+    font-size: 1.3vw;
 
     text-align: center;
 
@@ -239,16 +273,13 @@
 
 .fileText{
     position: absolute;
-    height: 25px;
-    left: 718px;
-    top: 351px;
+    left: 49.8611111111%;
+    top: 42.7527405603%;
 
     font-family: Open Sans;
     font-style: normal;
     font-weight: 600;
-    font-size: 18px;
-    line-height: 25px;
-    /* identical to box height */
+    font-size: 1.2vw;
 
     display: flex;
     align-items: center;
@@ -258,29 +289,23 @@
 
 .fileSize{
     position: absolute;
-    height: 19px;
-    left: 718px;
-    top: 378px;
+    left: 49.8611111111%;
+    top: 46.0414129111%;
 
     font-family: Open Sans;
     font-style: normal;
     font-weight: normal;
-    font-size: 14px;
-    line-height: 19px;
-    /* identical to box height */
-
-    display: flex;
-    align-items: center;
+    font-size: 0.9vw;
 
     color: rgba(255, 255, 255, 0.8);
 }
 
 .browseFilesBackground{
     position: absolute;
-    width: 130px;
-    height: 38px;
-    left: 356px;
-    top: 174px;
+    width: 15.457788347%;
+    height: 15.079365079%;
+    left: 42.330558858%;
+    top: 69.047619047%;
     
     background: rgba(255, 255, 255, 0.7);
     mix-blend-mode: screen;
@@ -293,17 +318,15 @@
 
 .browseFile{
     position: absolute;
-    width: 94px;
-    height: 22px;
-    left: 374px;
-    top: 182px;
+    width: 11.177170035%;
+    height: 8.73015873%;
+    left: 44.470868014%;
+    top: 72.222222222%;
 
     font-family: Open Sans;
     font-style: normal;
     font-weight: 600;
-    font-size: 16px;
-    line-height: 22px;
-    /* identical to box height */
+    font-size: 1.1vw;
 
     text-align: center;
 
@@ -316,62 +339,24 @@
 
 .footer{
     position: absolute;
-    width: 1440px;
-    height: 177px;
-    left: 0px;
-    top: 721px;
+    width: 100%;
+    height: 15%;
+    top: 85%;
 
     background: rgba(0, 0, 0, 0.62);
 }
 
-.number{
-    position: absolute;
-    width: 104px;
-    height: 30px;
-    left: 370px;
-    top: 584px;
-
-    font-family: Open Sans;
-    font-style: normal;
-    font-weight: bold;
-    font-size: 26px;
-    line-height: 35px;
-    display: flex;
-    align-items: center;
-
-    color: #FFFFFF;
-}
-
-.text{
-    position: absolute;
-    width: 137px;
-    height: 20px;
-    left: 370px;
-    top: 616px;
-
-    font-family: Open Sans;
-    font-style: normal;
-    font-weight: normal;
-    font-size: 15px;
-    line-height: 20px;
-    text-align: left;
-
-    color: #FFFFFF;
-}
 
 .publishText{
     position: absolute;
-    width: 94px;
-    height: 22px;
-    left: 674px;
-    top: 469px;
+    width: 6.52777777778%;
+    left: 46.8055555556%;
+    top: 57.12545676%;
 
     font-family: Open Sans;
     font-style: normal;
     font-weight: 600;
-    font-size: 16px;
-    line-height: 22px;
-    /* identical to box height */
+    font-size: 1.1vw;
 
     text-align: center;
 
@@ -384,10 +369,10 @@
 
 .borderFile{
     position: absolute;
-    width: 544px;
-    height: 114px;
-    left: 449px;
-    top: 317px;
+    width: 37.7777777778%;
+    height: 13.8855054811%;
+    left: 31.1805555556%;
+    top: 38.6114494519%;
 
     border: 1px dashed #3BCCFA;
     box-sizing: border-box;
@@ -395,24 +380,22 @@
 
 .alertBackground{
     position: absolute;
-    width: 600px;
-    left: 420px;
-    top: 152px;
-    height: 497px;
+    width: 41.6666666667%;
+    left: 29.1666666667%;
+    top: 18.5140073082%;
+    height: 60.5359317905%;
 
     background: #FFFFFF;
 }
 
 .alertText{
     position: absolute;
-    height: 19px;
-    left: 648px;
+    left: 45%;
 
     font-family: Open Sans;
     font-style: normal;
     font-weight: normal;
-    font-size: 14px;
-    line-height: 19px;
+    font-size: 0.9vw;
     /* identical to box height */
 
     display: flex;
@@ -434,54 +417,39 @@
 
 .alertFailTitle{
     position: absolute;
-    height: 19px;
-    left: 588px;
-    top: 567px;
+    left: 40.8333333333%;
+    top: 69.0621193666%;
 
     font-family: Open Sans;
     font-style: normal;
     font-weight: bold;
-    font-size: 14px;
-    line-height: 19px;
-    /* identical to box height */
-
-    display: flex;
-    align-items: center;
+    font-size: 0.8vw;
 
     color: #F84949;
 }
 
 .alertSuccessBigTitle{
     position: absolute;
-    height: 19px;
-    left: 648px;
-    top: 576px;
+    left: 45%;
+    top: 70.1583434836%;
 
     font-family: Open Sans;
     font-style: normal;
     font-weight: bold;
-    font-size: 14px;
-    line-height: 19px;
-    /* identical to box height */
-
-    display: flex;
-    align-items: center;
+    font-size: 1vw;
 
     color: #1FA7EA;
 }
 
 .alertSuccessTitle{
     position: absolute;
-    width: 252px;
-    height: 32px;
-    left: 648px;
-    top: 597px;
+    left: 45%;
+    top: 72.7161997564%;
 
     font-family: Open Sans;
     font-style: normal;
     font-weight: normal;
-    font-size: 12px;
-    line-height: 16px;
+    font-size: 0.8vw;
     display: flex;
     align-items: center;
 
@@ -490,20 +458,18 @@
 
 .alertBackgroundFade{
     position: absolute;
-    width: 1440px;
-    height: 898px;
-    left: 0px;
-    top: 0px;
+    width: 100%;
+    height: 100vh;
 
     background: rgba(0, 0, 0, 0.42);
 }
 
 .Progress{
     position: absolute;
-    width: 15px;
-    height: 293px;
-    left: 617px;
-    top: 317px;
+    width: 1.04166666667%;
+    height: 35.6881851401%;
+    left: 42.8472222222%;
+    top: 38.6114494519%;
 }
 
 .ProgressBar{
@@ -516,10 +482,9 @@
 
 .descriptionText{
     position: absolute;
-    width: 544px;
-    height: 25px;
-    left: 449px;
-    top: 405px;
+    width: 37.7777777778%;
+    left: 31.1805555556%;
+    top: 49.3300852619%;
 
     border: none;
     background-color: inherit;
@@ -527,42 +492,47 @@
     font-family: Open Sans;
     font-style: normal;
     font-weight: normal;
-    font-size: 18px;
-    line-height: 25px;
+    font-size: 1vw;
 }
 
 .descriptionText::placeholder{
     position: absolute;
-    left: 200px;
+    left: 35.8888888889%;
 
     color: #ffffff;
     font-family: Open Sans;
     font-style: normal;
     font-weight: normal;
-    font-size: 18px;
-    line-height: 25px;
+    font-size: 1vw;
 }
 
 .closeButton{
     position: absolute;
-    width: 24px;
-    height: 24px;
-    left: 600px;
-    top: 360px;
+    width: 1.66666666667%;
+    height: auto;
+    left: 41.6666666667%;
+    top: 43.8489646772%;
 }
 
 .closeButton:hover{
     cursor: pointer;
 }
 
+.checkIcon{
+    position: absolute;
+    width: 1.80555555556%;
+    height: auto;
+    left: 42.4305555556%
+}
+
 .loader {
     position: absolute;
-    left: 611px;
+    left: 42.4305555556%;
     border: 2px solid #f3f3f3; /* Light grey */
     border-top: 2px solid #3498db; /* Blue */
     border-radius: 50%;
-    width: 20px;
-    height: 20px;
+    width: 1.38888888889%;
+    height: 2.43605359318%;
     animation: spin 2s linear infinite;
 }
   
